@@ -70,6 +70,35 @@
             android:background="@drawable/frame_round"
             android:imeOptions="flagNoExtractUi"/>
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="130dp">
+
+            <ImageView
+                android:id="@+id/image_profile"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@mipmap/ic_launcher"
+                android:layout_centerVertical="true"
+                android:background="@drawable/frame_round"
+                />
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="@string/str_profile_image"
+                android:layout_below="@id/image_profile"
+                android:gravity="center"
+                android:textSize="12sp"/>
+            <Button
+                android:id="@+id/btn_image_select"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@id/image_profile"
+                android:layout_marginStart="20dp"
+                android:text="@string/str_select"/>
+        </RelativeLayout>
+
         <TextView
             android:id="@+id/text_error_message"
             android:layout_width="wrap_content"
