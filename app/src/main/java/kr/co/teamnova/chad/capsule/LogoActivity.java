@@ -21,7 +21,6 @@ public class LogoActivity extends AppCompatActivity {
             @Override
             public void run() {
                 Intent intent = new Intent(getApplicationContext(), LoginPageActivity.class);
-
                 startActivity(intent);
 
                 finish();

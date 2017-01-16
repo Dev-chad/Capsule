@@ -8,7 +8,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-// Todo: Make solution about that how to send instance(class) using intent.
+
+// TODO: Make solution about that how to send instance(class) using intent.
 public class LoginPageActivity extends AppCompatActivity {
 
     private EncryptData encryptData;
