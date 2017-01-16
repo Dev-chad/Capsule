@@ -27,8 +27,6 @@ public class JoinPageActivity extends AppCompatActivity {
     private final int PICK_FROM_ALBUM = 0;
     private final int CROP_FROM_IMAGE = 1;
 
-    private Uri imageCaptureUri;
-
     private TextView textErrorMessage;
     private EditText editFirstName;
     private EditText editLastName;
