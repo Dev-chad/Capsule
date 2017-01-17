@@ -2,22 +2,27 @@
 <resources>
     <string name="app_name">Capsule</string>
 
-    <string name="forgot_account">"계정을 잊으셨나요?"</string>
-    <string name="join">가입하기</string>
-    <string name="log_in">로그인</string>
-    <string name="email">이메일</string>
-    <string name="password">비밀번호</string>
-    <string name="first_name">이름</string>
-    <string name="last_name">성</string>
-    <string name="retype_password">"비밀번호 재입력"</string>
-    <string name="sign_up">등록</string>
-    <string name="back">돌아가기</string>
-
-    <string name="first_name_empty">"이름을 입력해 주세요."</string>
-    <string name="last_name_empty">"성을 입력해 주세요."</string>
-    <string name="email_empty">"이메일을 입력해 주세요."</string>
-    <string name="password_empty">"비밀번호를 입력해 주세요."</string>
-    <string name="retype_password_error">"비밀번호가 서로 다릅니다."</string>
+    <string name="str_join">가입하기</string>
+    <string name="str_log_in">로그인</string>
+    <string name="str_email">이메일</string>
+    <string name="str_password">비밀번호</string>
+    <string name="str_first_name">이름</string>
+    <string name="str_last_name">성</string>
+    <string name="str_retype_password">"비밀번호 재입력"</string>
+    <string name="str_back">돌아가기</string>
     <string name="str_profile_image">"프로필 이미지"</string>
     <string name="str_select">선택</string>
+
+    <string name="str_join_complete">"님의 캡슐이 생성되었습니다."</string>
+    <string name="str_join_cancel">"캡슐 생성을 취소합니다."</string>
+    <string name="str_forgot_account">"계정을 잊으셨나요?"</string>
+
+    <string name="str_error_empty_first_name">"이름을 입력해 주세요."</string>
+    <string name="str_error_empty_last_name">"성을 입력해 주세요."</string>
+    <string name="str_error_empty_email">"이메일을 입력해 주세요."</string>
+    <string name="str_error_empty_password">"비밀번호를 입력해 주세요."</string>
+    <string name="str_error_different_password">"비밀번호가 서로 다릅니다."</string>
+    <string name="str_error_duplicated_email">"이미 등록된 이메일 입니다."</string>
+    <string name="str_error_nonexistent_email">"존재하지 않는 이메일 입니다."</string>
+    <string name="str_error_incorrect_password">"비밀번호가 일치하지 않습니다."</string>
 </resources>

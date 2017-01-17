@@ -7,11 +7,11 @@ import java.security.NoSuchAlgorithmException;
  * Created by Chad on 2017-01-16.
  */
 
-public class EncryptData {
+class EncryptData {
 
 
     // TODO: Analysis about that how to generate SHA256
-    public String getSHA256(String plainPassword) {
+    static String getSHA256(String plainPassword) {
         String cipherPassword = "";
 
         try {

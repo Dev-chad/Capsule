@@ -20,6 +20,7 @@
         </activity>
         <activity android:name=".LoginPageActivity"/>
         <activity android:name=".JoinPageActivity"/>
+        <activity android:name=".HomeActivity"/>
     </application>
 
 </manifest>

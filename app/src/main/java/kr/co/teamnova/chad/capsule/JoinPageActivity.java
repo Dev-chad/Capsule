@@ -1,6 +1,7 @@
 package kr.co.teamnova.chad.capsule;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -31,10 +32,10 @@ public class JoinPageActivity extends AppCompatActivity {
     private EditText editFirstName;
     private EditText editLastName;
     private EditText editEmail;
-    private EditText editPassword ;
+    private EditText editPassword;
     private EditText editRePassword;
     private ImageView imageProfile;
-    private EncryptData encryptData;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,22 +55,37 @@ public class JoinPageActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (editFirstName.getText().toString().equals("")) {
-                    textErrorMessage.setText(getString(R.string.first_name_empty));
+                    textErrorMessage.setText(getString(R.string.str_error_empty_first_name));
                 } else if (editLastName.getText().toString().equals("")) {
-                    textErrorMessage.setText(getString(R.string.last_name_empty));
+                    textErrorMessage.setText(getString(R.string.str_error_empty_last_name));
                 } else if (editEmail.getText().toString().equals("")) {
-                    textErrorMessage.setText(getString(R.string.email_empty));
+                    textErrorMessage.setText(getString(R.string.str_error_empty_email));
                 } else if (editPassword.getText().toString().equals("")) {
-                    textErrorMessage.setText(getString(R.string.password_empty));
+                    textErrorMessage.setText(getString(R.string.str_error_empty_password));
                 } else if (editRePassword.getText().toString().equals("")) {
-                    textErrorMessage.setText(getString(R.string.password_empty));
+                    textErrorMessage.setText(getString(R.string.str_error_empty_password));
                 } else if (!editPassword.getText().toString().equals(editRePassword.getText().toString())) {
-                    textErrorMessage.setText(getString(R.string.retype_password_error));
+                    textErrorMessage.setText(getString(R.string.str_error_different_password));
                     editPassword.setText("");
                     editRePassword.setText("");
                 } else {
-                    Toast.makeText(getApplicationContext(), editFirstName.getText() + "의 캡슐이 생성되었습니다.", Toast.LENGTH_LONG).show();
-                    finish();
+                    File f = new File("/data/data/" + getPackageName() + "/shared_prefs/" + editEmail.getText().toString() + ".xml");
+                    if (f.exists()) {
+                        textErrorMessage.setText(getString(R.string.str_error_duplicated_email));
+                        editEmail.setText("");
+                    } else {
+                        SharedPreferences profileData = getSharedPreferences(editEmail.getText().toString(), MODE_PRIVATE);
+                        SharedPreferences.Editor profileEditor = profileData.edit();
+
+                        profileEditor.putString("first_name", editFirstName.getText().toString());
+                        profileEditor.putString("last_name", editLastName.getText().toString());
+                        profileEditor.putString("email", editEmail.getText().toString());
+                        profileEditor.putString("password", EncryptData.getSHA256(editPassword.getText().toString()));
+                        profileEditor.apply();
+
+                        Toast.makeText(getApplicationContext(), editFirstName.getText() + getString(R.string.str_join_complete), Toast.LENGTH_LONG).show();
+                        finish();
+                    }
                 }
             }
         });
@@ -77,7 +93,7 @@ public class JoinPageActivity extends AppCompatActivity {
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "캡슐 생성을 취소합니다.", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.str_join_cancel), Toast.LENGTH_LONG).show();
                 finish();
             }
         });
@@ -100,13 +116,12 @@ public class JoinPageActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(resultCode != RESULT_OK){
+        if (resultCode != RESULT_OK) {
             return;
         }
 
-        switch (requestCode){
-            case PICK_FROM_ALBUM:
-            {
+        switch (requestCode) {
+            case PICK_FROM_ALBUM: {
                 Intent intent = new Intent("com.android.camera.action.CROP");
                 intent.setDataAndType(data.getData(), "image/");
 
@@ -116,21 +131,20 @@ public class JoinPageActivity extends AppCompatActivity {
                 intent.putExtra("return-data", true);
                 startActivityForResult(intent, CROP_FROM_IMAGE);
             }
-            case CROP_FROM_IMAGE:
-            {
+            case CROP_FROM_IMAGE: {
                 final Bundle extras = data.getExtras();
-                String filePath = Environment.getExternalStorageDirectory().getAbsolutePath()+"/Capsule/Image/"+System.currentTimeMillis()+".jpg";
+                String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Capsule/Image/" + System.currentTimeMillis() + ".jpg";
                 System.out.println(filePath);
                 Toast.makeText(this, filePath, Toast.LENGTH_LONG).show();
 
-                if(extras != null){
+                if (extras != null) {
                     Bitmap photo = extras.getParcelable("data");
 
                     imageProfile.setImageBitmap(photo);
 
-                    String dirPath = Environment.getExternalStorageDirectory().getAbsolutePath()+"/Capsule/Image";
+                    String dirPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Capsule/Image";
                     File imageDirectory = new File(dirPath);
-                    if(!imageDirectory.exists()){
+                    if (!imageDirectory.exists()) {
                         Toast.makeText(this, "Not Exist", Toast.LENGTH_SHORT).show();
                         imageDirectory.mkdir();
                     }
@@ -145,7 +159,7 @@ public class JoinPageActivity extends AppCompatActivity {
                         sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(copyFile)));
                         out.flush();
                         out.close();
-                    } catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }

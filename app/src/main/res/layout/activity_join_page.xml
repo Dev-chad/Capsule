@@ -19,7 +19,7 @@
                 android:id="@+id/edit_first_name"
                 android:layout_width="150dp"
                 android:layout_height="40dp"
-                android:hint="@string/first_name"
+                android:hint="@string/str_first_name"
                 android:maxLines="1"
                 android:paddingStart="10dp"
                 android:background="@drawable/frame_round"
@@ -29,7 +29,7 @@
                 android:id="@+id/edit_last_name"
                 android:layout_width="150dp"
                 android:layout_height="40dp"
-                android:hint="@string/last_name"
+                android:hint="@string/str_last_name"
                 android:maxLines="1"
                 android:paddingStart="10dp"
                 android:layout_marginStart="10dp"
@@ -42,7 +42,7 @@
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:hint="@string/email"
+            android:hint="@string/str_email"
             android:inputType="textEmailAddress"
             android:maxLines="1"
             android:paddingStart="10dp"
@@ -53,7 +53,7 @@
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:hint="@string/password"
+            android:hint="@string/str_password"
             android:inputType="textPassword"
             android:paddingStart="10dp"
             android:background="@drawable/frame_round"
@@ -64,7 +64,7 @@
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:hint="@string/retype_password"
+            android:hint="@string/str_retype_password"
             android:inputType="textPassword"
             android:paddingStart="10dp"
             android:background="@drawable/frame_round"
@@ -124,7 +124,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textAllCaps="false"
-                android:text="@string/sign_up"/>
+                android:text="@string/str_join"/>
 
             <Button
                 android:id="@+id/btn_back"
@@ -133,7 +133,7 @@
                 android:layout_weight="1"
                 android:textAllCaps="false"
                 android:layout_marginStart="20dp"
-                android:text="@string/back"/>
+                android:text="@string/str_back"/>
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

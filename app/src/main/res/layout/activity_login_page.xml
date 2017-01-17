@@ -22,7 +22,7 @@
             android:layout_width="300dp"
             android:layout_height="50dp"
             android:maxLines="1"
-            android:hint="@string/email"
+            android:hint="@string/str_email"
             android:inputType="textEmailAddress"
             android:paddingStart="10dp" />
 
@@ -31,7 +31,7 @@
             android:layout_width="300dp"
             android:layout_height="50dp"
             android:ems="16"
-            android:hint="@string/password"
+            android:hint="@string/str_password"
             android:inputType="textPassword"
             android:paddingStart="10dp" />
 
@@ -47,7 +47,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/log_in"
+                android:text="@string/str_log_in"
                 android:textAllCaps="false" />
 
             <Button
@@ -56,9 +56,19 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginStart="20dp"
-                android:text="@string/join"
+                android:text="@string/str_join"
                 android:textAllCaps="false" />
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/text_error_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_gravity="center"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textColor="#99ff0000"/>
     </LinearLayout>
 
     <TextView
@@ -68,7 +78,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="40dp"
-        android:text="@string/forgot_account"
+        android:text="@string/str_forgot_account"
         android:textColor="#880000ff" />
 
 
