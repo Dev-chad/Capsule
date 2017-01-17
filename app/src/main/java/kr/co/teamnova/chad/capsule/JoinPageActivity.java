@@ -1,12 +1,14 @@
 package kr.co.teamnova.chad.capsule;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -14,6 +16,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -28,6 +33,8 @@ public class JoinPageActivity extends AppCompatActivity {
     private final int PICK_FROM_ALBUM = 0;
     private final int CROP_FROM_IMAGE = 1;
 
+    private String tmpImageName;
+
     private TextView textErrorMessage;
     private EditText editFirstName;
     private EditText editLastName;
@@ -35,6 +42,13 @@ public class JoinPageActivity extends AppCompatActivity {
     private EditText editPassword;
     private EditText editRePassword;
     private ImageView imageProfile;
+
+    private Bitmap profileImage = null;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -80,8 +94,27 @@ public class JoinPageActivity extends AppCompatActivity {
                         profileEditor.putString("last_name", editLastName.getText().toString());
                         profileEditor.putString("email", editEmail.getText().toString());
                         profileEditor.putString("password", EncryptData.getSHA256(editPassword.getText().toString()));
-                        profileEditor.apply();
+                        if(profileImage != null) {
+                            File userDir = new File("/data/data/" + getPackageName() + "/User/" + editEmail.getText().toString());
+                            if (!userDir.exists()) {
+                                userDir.mkdirs();
+                            }
 
+                            File copyFile = new File(userDir.getPath(), "/profile.jpg");
+                            try {
+                                copyFile.createNewFile();
+                                BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(copyFile));
+                                profileImage.compress(Bitmap.CompressFormat.JPEG, 100, out);
+
+                                sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(copyFile)));
+                                out.flush();
+                                out.close();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            profileEditor.putString("profile_image", Uri.fromFile(copyFile).toString());
+                        }
+                        profileEditor.apply();
                         Toast.makeText(getApplicationContext(), editFirstName.getText() + getString(R.string.str_join_complete), Toast.LENGTH_LONG).show();
                         finish();
                     }
@@ -101,14 +134,18 @@ public class JoinPageActivity extends AppCompatActivity {
         btnImageSelect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Intent intent = new Intent(Intent.ACTION_PICK);
-                intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
-
-                // TODO: This request code must change to constant variable.
-                startActivityForResult(intent, PICK_FROM_ALBUM);
+                if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+                   requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
+                } else{
+                    Intent intent = new Intent(Intent.ACTION_PICK);
+                    intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
+                    startActivityForResult(intent, PICK_FROM_ALBUM);
+                }
             }
         });
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     @Override
@@ -129,41 +166,35 @@ public class JoinPageActivity extends AppCompatActivity {
                 intent.putExtra("scale", true);
                 intent.putExtra("return-data", true);
                 startActivityForResult(intent, CROP_FROM_IMAGE);
+                break;
             }
             case CROP_FROM_IMAGE: {
                 final Bundle extras = data.getExtras();
-                String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Capsule/Image/" + System.currentTimeMillis() + ".jpg";
-                System.out.println(filePath);
-                Toast.makeText(this, filePath, Toast.LENGTH_LONG).show();
 
                 if (extras != null) {
-                    Bitmap photo = extras.getParcelable("data");
-
-                    imageProfile.setImageBitmap(photo);
-
-                    String dirPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Capsule/Image";
-                    File imageDirectory = new File(dirPath);
-                    if (!imageDirectory.exists()) {
-                        Toast.makeText(this, "Not Exist", Toast.LENGTH_SHORT).show();
-                        imageDirectory.mkdir();
-                    }
-
-                    File copyFile = new File(filePath);
-
-                    try {
-                        copyFile.createNewFile();
-                        BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(copyFile));
-                        photo.compress(Bitmap.CompressFormat.JPEG, 100, out);
-
-                        sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(copyFile)));
-                        out.flush();
-                        out.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    profileImage = extras.getParcelable("data");
+                    imageProfile.setImageBitmap(profileImage);
                 }
+                break;
             }
         }
 
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 0:
+            {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Intent intent = new Intent(Intent.ACTION_PICK);
+                    intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
+                    startActivityForResult(intent, PICK_FROM_ALBUM);
+                } else {
+                    Toast.makeText(this, "권한 거부로 인해 갤러리에 접근을 실패하였습니다.", Toast.LENGTH_LONG).show();
+                }
+                return;
+            }
+        }
     }
 }

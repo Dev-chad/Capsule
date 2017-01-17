@@ -32,22 +32,26 @@ public class LoginPageActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                File f = new File("/data/data/" + getPackageName() + "/shared_prefs/" + editEmail.getText().toString() + ".xml");
-                if(f.exists()){
-                    SharedPreferences profileData = getSharedPreferences(editEmail.getText().toString(), MODE_PRIVATE);
-
-                    if(EncryptData.getSHA256(editPassword.getText().toString()).equals(profileData.getString("password", ""))){
-                        Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-                        intent.putExtra("email", editEmail.getText().toString());
-                        startActivity(intent);
-                    } else {
-                        textError.setText(getString(R.string.str_error_incorrect_password));
-                        editPassword.setText("");
-                    }
+                if (editEmail.getText().toString().equals("")) {
+                    textError.setText(getString(R.string.str_error_empty_email));
+                } else if (editPassword.getText().toString().equals("")) {
+                    textError.setText(getString(R.string.str_error_empty_password));
                 } else {
-                    textError.setText(getString(R.string.str_error_nonexistent_email));
+                    File f = new File("/data/data/" + getPackageName() + "/shared_prefs/" + editEmail.getText().toString() + ".xml");
+                    if (f.exists()) {
+                        SharedPreferences profileData = getSharedPreferences(editEmail.getText().toString(), MODE_PRIVATE);
+                        if (EncryptData.getSHA256(editPassword.getText().toString()).equals(profileData.getString("password", ""))) {
+                            Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                            intent.putExtra("email", editEmail.getText().toString());
+                            startActivity(intent);
+                        } else {
+                            textError.setText(getString(R.string.str_error_incorrect_password));
+                            editPassword.setText("");
+                        }
+                    } else {
+                        textError.setText(getString(R.string.str_error_nonexistent_email));
+                    }
                 }
-
             }
         });
 
