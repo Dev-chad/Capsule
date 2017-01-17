@@ -26,6 +26,7 @@ public class HomeActivity extends AppCompatActivity{
         TextView textFirstname = (TextView) findViewById(R.id.text_firstname);
         TextView textLastname = (TextView) findViewById(R.id.text_lastname);
         TextView textPassword = (TextView) findViewById(R.id.text_password);
+        TextView textNickname = (TextView) findViewById(R.id.text_nickname);
         ImageView imageProfile = (ImageView) findViewById(R.id.image_profile);
 
         Intent intent = getIntent();
@@ -34,14 +35,18 @@ public class HomeActivity extends AppCompatActivity{
         textEmail.setText(email);
         textFirstname.setText(profileData.getString("first_name", ""));
         textLastname.setText(profileData.getString("last_name", ""));
+        textNickname.setText(profileData.getString("nickname", ""));
         textPassword.setText(profileData.getString("password", ""));
-        Uri uri = Uri.parse(profileData.getString("profile_image", ""));
-        try {
-            Bitmap bm = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-            imageProfile.setImageBitmap(bm);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(profileData.contains("profile_image")){
+            Uri uri = Uri.parse(profileData.getString("profile_image", ""));
+            try {
+                Bitmap bm = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                imageProfile.setImageBitmap(bm);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            imageProfile.setImageResource(R.mipmap.ic_launcher);
         }
-
     }
 }

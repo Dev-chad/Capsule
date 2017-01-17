@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,7 +19,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.io.BufferedOutputStream;
@@ -33,14 +34,16 @@ public class JoinPageActivity extends AppCompatActivity {
     private final int PICK_FROM_ALBUM = 0;
     private final int CROP_FROM_IMAGE = 1;
 
-    private String tmpImageName;
+    boolean isDuplicatedNickname = false;
 
     private TextView textErrorMessage;
+    private TextView textCheckNickname;
     private EditText editFirstName;
     private EditText editLastName;
     private EditText editEmail;
     private EditText editPassword;
     private EditText editRePassword;
+    private EditText editNickname;
     private ImageView imageProfile;
 
     private Bitmap profileImage = null;
@@ -55,13 +58,45 @@ public class JoinPageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_join_page);
 
+        imageProfile = (ImageView) findViewById(R.id.image_profile);
         textErrorMessage = (TextView) findViewById(R.id.text_error_message);
+        textCheckNickname = (TextView) findViewById(R.id.text_check_nickname);
         editFirstName = (EditText) findViewById(R.id.edit_first_name);
         editLastName = (EditText) findViewById(R.id.edit_last_name);
         editEmail = (EditText) findViewById(R.id.edit_email);
         editPassword = (EditText) findViewById(R.id.edit_password);
         editRePassword = (EditText) findViewById(R.id.edit_retype_password);
-        imageProfile = (ImageView) findViewById(R.id.image_profile);
+
+        editNickname = (EditText) findViewById(R.id.edit_nickname);
+        editNickname.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                SharedPreferences sp = getSharedPreferences("Nickname", MODE_PRIVATE);
+                if (sp.contains(editNickname.getText().toString())) {
+                    textCheckNickname.setTextColor(0x99ff0000);
+                    textCheckNickname.setText(R.string.str_not_available);
+                    isDuplicatedNickname = true;
+                } else if (editNickname.getText().toString().equals("")) {
+                    textCheckNickname.setText("");
+                    isDuplicatedNickname = false;
+                } else {
+                    textCheckNickname.setTextColor(0xff00ff00);
+                    textCheckNickname.setText(R.string.str_available);
+                    isDuplicatedNickname = false;
+                }
+            }
+        });
+
 
         Button btnSignUp = (Button) findViewById(R.id.btn_sign_up);
         btnSignUp.setOnClickListener(new View.OnClickListener() {
@@ -71,6 +106,10 @@ public class JoinPageActivity extends AppCompatActivity {
                     textErrorMessage.setText(getString(R.string.str_error_empty_first_name));
                 } else if (editLastName.getText().toString().equals("")) {
                     textErrorMessage.setText(getString(R.string.str_error_empty_last_name));
+                } else if (editNickname.getText().toString().equals("")) {
+                    textErrorMessage.setText(getString(R.string.str_error_empty_nickname));
+                } else if (isDuplicatedNickname) {
+                    textErrorMessage.setText(getString(R.string.str_error_duplicated_nickname));
                 } else if (editEmail.getText().toString().equals("")) {
                     textErrorMessage.setText(getString(R.string.str_error_empty_email));
                 } else if (editPassword.getText().toString().equals("")) {
@@ -88,18 +127,23 @@ public class JoinPageActivity extends AppCompatActivity {
                         editEmail.setText("");
                     } else {
                         SharedPreferences profileData = getSharedPreferences(editEmail.getText().toString(), MODE_PRIVATE);
+                        SharedPreferences nickNameData = getSharedPreferences("Nickname", MODE_PRIVATE);
                         SharedPreferences.Editor profileEditor = profileData.edit();
+                        SharedPreferences.Editor nicknameEditor = nickNameData.edit();
 
                         profileEditor.putString("first_name", editFirstName.getText().toString());
                         profileEditor.putString("last_name", editLastName.getText().toString());
+                        profileEditor.putString("nickname", editNickname.getText().toString());
+                        nicknameEditor.putString(editNickname.getText().toString(), "");
                         profileEditor.putString("email", editEmail.getText().toString());
                         profileEditor.putString("password", EncryptData.getSHA256(editPassword.getText().toString()));
-                        if(profileImage != null) {
-                            File userDir = new File("/data/data/" + getPackageName() + "/User/" + editEmail.getText().toString());
-                            if (!userDir.exists()) {
-                                userDir.mkdirs();
-                            }
 
+                        File userDir = new File("/data/data/" + getPackageName() + "/User/" + editEmail.getText().toString());
+                        if (!userDir.exists()) {
+                            userDir.mkdirs();
+                        }
+
+                        if (profileImage != null) {
                             File copyFile = new File(userDir.getPath(), "/profile.jpg");
                             try {
                                 copyFile.createNewFile();
@@ -114,6 +158,7 @@ public class JoinPageActivity extends AppCompatActivity {
                             }
                             profileEditor.putString("profile_image", Uri.fromFile(copyFile).toString());
                         }
+                        nicknameEditor.apply();
                         profileEditor.apply();
                         Toast.makeText(getApplicationContext(), editFirstName.getText() + getString(R.string.str_join_complete), Toast.LENGTH_LONG).show();
                         finish();
@@ -130,22 +175,18 @@ public class JoinPageActivity extends AppCompatActivity {
             }
         });
 
-        Button btnImageSelect = (Button) findViewById(R.id.btn_image_select);
-        btnImageSelect.setOnClickListener(new View.OnClickListener() {
+        imageProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
-                   requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
-                } else{
+                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
+                } else {
                     Intent intent = new Intent(Intent.ACTION_PICK);
                     intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
                     startActivityForResult(intent, PICK_FROM_ALBUM);
                 }
             }
         });
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     @Override
@@ -182,10 +223,9 @@ public class JoinPageActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
-            case 0:
-            {
+            case 0: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Intent intent = new Intent(Intent.ACTION_PICK);
                     intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
