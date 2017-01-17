@@ -36,7 +36,6 @@ public class JoinPageActivity extends AppCompatActivity {
     private EditText editRePassword;
     private ImageView imageProfile;
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
