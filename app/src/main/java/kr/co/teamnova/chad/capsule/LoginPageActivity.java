@@ -41,7 +41,7 @@ public class LoginPageActivity extends AppCompatActivity {
                     if (f.exists()) {
                         SharedPreferences profileData = getSharedPreferences(editEmail.getText().toString(), MODE_PRIVATE);
                         if (EncryptData.getSHA256(editPassword.getText().toString()).equals(profileData.getString("password", ""))) {
-                            Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                             intent.putExtra("email", editEmail.getText().toString());
                             startActivity(intent);
                         } else {

@@ -30,6 +30,7 @@
     <string name="str_error_nonexistent_email">"존재하지 않는 이메일 입니다."</string>
     <string name="str_error_incorrect_password">"비밀번호가 일치하지 않습니다."</string>
     <string name="str_error_duplicated_nickname">이미 존재하는 닉네임 입니다.</string>
+    <string name="str_total_content">총 게시물:</string>
 
 
 </resources>

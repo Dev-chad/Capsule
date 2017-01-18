@@ -43,8 +43,14 @@
             android:src="@mipmap/image_btn_add_inactive"/>
     </LinearLayout>
     <View
+        android:id="@+id/line_menu"
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:layout_below="@id/layout_top"
         android:background="#33000000"/>
+    <FrameLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/line_menu" />
 </RelativeLayout>
