@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 import java.io.File;
 
-// TODO: Make solution about that how to send instance(class) using intent.
 public class LoginPageActivity extends AppCompatActivity {
 
     private EditText editEmail;

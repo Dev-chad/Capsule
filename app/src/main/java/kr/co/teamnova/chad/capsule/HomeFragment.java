@@ -11,6 +11,7 @@ import android.widget.TextView;
  * Created by Chad on 2017-01-18.
  */
 
+// TODO: Implementation activity view.
 public class HomeFragment extends Fragment {
 
     private TextView textView;
