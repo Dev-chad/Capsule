@@ -1,43 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:text="Home Activity"
+    <LinearLayout
+        android:id="@+id/layout_top"
+        android:layout_alignParentTop="true"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/text_title"
-        android:gravity="center"/>
-    <TextView
-        android:id="@+id/text_email"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp">
+        <ImageButton
+            android:id="@+id/btn_home"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="#ffffff"
+            android:src="@mipmap/image_btn_home_inactive"
+            />
+        <ImageButton
+            android:id="@+id/btn_search"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="#ffffff"
+            android:src="@mipmap/image_btn_search_inactive" />
+        <ImageButton
+            android:id="@+id/btn_people"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="#ffffff"
+            android:src="@mipmap/image_btn_people_inactive"/>
+        <ImageButton
+            android:id="@+id/btn_add"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="#ffffff"
+            android:src="@mipmap/image_btn_add_inactive"/>
+    </LinearLayout>
+    <View
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:id="@+id/text_firstname"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:id="@+id/text_lastname"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <TextView
-        android:id="@+id/text_nickname"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:id="@+id/text_password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <ImageView
-        android:id="@+id/image_profile"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:background="@drawable/frame_round"
-        android:padding="5dp"/>
-
-</LinearLayout>
+        android:layout_height="2dp"
+        android:layout_below="@id/layout_top"
+        android:background="#33000000"/>
+</RelativeLayout>

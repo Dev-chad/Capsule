@@ -237,4 +237,13 @@ public class JoinPageActivity extends AppCompatActivity {
             }
         }
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Toast.makeText(this, "onStart() called", Toast.LENGTH_LONG).show();
+        if(profileImage != null){
+            imageProfile.setImageBitmap(profileImage);
+        }
+    }
 }
