@@ -35,6 +35,7 @@
     <string name="str_upload">업로드</string>
     <string name="str_tag">Tag</string>
     <string name="str_image_upload">이미지 업로드</string>
+    <string name="str_reg">등록</string>
 
 
 </resources>
