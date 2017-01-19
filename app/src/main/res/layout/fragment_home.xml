@@ -59,4 +59,14 @@
 
     </GridLayout>
 
+    <TextView
+        android:id="@+id/text_nothing_content_const"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="아직 게시물이 없습니다."
+        android:layout_below="@id/layout_profile"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:visibility="gone"/>
+
 </RelativeLayout>

@@ -12,7 +12,7 @@ import android.widget.ImageButton;
  * Created by Chad on 2017-01-17.
  */
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity implements AddFragment.OnClickAddListener{
     private final int STATE_HOME = 0;
     private final int STATE_SEARCH = 1;
     private final int STATE_PEOPLE= 2;
@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 stateNum = STATE_HOME;
-                setFragmentActivity();
+                onClickMenu();
             }
         });
 
@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 stateNum = STATE_SEARCH;
-                setFragmentActivity();
+                onClickMenu();
             }
         });
 
@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 stateNum = STATE_PEOPLE;
-                setFragmentActivity();
+                onClickMenu();
             }
         });
 
@@ -69,37 +69,11 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 stateNum = STATE_ADD;
-                setFragmentActivity();
+                onClickMenu();
             }
         });
-        setFragmentActivity();
+        onClickMenu();
 
-        /*TextView textEmail = (TextView) findViewById(R.id.text_email);
-        TextView textFirstname = (TextView) findViewById(R.id.text_firstname);
-        TextView textLastname = (TextView) findViewById(R.id.text_lastname);
-        TextView textPassword = (TextView) findViewById(R.id.text_password);
-        TextView textNickname = (TextView) findViewById(R.id.text_nickname);
-        ImageView imageProfile = (ImageView) findViewById(R.id.image_profile);
-
-
-        String email = intent.getStringExtra("email");
-        SharedPreferences profileData = getSharedPreferences(email, MODE_PRIVATE);
-        textEmail.setText(email);
-        textFirstname.setText(profileData.getString("first_name", ""));
-        textLastname.setText(profileData.getString("last_name", ""));
-        textNickname.setText(profileData.getString("nickname", ""));
-        textPassword.setText(profileData.getString("password", ""));
-        if(profileData.contains("profile_image")){
-            Uri uri = Uri.parse(profileData.getString("profile_image", ""));
-            try {
-                Bitmap bm = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                imageProfile.setImageBitmap(bm);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            imageProfile.setImageResource(R.mipmap.ic_launcher);
-        }*/
     }
 
     @Override
@@ -108,7 +82,7 @@ public class MainActivity extends AppCompatActivity{
 //        setButtonAlpha();
     }
 
-    private void setFragmentActivity(){
+    private void onClickMenu(){
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         Bundle bundle = new Bundle(1);
         bundle.putString("email", intent.getStringExtra("email"));
@@ -157,4 +131,24 @@ public class MainActivity extends AppCompatActivity{
 
         fragmentTransaction.commit();
     }
+
+    public void setHomeFragment(){
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        Bundle bundle = new Bundle(1);
+        bundle.putString("email", intent.getStringExtra("email"));
+        btnHome.setImageResource(R.mipmap.image_btn_home);
+        btnSearch.setImageResource(R.mipmap.image_btn_search_inactive);
+        btnPeople.setImageResource(R.mipmap.image_btn_people_inactive);
+        btnAdd.setImageResource(R.mipmap.image_btn_add_inactive);
+        HomeFragment fragment = new HomeFragment();
+        fragment.setArguments(bundle);
+        fragmentTransaction.replace(R.id.container, fragment);
+        fragmentTransaction.commit();
+    }
+
+
+        public void AddClickEvent(){
+            setHomeFragment();
+        }
+
 }

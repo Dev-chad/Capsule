@@ -1,9 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <TextView
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <EditText
+        android:id="@+id/text_content_details"
         android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:background="@drawable/frame_round"
+        android:gravity="top"
+        android:hint="@string/str_content_request_details"
+        android:inputType="textMultiLine"
+        android:paddingStart="10dp"
+        android:paddingTop="10dp" />
+
+    <ImageView
+        android:id="@+id/image_content"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_below="@id/text_content_details"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/frame_round"
+        android:padding="5dp" />
+
+    <TextView
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:text="ADD"/>
-</LinearLayout>
+        android:layout_below="@+id/image_content"
+        android:gravity="center"
+        android:text="@string/str_image_upload"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/text_const_tag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/image_content"
+        android:layout_marginStart="10dp"
+        android:layout_toEndOf="@id/image_content"
+        android:text="@string/str_tag" />
+
+    <RelativeLayout
+        android:id="@+id/layout_tag_reg"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginStart="10dp"
+        android:layout_alignBottom="@id/image_content"
+        android:layout_toEndOf="@id/image_content">
+        <EditText
+            android:id="@+id/edit_tag"
+            android:layout_width="100dp"
+            android:layout_height="30dp"
+            android:background="@drawable/frame_round"
+            android:paddingStart="10dp"
+            android:inputType="text"
+            android:layout_centerVertical="true"
+            android:textSize="15sp" />
+
+        <Button
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:text="등록"
+            android:textSize="12sp"
+            android:layout_toEndOf="@+id/edit_tag"
+            android:id="@+id/button"
+            android:layout_centerVertical="true"/>
+    </RelativeLayout>
+
+    <GridLayout
+        android:id="@+id/layout_tag"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/text_const_tag"
+        android:layout_above="@id/layout_tag_reg"
+        android:columnCount="5"
+        android:rowCount="1"
+        android:orientation="horizontal"
+        android:layout_toEndOf="@id/image_content">
+
+
+    </GridLayout>
+
+
+
+
+    <Button
+        android:id="@+id/btn_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="@string/str_upload" />
+
+
+</RelativeLayout>

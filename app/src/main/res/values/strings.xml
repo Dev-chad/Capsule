@@ -31,6 +31,10 @@
     <string name="str_error_incorrect_password">"비밀번호가 일치하지 않습니다."</string>
     <string name="str_error_duplicated_nickname">이미 존재하는 닉네임 입니다.</string>
     <string name="str_total_content">총 게시물:</string>
+    <string name="str_content_request_details">내용을 입력해 주세요</string>
+    <string name="str_upload">업로드</string>
+    <string name="str_tag">Tag</string>
+    <string name="str_image_upload">이미지 업로드</string>
 
 
 </resources>
