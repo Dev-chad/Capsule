@@ -156,7 +156,6 @@ public class AddFragment extends Fragment {
 
         switch (requestCode) {
             case PICK_FROM_ALBUM: {
-
                 if (data.getData() != null) {
                     try {
                         contentImage = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), data.getData());

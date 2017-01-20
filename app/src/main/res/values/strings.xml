@@ -36,6 +36,8 @@
     <string name="str_tag">Tag</string>
     <string name="str_image_upload">이미지 업로드</string>
     <string name="str_reg">등록</string>
+    <string name="str_phone">전화번호</string>
+    <string name="str_auth">인증</string>
 
 
 </resources>

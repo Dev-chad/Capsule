@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.SmsManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -24,6 +25,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.Random;
 
 /**
  * Created by Chad on 2017-01-16.
@@ -33,6 +35,9 @@ public class JoinPageActivity extends AppCompatActivity {
 
     private final int PICK_FROM_ALBUM = 0;
     private final int CROP_FROM_IMAGE = 1;
+    private final int SEND_SMS = 2;
+
+    private int authNum;
 
     boolean isDuplicatedNickname = false;
 
@@ -44,6 +49,7 @@ public class JoinPageActivity extends AppCompatActivity {
     private EditText editPassword;
     private EditText editRePassword;
     private EditText editNickname;
+    private EditText editPhone;
     private ImageView imageProfile;
 
     private Bitmap profileImage = null;
@@ -58,6 +64,7 @@ public class JoinPageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_join_page);
 
+
         imageProfile = (ImageView) findViewById(R.id.image_profile);
         textErrorMessage = (TextView) findViewById(R.id.text_error_message);
         textCheckNickname = (TextView) findViewById(R.id.text_check_nickname);
@@ -66,6 +73,7 @@ public class JoinPageActivity extends AppCompatActivity {
         editEmail = (EditText) findViewById(R.id.edit_email);
         editPassword = (EditText) findViewById(R.id.edit_password);
         editRePassword = (EditText) findViewById(R.id.edit_retype_password);
+        editPhone = (EditText) findViewById(R.id.edit_phone);
 
         editNickname = (EditText) findViewById(R.id.edit_nickname);
         editNickname.addTextChangedListener(new TextWatcher() {
@@ -94,9 +102,28 @@ public class JoinPageActivity extends AppCompatActivity {
                     textCheckNickname.setText(R.string.str_available);
                     isDuplicatedNickname = false;
                 }
+
             }
         });
 
+        Button btnAuth = (Button) findViewById(R.id.btn_auth);
+        btnAuth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int permissionCheck = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.RECEIVE_SMS);
+
+                if (permissionCheck == PackageManager.PERMISSION_DENIED) {
+                    requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS}, SEND_SMS);
+                } else {
+                    Random rand = new Random();
+                    authNum = rand.nextInt();
+                    authNum = (authNum >>> 1) % (5000 - 1000) + 1000;
+                    String phonNumber = editPhone.getText().toString();
+
+                    sendAuthSMS(phonNumber, String.valueOf(authNum));
+                }
+            }
+        });
 
         Button btnSignUp = (Button) findViewById(R.id.btn_sign_up);
         btnSignUp.setOnClickListener(new View.OnClickListener() {
@@ -138,7 +165,7 @@ public class JoinPageActivity extends AppCompatActivity {
                         profileEditor.putString("email", editEmail.getText().toString());
                         profileEditor.putString("password", EncryptData.getSHA256(editPassword.getText().toString()));
 
-                        new File("/data/data/"+getPackageName() + "/User/" + editEmail.getText().toString() + "/" + "Contents").mkdirs();
+                        new File("/data/data/" + getPackageName() + "/User/" + editEmail.getText().toString() + "/" + "Contents").mkdirs();
                         File userDir = new File("/data/data/" + getPackageName() + "/User/" + editEmail.getText().toString());
 
                         if (profileImage != null) {
@@ -233,6 +260,19 @@ public class JoinPageActivity extends AppCompatActivity {
                 }
                 break;
             }
+            case 2: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Random rand = new Random();
+                    authNum = rand.nextInt();
+                    authNum = (authNum >>> 1) % (5000 - 1000) + 1000;
+                    String phonNumber = editPhone.getText().toString();
+                    Uri uri = Uri.parse("smsto:" + phonNumber);
+                    Intent it = new Intent(Intent.ACTION_SENDTO, uri);
+                    it.putExtra("sms_body", String.valueOf(authNum));
+                    startActivity(it);
+                    break;
+                }
+            }
         }
     }
 
@@ -242,6 +282,19 @@ public class JoinPageActivity extends AppCompatActivity {
         Toast.makeText(this, "onStart() called", Toast.LENGTH_LONG).show();
         if (profileImage != null) {
             imageProfile.setImageBitmap(profileImage);
+        }
+    }
+
+    public void sendAuthSMS(String phoneNo, String msg) {
+        try {
+            SmsManager smsManager = SmsManager.getDefault();
+            smsManager.sendTextMessage(phoneNo, null, msg, null, null);
+/*            Toast.makeText(getApplicationContext(), "Message Sent",
+                    Toast.LENGTH_LONG).show();*/
+        } catch (Exception ex) {
+            Toast.makeText(getApplicationContext(),ex.getMessage().toString(),
+                    Toast.LENGTH_LONG).show();
+            ex.printStackTrace();
         }
     }
 }

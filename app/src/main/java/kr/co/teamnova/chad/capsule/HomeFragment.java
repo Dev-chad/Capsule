@@ -60,15 +60,21 @@ public class HomeFragment extends Fragment {
         textContentCount = (TextView) view.findViewById(R.id.text_content_count);
         textContentCount.setText(String.valueOf(layoutContents.getChildCount()));
 
-        File test = new File("/data/data/" + getActivity().getPackageName() + "/User/" + getArguments().getString("email") + "/Content/1.txt");
-        File test2 = new File("/data/data/" + getActivity().getPackageName() + "/User/" + getArguments().getString("email") + "/Content/1.jpg");
-
-        if(test.exists() && test2.exists()){
-            Toast.makeText(getActivity().getApplicationContext(), "good", Toast.LENGTH_SHORT).show();
-        }
         return view;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        File test = new File("/data/data/" + getActivity().getPackageName() + "/User/" + getArguments().getString("email") + "/Content/1.txt");
+        File test2 = new File("/data/data/" + getActivity().getPackageName() + "/User/" + getArguments().getString("email") + "/Content/1.jpg");
 
-
+        Toast.makeText(getActivity().getApplicationContext(), test.getPath(), Toast.LENGTH_SHORT).show();
+        if(test.exists()){
+            Toast.makeText(getActivity().getApplicationContext(), "test", Toast.LENGTH_SHORT).show();
+        }
+        if(test2.exists()){
+            Toast.makeText(getActivity().getApplicationContext(), "test2", Toast.LENGTH_SHORT).show();
+        }
+    }
 }
