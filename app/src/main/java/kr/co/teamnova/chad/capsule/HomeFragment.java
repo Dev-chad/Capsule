@@ -11,12 +11,14 @@ import android.view.ViewGroup;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.io.File;
 
 /**
  * Created by Chad on 2017-01-18.
  */
 
-// TODO: Implementation activity view.
 public class HomeFragment extends Fragment {
 
     private ImageView imagePorfile;
@@ -58,6 +60,12 @@ public class HomeFragment extends Fragment {
         textContentCount = (TextView) view.findViewById(R.id.text_content_count);
         textContentCount.setText(String.valueOf(layoutContents.getChildCount()));
 
+        File test = new File("/data/data/" + getActivity().getPackageName() + "/User/" + getArguments().getString("email") + "/Content/1.txt");
+        File test2 = new File("/data/data/" + getActivity().getPackageName() + "/User/" + getArguments().getString("email") + "/Content/1.jpg");
+
+        if(test.exists() && test2.exists()){
+            Toast.makeText(getActivity().getApplicationContext(), "good", Toast.LENGTH_SHORT).show();
+        }
         return view;
     }
 

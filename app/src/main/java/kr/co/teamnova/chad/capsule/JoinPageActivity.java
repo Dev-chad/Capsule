@@ -138,10 +138,8 @@ public class JoinPageActivity extends AppCompatActivity {
                         profileEditor.putString("email", editEmail.getText().toString());
                         profileEditor.putString("password", EncryptData.getSHA256(editPassword.getText().toString()));
 
+                        new File("/data/data/"+getPackageName() + "/User/" + editEmail.getText().toString() + "/" + "Contents").mkdirs();
                         File userDir = new File("/data/data/" + getPackageName() + "/User/" + editEmail.getText().toString());
-                        if (!userDir.exists()) {
-                            userDir.mkdirs();
-                        }
 
                         if (profileImage != null) {
                             File copyFile = new File(userDir.getPath(), "/profile.jpg");
@@ -233,7 +231,7 @@ public class JoinPageActivity extends AppCompatActivity {
                 } else {
                     Toast.makeText(this, "권한 거부로 인해 갤러리에 접근을 실패하였습니다.", Toast.LENGTH_LONG).show();
                 }
-                return;
+                break;
             }
         }
     }
@@ -242,7 +240,7 @@ public class JoinPageActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         Toast.makeText(this, "onStart() called", Toast.LENGTH_LONG).show();
-        if(profileImage != null){
+        if (profileImage != null) {
             imageProfile.setImageBitmap(profileImage);
         }
     }
