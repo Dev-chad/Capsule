@@ -46,7 +46,8 @@ public class AddFragment extends Fragment {
         public void AddClickEvent();
     }
 
-    public AddFragment() {}
+    public AddFragment() {
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

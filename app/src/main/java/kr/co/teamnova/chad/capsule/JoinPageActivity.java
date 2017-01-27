@@ -17,10 +17,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -41,6 +40,8 @@ public class JoinPageActivity extends AppCompatActivity {
 
     boolean isDuplicatedNickname = false;
 
+    private RelativeLayout layoutPhoneAuth;
+
     private TextView textErrorMessage;
     private TextView textCheckNickname;
     private EditText editFirstName;
@@ -50,20 +51,19 @@ public class JoinPageActivity extends AppCompatActivity {
     private EditText editRePassword;
     private EditText editNickname;
     private EditText editPhone;
+    private EditText editAuth;
     private ImageView imageProfile;
 
     private Bitmap profileImage = null;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private GoogleApiClient client;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_join_page);
 
+
+        layoutPhoneAuth = (RelativeLayout) findViewById(R.id.layout_phone_auth);
+        editAuth = (EditText)findViewById(R.id.edit_auth_check);
 
         imageProfile = (ImageView) findViewById(R.id.image_profile);
         textErrorMessage = (TextView) findViewById(R.id.text_error_message);
@@ -106,7 +106,7 @@ public class JoinPageActivity extends AppCompatActivity {
             }
         });
 
-        Button btnAuth = (Button) findViewById(R.id.btn_auth);
+        final Button btnAuth = (Button) findViewById(R.id.btn_auth);
         btnAuth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -117,10 +117,33 @@ public class JoinPageActivity extends AppCompatActivity {
                 } else {
                     Random rand = new Random();
                     authNum = rand.nextInt();
-                    authNum = (authNum >>> 1) % (5000 - 1000) + 1000;
-                    String phonNumber = editPhone.getText().toString();
+                    authNum = (authNum >>> 1) % (500000 - 100000) + 100000;
+                    String phoneNumber = editPhone.getText().toString();
 
-                    sendAuthSMS(phonNumber, String.valueOf(authNum));
+                    sendAuthSMS(phoneNumber, "[CAPSULE]\n본인인증번호는 " + authNum + " 입니다.\n정확히 입력해주세요.");
+                    if(layoutPhoneAuth.getVisibility() != View.VISIBLE){
+                        layoutPhoneAuth.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+        });
+
+        Button btnCheck = (Button)findViewById(R.id.btn_auth_check);
+        btnCheck.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String userAuthNum = editAuth.getText().toString();
+                if(userAuthNum.equals(String.valueOf(authNum))){
+                    btnAuth.setClickable(false);
+                    btnAuth.setBackgroundColor(0x9900ff00);
+                    btnAuth.setText("완료");
+                    editPhone.setClickable(false);
+                    layoutPhoneAuth.setVisibility(View.GONE);
+                    textErrorMessage.setText("");
+
+                } else{
+                    editAuth.setText("");
+                    textErrorMessage.setText("인증번호가 올바르지 않습니다.");
                 }
             }
         });
@@ -264,12 +287,13 @@ public class JoinPageActivity extends AppCompatActivity {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Random rand = new Random();
                     authNum = rand.nextInt();
-                    authNum = (authNum >>> 1) % (5000 - 1000) + 1000;
-                    String phonNumber = editPhone.getText().toString();
-                    Uri uri = Uri.parse("smsto:" + phonNumber);
-                    Intent it = new Intent(Intent.ACTION_SENDTO, uri);
-                    it.putExtra("sms_body", String.valueOf(authNum));
-                    startActivity(it);
+                    authNum = (authNum >>> 1) % (500000 - 100000) + 100000;
+                    String phoneNumber = editPhone.getText().toString();
+
+                    sendAuthSMS(phoneNumber, "[CAPSULE]\n본인인증번호는 " + authNum + " 입니다.\n정확히 입력해주세요.");
+                    if(layoutPhoneAuth.getVisibility() != View.VISIBLE){
+                        layoutPhoneAuth.setVisibility(View.VISIBLE);
+                    }
                     break;
                 }
             }
