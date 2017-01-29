@@ -38,7 +38,8 @@ public class JoinPageActivity extends AppCompatActivity {
 
     private int authNum;
 
-    boolean isDuplicatedNickname = false;
+    private boolean isDuplicatedNickname = false;
+    private boolean isCompletedPhoneAuth = false;
 
     private RelativeLayout layoutPhoneAuth;
 
@@ -63,7 +64,7 @@ public class JoinPageActivity extends AppCompatActivity {
 
 
         layoutPhoneAuth = (RelativeLayout) findViewById(R.id.layout_phone_auth);
-        editAuth = (EditText)findViewById(R.id.edit_auth_check);
+        editAuth = (EditText) findViewById(R.id.edit_auth_check);
 
         imageProfile = (ImageView) findViewById(R.id.image_profile);
         textErrorMessage = (TextView) findViewById(R.id.text_error_message);
@@ -115,33 +116,29 @@ public class JoinPageActivity extends AppCompatActivity {
                 if (permissionCheck == PackageManager.PERMISSION_DENIED) {
                     requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS}, SEND_SMS);
                 } else {
-                    Random rand = new Random();
-                    authNum = rand.nextInt();
-                    authNum = (authNum >>> 1) % (500000 - 100000) + 100000;
-                    String phoneNumber = editPhone.getText().toString();
-
-                    sendAuthSMS(phoneNumber, "[CAPSULE]\n본인인증번호는 " + authNum + " 입니다.\n정확히 입력해주세요.");
-                    if(layoutPhoneAuth.getVisibility() != View.VISIBLE){
+                    sendAuthSMS();
+                    if (layoutPhoneAuth.getVisibility() != View.VISIBLE) {
                         layoutPhoneAuth.setVisibility(View.VISIBLE);
                     }
                 }
             }
         });
 
-        Button btnCheck = (Button)findViewById(R.id.btn_auth_check);
+        Button btnCheck = (Button) findViewById(R.id.btn_auth_check);
         btnCheck.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String userAuthNum = editAuth.getText().toString();
-                if(userAuthNum.equals(String.valueOf(authNum))){
+                if (userAuthNum.equals(String.valueOf(authNum))) {
                     btnAuth.setClickable(false);
                     btnAuth.setBackgroundColor(0x9900ff00);
                     btnAuth.setText("완료");
+                    editPhone.setFocusable(false);
                     editPhone.setClickable(false);
                     layoutPhoneAuth.setVisibility(View.GONE);
                     textErrorMessage.setText("");
-
-                } else{
+                    isCompletedPhoneAuth = true;
+                } else {
                     editAuth.setText("");
                     textErrorMessage.setText("인증번호가 올바르지 않습니다.");
                 }
@@ -162,6 +159,8 @@ public class JoinPageActivity extends AppCompatActivity {
                     textErrorMessage.setText(getString(R.string.str_error_duplicated_nickname));
                 } else if (editEmail.getText().toString().equals("")) {
                     textErrorMessage.setText(getString(R.string.str_error_empty_email));
+                } else if (!isCompletedPhoneAuth) {
+                    textErrorMessage.setText("핸드폰 인증을 완료하지 않았습니다.");
                 } else if (editPassword.getText().toString().equals("")) {
                     textErrorMessage.setText(getString(R.string.str_error_empty_password));
                 } else if (editRePassword.getText().toString().equals("")) {
@@ -285,17 +284,9 @@ public class JoinPageActivity extends AppCompatActivity {
             }
             case 2: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Random rand = new Random();
-                    authNum = rand.nextInt();
-                    authNum = (authNum >>> 1) % (500000 - 100000) + 100000;
-                    String phoneNumber = editPhone.getText().toString();
-
-                    sendAuthSMS(phoneNumber, "[CAPSULE]\n본인인증번호는 " + authNum + " 입니다.\n정확히 입력해주세요.");
-                    if(layoutPhoneAuth.getVisibility() != View.VISIBLE){
-                        layoutPhoneAuth.setVisibility(View.VISIBLE);
-                    }
-                    break;
+                    sendAuthSMS();
                 }
+                break;
             }
         }
     }
@@ -309,16 +300,19 @@ public class JoinPageActivity extends AppCompatActivity {
         }
     }
 
-    public void sendAuthSMS(String phoneNo, String msg) {
+    private void sendAuthSMS() {
         try {
+            Random rand = new Random();
+            authNum = rand.nextInt();
+            authNum = (authNum >>> 1) % (500000 - 100000) + 100000;
+
             SmsManager smsManager = SmsManager.getDefault();
-            smsManager.sendTextMessage(phoneNo, null, msg, null, null);
-/*            Toast.makeText(getApplicationContext(), "Message Sent",
-                    Toast.LENGTH_LONG).show();*/
+            smsManager.sendTextMessage(editPhone.getText().toString(), null, "[CAPSULE]\n본인인증번호는 " + authNum + " 입니다.\n정확히 입력해주세요.", null, null);
         } catch (Exception ex) {
-            Toast.makeText(getApplicationContext(),ex.getMessage().toString(),
+            Toast.makeText(getApplicationContext(), ex.getMessage().toString(),
                     Toast.LENGTH_LONG).show();
             ex.printStackTrace();
         }
     }
+
 }
