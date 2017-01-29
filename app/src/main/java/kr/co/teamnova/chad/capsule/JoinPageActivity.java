@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
@@ -45,6 +46,7 @@ public class JoinPageActivity extends AppCompatActivity {
 
     private TextView textErrorMessage;
     private TextView textCheckNickname;
+    private TextView textAuthTime;
     private EditText editFirstName;
     private EditText editLastName;
     private EditText editEmail;
@@ -57,18 +59,24 @@ public class JoinPageActivity extends AppCompatActivity {
 
     private Bitmap profileImage = null;
 
+    private TimerAsyncTask authTimer;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_join_page);
 
 
+        authTimer = new TimerAsyncTask();
+
         layoutPhoneAuth = (RelativeLayout) findViewById(R.id.layout_phone_auth);
+
         editAuth = (EditText) findViewById(R.id.edit_auth_check);
 
         imageProfile = (ImageView) findViewById(R.id.image_profile);
         textErrorMessage = (TextView) findViewById(R.id.text_error_message);
         textCheckNickname = (TextView) findViewById(R.id.text_check_nickname);
+        textAuthTime = (TextView) findViewById(R.id.text_time);
         editFirstName = (EditText) findViewById(R.id.edit_first_name);
         editLastName = (EditText) findViewById(R.id.edit_last_name);
         editEmail = (EditText) findViewById(R.id.edit_email);
@@ -116,9 +124,14 @@ public class JoinPageActivity extends AppCompatActivity {
                 if (permissionCheck == PackageManager.PERMISSION_DENIED) {
                     requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS}, SEND_SMS);
                 } else {
-                    sendAuthSMS();
-                    if (layoutPhoneAuth.getVisibility() != View.VISIBLE) {
-                        layoutPhoneAuth.setVisibility(View.VISIBLE);
+                    if(!editPhone.getText().toString().equals("")){
+                        editAuth.setText("");
+                        sendAuthSMS();
+                        if (layoutPhoneAuth.getVisibility() != View.VISIBLE) {
+                            layoutPhoneAuth.setVisibility(View.VISIBLE);
+                        }
+                    } else{
+                        textErrorMessage.setText("전화번호를 입력해 주세요");
                     }
                 }
             }
@@ -130,14 +143,19 @@ public class JoinPageActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String userAuthNum = editAuth.getText().toString();
                 if (userAuthNum.equals(String.valueOf(authNum))) {
-                    btnAuth.setClickable(false);
-                    btnAuth.setBackgroundColor(0x9900ff00);
-                    btnAuth.setText("완료");
-                    editPhone.setFocusable(false);
-                    editPhone.setClickable(false);
-                    layoutPhoneAuth.setVisibility(View.GONE);
-                    textErrorMessage.setText("");
-                    isCompletedPhoneAuth = true;
+                    if(!textAuthTime.getText().toString().equals("0:00")){
+                        authTimer.cancel(true);
+                        btnAuth.setClickable(false);
+                        btnAuth.setBackgroundColor(0x9900ff00);
+                        btnAuth.setText("완료");
+                        editPhone.setFocusable(false);
+                        editPhone.setClickable(false);
+                        layoutPhoneAuth.setVisibility(View.GONE);
+                        textErrorMessage.setText("");
+                        isCompletedPhoneAuth = true;
+                    } else{
+                        textErrorMessage.setText("인증시간이 초과되었습니다.");
+                    }
                 } else {
                     editAuth.setText("");
                     textErrorMessage.setText("인증번호가 올바르지 않습니다.");
@@ -184,6 +202,7 @@ public class JoinPageActivity extends AppCompatActivity {
                         profileEditor.putString("last_name", editLastName.getText().toString());
                         profileEditor.putString("nickname", editNickname.getText().toString());
                         nicknameEditor.putString(editNickname.getText().toString(), "");
+                        profileEditor.putString("phone", editPhone.getText().toString());
                         profileEditor.putString("email", editEmail.getText().toString());
                         profileEditor.putString("password", EncryptData.getSHA256(editPassword.getText().toString()));
 
@@ -308,6 +327,12 @@ public class JoinPageActivity extends AppCompatActivity {
 
             SmsManager smsManager = SmsManager.getDefault();
             smsManager.sendTextMessage(editPhone.getText().toString(), null, "[CAPSULE]\n본인인증번호는 " + authNum + " 입니다.\n정확히 입력해주세요.", null, null);
+
+            if(authTimer.getStatus() == AsyncTask.Status.RUNNING){
+                authTimer.cancel(true);
+            }
+            authTimer = new TimerAsyncTask();
+            authTimer.execute();
         } catch (Exception ex) {
             Toast.makeText(getApplicationContext(), ex.getMessage().toString(),
                     Toast.LENGTH_LONG).show();
@@ -315,4 +340,56 @@ public class JoinPageActivity extends AppCompatActivity {
         }
     }
 
+    public class TimerAsyncTask extends AsyncTask<Void, String, String> {
+
+        @Override
+        protected String doInBackground(Void... value) {
+            int m = 0;
+            int s = 10;
+
+            while(m > -1){
+                if(isCancelled()){
+                    break;
+                }
+                publishProgress(String.format("%d:%02d", m, s));
+                if(--s < 0){
+                    s = 59;
+                    --m;
+                }
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+        }
+
+        @Override
+        protected void onProgressUpdate(String... values) {
+            super.onProgressUpdate(values);
+            textAuthTime.setText(values[0]);
+        }
+
+        @Override
+        protected void onCancelled(String s) {
+            super.onCancelled(s);
+        }
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+        }
+    }
 }

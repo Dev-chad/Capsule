@@ -5,11 +5,14 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:layout_marginTop="30dp"
-        android:layout_centerHorizontal="true"
-        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="20dp"
+        android:orientation="vertical">
+
         <RelativeLayout
             android:id="@+id/layout_top"
             android:layout_width="wrap_content"
@@ -17,9 +20,10 @@
 
             <LinearLayout
                 android:id="@+id/layout_profile"
-                android:orientation="vertical"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
                 <ImageView
                     android:id="@+id/image_profile"
                     android:layout_width="100dp"
@@ -27,6 +31,7 @@
                     android:background="@drawable/frame_round"
                     android:padding="5dp"
                     android:src="@mipmap/ic_launcher" />
+
                 <TextView
                     android:id="@+id/text_image"
                     android:layout_width="100dp"
@@ -37,11 +42,12 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_toEndOf="@id/layout_profile"
-                android:layout_marginStart="15dp"
-                android:orientation="vertical"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_toEndOf="@id/layout_profile"
+                android:orientation="vertical">
+
                 <EditText
                     android:id="@+id/edit_first_name"
                     android:layout_width="150dp"
@@ -49,10 +55,10 @@
                     android:layout_marginTop="5dp"
                     android:background="@drawable/frame_round"
                     android:hint="@string/str_first_name"
-                    android:paddingStart="10dp"
                     android:imeOptions="actionNext|flagNoExtractUi"
                     android:inputType="text"
-                    android:maxLines="1" />
+                    android:maxLines="1"
+                    android:paddingStart="10dp" />
 
                 <EditText
                     android:id="@+id/edit_last_name"
@@ -61,18 +67,18 @@
                     android:layout_marginTop="10dp"
                     android:background="@drawable/frame_round"
                     android:hint="@string/str_last_name"
-                    android:paddingStart="10dp"
                     android:imeOptions="actionNext|flagNoEnterAction"
                     android:inputType="text"
-                    android:maxLines="1" />
+                    android:maxLines="1"
+                    android:paddingStart="10dp" />
             </LinearLayout>
 
         </RelativeLayout>
 
         <RelativeLayout
-            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
 
             <EditText
                 android:id="@+id/edit_nickname"
@@ -84,16 +90,17 @@
                 android:inputType="textEmailAddress"
                 android:maxLines="1"
                 android:paddingStart="10dp" />
+
             <TextView
                 android:id="@+id/text_check_nickname"
-                android:gravity="center"
-                android:layout_marginStart="10dp"
-                android:layout_centerInParent="true"
-                android:layout_toEndOf="@id/edit_nickname"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:text=""/>
+                android:layout_centerInParent="true"
+                android:layout_marginStart="10dp"
+                android:layout_toEndOf="@id/edit_nickname"
+                android:gravity="center"
+                android:text=""
+                android:textStyle="bold" />
         </RelativeLayout>
 
         <EditText
@@ -109,20 +116,20 @@
             android:paddingStart="10dp" />
 
         <LinearLayout
-            android:gravity="center"
-            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center">
 
             <EditText
                 android:id="@+id/edit_phone"
                 android:layout_width="0dp"
                 android:layout_height="35dp"
                 android:layout_weight="9"
-                android:inputType="phone"
+                android:background="@drawable/frame_round"
                 android:hint="@string/str_phone"
-                android:paddingStart="10dp"
-                android:background="@drawable/frame_round"/>
+                android:inputType="phone"
+                android:paddingStart="10dp" />
 
             <Button
                 android:id="@+id/btn_auth"
@@ -130,33 +137,44 @@
                 android:layout_height="40dp"
                 android:layout_marginStart="5dp"
                 android:layout_weight="3"
-                android:text="@string/str_auth"/>
+                android:text="@string/str_auth" />
 
         </LinearLayout>
 
         <RelativeLayout
             android:id="@+id/layout_phone_auth"
-            android:visibility="gone"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
             <Button
                 android:id="@+id/btn_auth_check"
                 android:layout_width="65dp"
                 android:layout_height="40dp"
-                android:layout_marginStart="5dp"
                 android:layout_alignParentEnd="true"
-                android:text="확인"/>
+                android:layout_marginStart="5dp"
+                android:text="확인" />
+
             <EditText
                 android:id="@+id/edit_auth_check"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:inputType="number"
-                android:hint="인증번호"
-                android:paddingStart="10dp"
+                android:layout_toStartOf="@id/btn_auth_check"
                 android:ems="4"
+                android:hint="인증번호"
+                android:inputType="number"
                 android:maxLength="6"
-                android:layout_toStartOf="@id/btn_auth_check"/>
+                android:paddingStart="10dp" />
 
+            <TextView
+                android:id="@+id/text_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3:00"
+                android:textSize="20sp"
+                android:layout_toStartOf="@id/edit_auth_check"
+                android:layout_alignBaseline="@id/edit_auth_check"
+                android:layout_marginEnd="10dp"/>
 
         </RelativeLayout>
 
@@ -187,38 +205,37 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="30dp"
             android:textColor="#99ff0000"
             android:textSize="12sp"
             android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_sign_up"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/str_join"
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/btn_back"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_weight="1"
+                android:text="@string/str_back"
+                android:textAllCaps="false" />
+        </LinearLayout>
     </LinearLayout>
 
 
-    <LinearLayout
-        android:layout_centerHorizontal="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginBottom="20dp"
-        android:layout_alignParentBottom="true"
-        android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/btn_sign_up"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/str_join"
-            android:textAllCaps="false" />
-
-        <Button
-            android:id="@+id/btn_back"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_weight="1"
-            android:text="@string/str_back"
-            android:textAllCaps="false" />
-    </LinearLayout>
 </RelativeLayout>
