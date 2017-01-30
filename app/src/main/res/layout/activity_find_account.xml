@@ -1,34 +1,142 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <RadioGroup
-        android:gravity="center_horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="20dp"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
         <RadioButton
             android:id="@+id/rbtn_find_email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="이메일 찾기"/>
+            android:text="이메일 찾기" />
 
         <RadioButton
             android:id="@+id/rbtn_find_password"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="40dp"
-            android:text="패스워드 찾기"/>
+            android:text="패스워드 찾기" />
     </RadioGroup>
 
-    <FrameLayout
-        android:id="@+id/layout_find_type"
-        android:layout_marginTop="20dp"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
 
-    </FrameLayout>
+        <EditText
+            android:id="@+id/edit_first_name"
+            android:layout_width="150dp"
+            android:layout_height="35dp"
+            android:background="@drawable/frame_round"
+            android:hint="@string/str_first_name"
+            android:imeOptions="actionNext|flagNoExtractUi"
+            android:inputType="text"
+            android:maxLines="1"
+            android:paddingStart="10dp" />
 
-</LinearLayout>
+        <EditText
+            android:id="@+id/edit_last_name"
+            android:layout_width="150dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="20dp"
+            android:layout_toEndOf="@id/edit_first_name"
+            android:background="@drawable/frame_round"
+            android:hint="@string/str_last_name"
+            android:imeOptions="actionNext|flagNoExtractUi"
+            android:inputType="text"
+            android:maxLines="1"
+            android:paddingStart="10dp" />
+
+        <EditText
+            android:layout_width="300dp"
+            android:layout_height="35dp"
+            android:layout_below="@id/edit_last_name"
+            android
+            android:hint="이메일" />
+
+        <RelativeLayout
+            android:id="@+id/layout_phone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@id/edit_last_name"
+            android:layout_below="@id/edit_last_name"
+            android:layout_marginTop="10dp">
+
+            <EditText
+                android:id="@+id/edit_phone"
+                android:layout_width="200dp"
+                android:layout_height="35dp"
+                android:layout_centerVertical="true"
+                android:background="@drawable/frame_round"
+                android:hint="@string/str_phone"
+                android:inputType="phone"
+                android:paddingStart="10dp" />
+
+            <Button
+                android:id="@+id/btn_auth"
+                android:layout_width="65dp"
+                android:layout_height="40dp"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="5dp"
+                android:layout_toEndOf="@id/edit_phone"
+                android:text="@string/str_auth" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@id/edit_last_name"
+            android:layout_below="@id/layout_phone"
+            android:visibility="visible">
+
+            <TextView
+                android:id="@+id/text_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:text="3:00"
+                android:layout_centerVertical="true"
+                android:textSize="20sp" />
+
+            <EditText
+                android:id="@+id/edit_auth_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="4"
+                android:hint="인증번호"
+                android:inputType="number"
+                android:maxLength="6"
+                android:paddingStart="10dp"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@id/text_time"/>
+
+            <Button
+                android:id="@+id/btn_auth_check"
+                android:layout_width="65dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="5dp"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@id/edit_auth_check"
+                android:text="확인" />
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/btn_find"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:text="찾기" />
+</RelativeLayout>
