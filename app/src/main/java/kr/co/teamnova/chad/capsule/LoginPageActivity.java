@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.File;
 
@@ -67,7 +66,8 @@ public class LoginPageActivity extends AppCompatActivity {
         strForgotAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Hope find it.", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(getApplicationContext(), FindAccountActivity.class);
+                startActivity(intent);
             }
         });
     }

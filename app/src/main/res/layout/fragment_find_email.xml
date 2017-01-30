@@ -5,106 +5,115 @@
     android:gravity="center_vertical">
 
 
-    <LinearLayout
-        android:id="@+id/layout_name"
+    <RelativeLayout
+        android:id="@+id/layout_main"
         android:layout_centerHorizontal="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
-        <EditText
-            android:id="@+id/edit_first_name"
-            android:layout_width="150dp"
-            android:layout_height="35dp"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/frame_round"
-            android:hint="@string/str_first_name"
-            android:imeOptions="actionNext|flagNoExtractUi"
-            android:inputType="text"
-            android:maxLines="1"
-            android:paddingStart="10dp" />
+        <LinearLayout
+            android:id="@+id/layout_name"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <EditText
+                android:id="@+id/edit_first_name"
+                android:layout_width="150dp"
+                android:layout_height="35dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/frame_round"
+                android:hint="@string/str_first_name"
+                android:imeOptions="actionNext|flagNoExtractUi"
+                android:inputType="text"
+                android:maxLines="1"
+                android:paddingStart="10dp" />
 
-        <EditText
-            android:id="@+id/edit_last_name"
-            android:layout_width="150dp"
-            android:layout_height="35dp"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/frame_round"
-            android:hint="@string/str_last_name"
-            android:imeOptions="actionNext|flagNoExtractUi"
-            android:inputType="text"
-            android:maxLines="1"
-            android:paddingStart="10dp"
-            android:layout_marginStart="20dp"
-            android:layout_toEndOf="@id/edit_first_name"/>
+            <EditText
+                android:id="@+id/edit_last_name"
+                android:layout_width="150dp"
+                android:layout_height="35dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/frame_round"
+                android:hint="@string/str_last_name"
+                android:imeOptions="actionNext|flagNoExtractUi"
+                android:inputType="text"
+                android:maxLines="1"
+                android:paddingStart="10dp"
+                android:layout_marginStart="20dp"
+                android:layout_toEndOf="@id/edit_first_name"/>
 
-    </LinearLayout>
+        </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/layout_phone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_alignEnd="@id/layout_name"
-        android:layout_below="@id/layout_name"
-        android:gravity="center">
-
-        <EditText
-            android:id="@+id/edit_phone"
-            android:layout_width="200dp"
-            android:layout_height="35dp"
-            android:background="@drawable/frame_round"
-            android:hint="@string/str_phone"
-            android:inputType="phone"
-            android:paddingStart="10dp" />
-
-        <Button
-            android:id="@+id/btn_auth"
-            android:layout_width="65dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="5dp"
-            android:text="@string/str_auth" />
-
-    </LinearLayout>
-
-    <RelativeLayout
-        android:layout_alignEnd="@id/layout_phone"
-        android:layout_below="@id/layout_phone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="visible">
-
-        <Button
-            android:id="@+id/btn_auth_check"
-            android:layout_width="65dp"
-            android:layout_height="40dp"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="5dp"
-            android:text="확인" />
-
-        <EditText
-            android:id="@+id/edit_auth_check"
+        <LinearLayout
+            android:id="@+id/layout_phone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toStartOf="@id/btn_auth_check"
-            android:ems="4"
-            android:hint="인증번호"
-            android:inputType="number"
-            android:maxLength="6"
-            android:paddingStart="10dp" />
+            android:layout_marginTop="10dp"
+            android:layout_alignEnd="@id/layout_name"
+            android:layout_below="@id/layout_name"
+            android:gravity="center">
 
-        <TextView
-            android:id="@+id/text_time"
+            <EditText
+                android:id="@+id/edit_phone"
+                android:layout_width="200dp"
+                android:layout_height="35dp"
+                android:background="@drawable/frame_round"
+                android:hint="@string/str_phone"
+                android:inputType="phone"
+                android:paddingStart="10dp" />
+
+            <Button
+                android:id="@+id/btn_auth"
+                android:layout_width="65dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="5dp"
+                android:text="@string/str_auth" />
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_alignEnd="@id/layout_phone"
+            android:layout_below="@id/layout_phone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="3:00"
-            android:textSize="20sp"
-            android:layout_toStartOf="@id/edit_auth_check"
-            android:layout_alignBaseline="@id/edit_auth_check"
-            android:layout_marginEnd="10dp"/>
-        <Button
-            android:id="@+id/btn_find"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="찾기"/>
+            android:visibility="visible">
 
+            <Button
+                android:id="@+id/btn_auth_check"
+                android:layout_width="65dp"
+                android:layout_height="40dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="5dp"
+                android:text="확인" />
+
+            <EditText
+                android:id="@+id/edit_auth_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toStartOf="@id/btn_auth_check"
+                android:ems="4"
+                android:hint="인증번호"
+                android:inputType="number"
+                android:maxLength="6"
+                android:paddingStart="10dp" />
+
+            <TextView
+                android:id="@+id/text_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3:00"
+                android:textSize="20sp"
+                android:layout_toStartOf="@id/edit_auth_check"
+                android:layout_alignBaseline="@id/edit_auth_check"
+                android:layout_marginEnd="10dp"/>
+        </RelativeLayout>
     </RelativeLayout>
+
+    <Button
+        android:id="@+id/btn_find"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_below="@id/layout_main"
+        android:layout_centerHorizontal="true"
+        android:text="찾기"/>
 </RelativeLayout>

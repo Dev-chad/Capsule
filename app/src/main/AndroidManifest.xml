@@ -26,6 +26,7 @@
         <activity android:name=".LoginPageActivity" />
         <activity android:name=".JoinPageActivity" />
         <activity android:name=".MainActivity" />
+        <activity android:name=".FindAccountActivity" />
     </application>
 
 </manifest>

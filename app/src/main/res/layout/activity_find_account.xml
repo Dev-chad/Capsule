@@ -26,6 +26,7 @@
     </RadioGroup>
 
     <RelativeLayout
+        android:id="@+id/layout_main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true">
@@ -45,7 +46,7 @@
             android:id="@+id/edit_last_name"
             android:layout_width="150dp"
             android:layout_height="35dp"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="10dp"
             android:layout_toEndOf="@id/edit_first_name"
             android:background="@drawable/frame_round"
             android:hint="@string/str_last_name"
@@ -55,18 +56,24 @@
             android:paddingStart="10dp" />
 
         <EditText
+            android:id="@+id/edit_email"
             android:layout_width="300dp"
             android:layout_height="35dp"
+            android:layout_alignEnd="@id/edit_last_name"
             android:layout_below="@id/edit_last_name"
-            android
-            android:hint="이메일" />
+            android:layout_marginTop="10dp"
+            android:background="@drawable/frame_round"
+            android:hint="이메일"
+            android:inputType="textEmailAddress"
+            android:paddingStart="10dp"
+            android:visibility="gone" />
 
         <RelativeLayout
             android:id="@+id/layout_phone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignEnd="@id/edit_last_name"
-            android:layout_below="@id/edit_last_name"
+            android:layout_below="@id/edit_email"
             android:layout_marginTop="10dp">
 
             <EditText
@@ -87,44 +94,44 @@
                 android:layout_marginStart="5dp"
                 android:layout_toEndOf="@id/edit_phone"
                 android:text="@string/str_auth" />
-
         </RelativeLayout>
 
         <RelativeLayout
-            android:layout_marginTop="10dp"
+            android:id="@+id/layout_phone_auth"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignEnd="@id/edit_last_name"
             android:layout_below="@id/layout_phone"
-            android:visibility="visible">
+            android:layout_marginTop="5dp"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/text_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:layout_marginEnd="10dp"
                 android:text="3:00"
-                android:layout_centerVertical="true"
                 android:textSize="20sp" />
 
             <EditText
                 android:id="@+id/edit_auth_check"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@id/text_time"
                 android:ems="4"
                 android:hint="인증번호"
                 android:inputType="number"
                 android:maxLength="6"
-                android:paddingStart="10dp"
-                android:layout_centerVertical="true"
-                android:layout_toEndOf="@id/text_time"/>
+                android:paddingStart="10dp" />
 
             <Button
                 android:id="@+id/btn_auth_check"
                 android:layout_width="65dp"
                 android:layout_height="40dp"
-                android:layout_marginStart="5dp"
                 android:layout_centerVertical="true"
+                android:layout_marginStart="5dp"
                 android:layout_toEndOf="@id/edit_auth_check"
                 android:text="확인" />
 
