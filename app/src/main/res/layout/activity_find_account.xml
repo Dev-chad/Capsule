@@ -29,6 +29,7 @@
         android:id="@+id/layout_main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         android:layout_centerInParent="true">
 
         <EditText
@@ -136,14 +137,16 @@
                 android:text="확인" />
 
         </RelativeLayout>
+
+        <Button
+            android:id="@+id/btn_find"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/layout_phone_auth"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp"
+            android:text="찾기" />
     </RelativeLayout>
 
-    <Button
-        android:id="@+id/btn_find"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="10dp"
-        android:text="찾기" />
+
 </RelativeLayout>
