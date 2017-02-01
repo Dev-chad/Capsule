@@ -1,9 +1,13 @@
 package kr.co.teamnova.chad.capsule;
 
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.SmsManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,6 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.util.Random;
 
 /**
@@ -103,9 +108,52 @@ public class FindAccountActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (rbtnEmail.isChecked()) {
+                    boolean isFind = false;
+                    String email = "";
+                    File[] f = new File("/data/data/" + getPackageName() + "/shared_prefs").listFiles();
+                    for (File ff : f) {
+                        SharedPreferences sp = getSharedPreferences(ff.getName().split(".xml")[0], MODE_PRIVATE);
+                        if (sp.contains("phone")) {
+                            if (sp.getString("phone", "").equals(editPhone.getText().toString())) {
+                                isFind = true;
+                                email = ff.getName().split(".xml")[0];
+                                break;
+                            }
+                        }
+                    }
 
+                    Log.v("find", email);
+                    if (isFind) {
+                        AlertDialog.Builder alert = new AlertDialog.Builder(FindAccountActivity.this);
+                        alert
+                                .setTitle("이메일 찾기")
+                                .setMessage("이메일: " + email)
+                                .
+                                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();     //닫기
+                                    }
+                                });
+                        AlertDialog messageBox = alert.create();
+                        messageBox.show();
+                    }
                 } else {
 
+                   /* File f = new File("/data/data/" + getPackageName() + "/shared_prefs/" + editEmail.getText().toString() + ".xml");
+                    if (f.exists()) {
+                        SharedPreferences profileData = getSharedPreferences(editEmail.getText().toString(), MODE_PRIVATE);
+                        if (EncryptData.getSHA256(editPassword.getText().toString()).equals(profileData.getString("password", ""))) {
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            intent.putExtra("email", editEmail.getText().toString());
+                            startActivity(intent);
+                        } else {
+                            textError.setText(getString(R.string.str_error_incorrect_password));
+                            editPassword.setText("");
+                        }
+                    } else {
+                        textError.setText(getString(R.string.str_error_nonexistent_email));
+                    }*/
                 }
             }
         });
