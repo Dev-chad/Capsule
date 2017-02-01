@@ -137,6 +137,7 @@
                 android:layout_height="40dp"
                 android:layout_marginStart="5dp"
                 android:layout_weight="3"
+                android:background="@android:drawable/btn_default"
                 android:text="@string/str_auth" />
 
         </LinearLayout>
@@ -153,6 +154,7 @@
                 android:layout_height="40dp"
                 android:layout_alignParentEnd="true"
                 android:layout_marginStart="5dp"
+                android:background="@android:drawable/btn_default"
                 android:text="확인" />
 
             <EditText
@@ -223,6 +225,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/str_join"
+                android:background="@android:drawable/btn_default"
+
                 android:textAllCaps="false" />
 
             <Button
@@ -232,6 +236,8 @@
                 android:layout_marginStart="20dp"
                 android:layout_weight="1"
                 android:text="@string/str_back"
+                android:background="@android:drawable/btn_default"
+
                 android:textAllCaps="false" />
         </LinearLayout>
     </LinearLayout>

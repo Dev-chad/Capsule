@@ -38,6 +38,11 @@
     <string name="str_reg">등록</string>
     <string name="str_phone">전화번호</string>
     <string name="str_auth">인증</string>
+    <string name="str_error_empty_phone">전화번호를 입력해 주세요</string>
+    <string name="str_error_auth_overtime">인증시간이 초과되었습니다.</string>
+    <string name="str_error_auth_incorrect">인증번호가 올바르지 않습니다.</string>
+    <string name="str_error_phone_incomplete_auth">핸드폰 인증을 완료하지 않았습니다.</string>
+    <string name="str_error_user_found">일치하는 사용자가 없습니다.</string>
 
 
 </resources>

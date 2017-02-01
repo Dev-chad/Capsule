@@ -41,6 +41,7 @@
             android:imeOptions="actionNext|flagNoExtractUi"
             android:inputType="text"
             android:maxLines="1"
+            android:nextFocusDown="@+id/edit_last_name"
             android:paddingStart="10dp" />
 
         <EditText
@@ -54,6 +55,7 @@
             android:imeOptions="actionNext|flagNoExtractUi"
             android:inputType="text"
             android:maxLines="1"
+            android:nextFocusDown="@+id/edit_phone"
             android:paddingStart="10dp" />
 
         <EditText
@@ -85,6 +87,7 @@
                 android:background="@drawable/frame_round"
                 android:hint="@string/str_phone"
                 android:inputType="phone"
+                android:nextFocusDown="@+id/btn_auth"
                 android:paddingStart="10dp" />
 
             <Button
@@ -94,6 +97,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginStart="5dp"
                 android:layout_toEndOf="@id/edit_phone"
+                android:background="@android:drawable/btn_default"
                 android:text="@string/str_auth" />
         </RelativeLayout>
 
@@ -134,17 +138,30 @@
                 android:layout_centerVertical="true"
                 android:layout_marginStart="5dp"
                 android:layout_toEndOf="@id/edit_auth_check"
+                android:background="@android:drawable/btn_default"
                 android:text="확인" />
 
         </RelativeLayout>
+
+        <TextView
+            android:id="@+id/text_error_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/layout_phone_auth"
+            android:layout_marginTop="20dp"
+            android:textColor="#99ff0000"
+            android:layout_centerHorizontal="true"
+            android:textSize="12sp"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/btn_find"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/layout_phone_auth"
+            android:layout_below="@id/text_error_message"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="20dp"
+            android:background="@android:drawable/btn_default"
             android:text="찾기" />
     </RelativeLayout>
 

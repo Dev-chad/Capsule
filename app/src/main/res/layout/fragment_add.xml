@@ -44,43 +44,45 @@
 
     <RelativeLayout
         android:id="@+id/layout_tag_reg"
-        android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_marginStart="10dp"
         android:layout_alignBottom="@id/image_content"
-        android:layout_toEndOf="@id/image_content">
+        android:layout_marginStart="10dp"
+        android:layout_toEndOf="@id/image_content"
+        android:gravity="center">
+
         <EditText
             android:id="@+id/edit_tag"
             android:layout_width="100dp"
             android:layout_height="40dp"
-            android:paddingStart="10dp"
-            android:inputType="text"
             android:layout_centerVertical="true"
-            android:textSize="13sp"/>
+            android:inputType="text"
+            android:paddingStart="10dp"
+            android:textSize="13sp" />
 
         <Button
+            android:id="@+id/btn_tag"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:text="@string/str_reg"
-            android:textSize="12sp"
+            android:layout_centerVertical="true"
             android:layout_toEndOf="@+id/edit_tag"
-            android:id="@+id/btn_tag"
-            android:layout_centerVertical="true" />
+            android:background="@android:drawable/btn_default"
+            android:text="@string/str_reg"
+            android:textSize="12sp" />
     </RelativeLayout>
 
     <GridLayout
         android:id="@+id/layout_tag"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@id/layout_tag_reg"
+        android:layout_below="@id/text_const_tag"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
-        android:layout_below="@id/text_const_tag"
-        android:layout_above="@id/layout_tag_reg"
+        android:layout_toEndOf="@id/image_content"
         android:columnCount="5"
-        android:rowCount="1"
         android:orientation="horizontal"
-        android:layout_toEndOf="@id/image_content">
+        android:rowCount="1">
 
 
     </GridLayout>
@@ -92,6 +94,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:background="@android:drawable/btn_default"
         android:text="@string/str_upload" />
 
 

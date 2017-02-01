@@ -131,7 +131,7 @@ public class JoinPageActivity extends AppCompatActivity {
                             layoutPhoneAuth.setVisibility(View.VISIBLE);
                         }
                     } else{
-                        textErrorMessage.setText("전화번호를 입력해 주세요");
+                        textErrorMessage.setText(R.string.str_error_empty_phone);
                     }
                 }
             }
@@ -141,8 +141,7 @@ public class JoinPageActivity extends AppCompatActivity {
         btnCheck.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String userAuthNum = editAuth.getText().toString();
-                if (userAuthNum.equals(String.valueOf(authNum))) {
+                if (editAuth.getText().toString().equals(String.valueOf(authNum))) {
                     if(!textAuthTime.getText().toString().equals("0:00")){
                         authTimer.cancel(true);
                         btnAuth.setClickable(false);
@@ -154,11 +153,11 @@ public class JoinPageActivity extends AppCompatActivity {
                         textErrorMessage.setText("");
                         isCompletedPhoneAuth = true;
                     } else{
-                        textErrorMessage.setText("인증시간이 초과되었습니다.");
+                        textErrorMessage.setText(R.string.str_error_auth_overtime);
                     }
                 } else {
                     editAuth.setText("");
-                    textErrorMessage.setText("인증번호가 올바르지 않습니다.");
+                    textErrorMessage.setText(R.string.str_error_auth_incorrect);
                 }
             }
         });
@@ -178,7 +177,7 @@ public class JoinPageActivity extends AppCompatActivity {
                 } else if (editEmail.getText().toString().equals("")) {
                     textErrorMessage.setText(getString(R.string.str_error_empty_email));
                 } else if (!isCompletedPhoneAuth) {
-                    textErrorMessage.setText("핸드폰 인증을 완료하지 않았습니다.");
+                    textErrorMessage.setText(R.string.str_error_phone_incomplete_auth);
                 } else if (editPassword.getText().toString().equals("")) {
                     textErrorMessage.setText(getString(R.string.str_error_empty_password));
                 } else if (editRePassword.getText().toString().equals("")) {
@@ -304,6 +303,7 @@ public class JoinPageActivity extends AppCompatActivity {
             case 2: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     sendAuthSMS();
+                    layoutPhoneAuth.setVisibility(View.VISIBLE);
                 }
                 break;
             }
