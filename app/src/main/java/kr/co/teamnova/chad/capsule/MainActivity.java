@@ -3,8 +3,11 @@ package kr.co.teamnova.chad.capsule;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 
@@ -12,10 +15,10 @@ import android.widget.ImageButton;
  * Created by Chad on 2017-01-17.
  */
 
-public class MainActivity extends AppCompatActivity implements AddFragment.OnClickAddListener{
+public class MainActivity extends AppCompatActivity implements AddFragment.OnClickAddListener {
     private final int STATE_HOME = 0;
     private final int STATE_SEARCH = 1;
-    private final int STATE_PEOPLE= 2;
+    private final int STATE_PEOPLE = 2;
     private final int STATE_ADD = 3;
 
     private int stateNum = 0;
@@ -82,11 +85,11 @@ public class MainActivity extends AppCompatActivity implements AddFragment.OnCli
 //        setButtonAlpha();
     }
 
-    private void onClickMenu(){
+    private void onClickMenu() {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         Bundle bundle = new Bundle(1);
         bundle.putString("email", intent.getStringExtra("email"));
-        switch (stateNum){
+        switch (stateNum) {
             case STATE_HOME: {
                 btnHome.setImageResource(R.mipmap.image_btn_home);
                 btnSearch.setImageResource(R.mipmap.image_btn_search_inactive);
@@ -132,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements AddFragment.OnCli
         fragmentTransaction.commit();
     }
 
-    public void setHomeFragment(){
+    public void setHomeFragment() {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         Bundle bundle = new Bundle(1);
         bundle.putString("email", intent.getStringExtra("email"));
@@ -147,8 +150,31 @@ public class MainActivity extends AppCompatActivity implements AddFragment.OnCli
     }
 
 
-        public void AddClickEvent(){
-            setHomeFragment();
-        }
+    public void AddClickEvent() {
+        setHomeFragment();
+    }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        switch (id) {
+            case R.id.menu_logout: {
+                SharedPreferences spAutoLogin = getSharedPreferences("login_info", MODE_PRIVATE);
+                SharedPreferences.Editor spEditor = spAutoLogin.edit();
+                spEditor.putString("enable", "false");
+                spEditor.apply();
+                Intent intent = new Intent(getApplicationContext(), LoginPageActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

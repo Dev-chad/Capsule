@@ -235,7 +235,7 @@ public class FindAccountActivity extends AppCompatActivity {
                                             public void onClick(View v) {
                                                 String strPassword = editPassword.getText().toString();
 
-                                                if(strPassword.equals(editRePassword.getText().toString())){
+                                                if (strPassword.equals(editRePassword.getText().toString())) {
                                                     SharedPreferences.Editor spEditor = sp.edit();
                                                     spEditor.putString("password", EncryptData.getSHA256(strPassword));
                                                     spEditor.apply();
@@ -257,21 +257,6 @@ public class FindAccountActivity extends AppCompatActivity {
                         } else {
                             Toast.makeText(FindAccountActivity.this, R.string.str_error_user_found, Toast.LENGTH_SHORT).show();
                         }
-
-                   /* File f = new File("/data/data/" + getPackageName() + "/shared_prefs/" + editEmail.getText().toString() + ".xml");
-                    if (f.exists()) {
-                        SharedPreferences profileData = getSharedPreferences(editEmail.getText().toString(), MODE_PRIVATE);
-                        if (EncryptData.getSHA256(editPassword.getText().toString()).equals(profileData.getString("password", ""))) {
-                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                            intent.putExtra("email", editEmail.getText().toString());
-                            startActivity(intent);
-                        } else {
-                            textError.setText(getString(R.string.str_error_incorrect_password));
-                            editPassword.setText("");
-                        }
-                    } else {
-                        textError.setText(getString(R.string.str_error_nonexistent_email));
-                    }*/
                     }
                 }
             }

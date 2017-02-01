@@ -22,7 +22,13 @@ public class LoginPageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_page);
 
+        String email = getSharedPreferences("login_info", MODE_PRIVATE).getString("email", "");
+
         editEmail = (EditText) findViewById(R.id.edit_email);
+        if(email.length() > 0){
+            editEmail.setText(email);
+        }
+
         editPassword = (EditText) findViewById(R.id.edit_password);
         textError = (TextView) findViewById(R.id.text_error_message);
 
@@ -39,9 +45,16 @@ public class LoginPageActivity extends AppCompatActivity {
                     if (f.exists()) {
                         SharedPreferences profileData = getSharedPreferences(editEmail.getText().toString(), MODE_PRIVATE);
                         if (EncryptData.getSHA256(editPassword.getText().toString()).equals(profileData.getString("password", ""))) {
+                            SharedPreferences autoLoginData = getSharedPreferences("login_info", MODE_PRIVATE);
+                            SharedPreferences.Editor autoLoginEditor = autoLoginData.edit();
+                            autoLoginEditor.putString("email", editEmail.getText().toString());
+                            autoLoginEditor.putString("enable", "true");
+                            autoLoginEditor.apply();
+
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                             intent.putExtra("email", editEmail.getText().toString());
                             startActivity(intent);
+                            finish();
                         } else {
                             textError.setText(getString(R.string.str_error_incorrect_password));
                             editPassword.setText("");
