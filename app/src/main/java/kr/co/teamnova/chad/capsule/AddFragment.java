@@ -82,6 +82,7 @@ public class AddFragment extends Fragment {
 
                 if (!userData.contains("num_of_content")) {
                     userDataEditor.putInt("num_of_content", 0);
+                    userDataEditor.apply();
                 }
 
                 numOfContent = userData.getInt("num_of_content", -1);

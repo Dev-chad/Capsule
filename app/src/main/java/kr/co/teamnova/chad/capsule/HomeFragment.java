@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.File;
 
@@ -26,11 +25,13 @@ public class HomeFragment extends Fragment {
     private GridLayout layoutContents;
     private TextView textNothingContent;
 
+    File file;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        SharedPreferences userData = this.getActivity().getSharedPreferences(getArguments().getString("email"), Context.MODE_PRIVATE);
+        SharedPreferences userData = getActivity().getSharedPreferences(getArguments().getString("email"), Context.MODE_PRIVATE);
 
         imagePorfile = (ImageView) view.findViewById(R.id.image_profile);
 
@@ -49,7 +50,6 @@ public class HomeFragment extends Fragment {
         TextView textNickname;
         textNickname = (TextView) view.findViewById(R.id.text_nickname);
         textNickname.setText(userData.getString("nickname", ""));
-
         textNothingContent = (TextView) view.findViewById(R.id.text_nothing_content_const);
 
         layoutContents = (GridLayout) view.findViewById(R.id.layout_content);
@@ -66,15 +66,6 @@ public class HomeFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        File test = new File("/data/data/" + getActivity().getPackageName() + "/User/" + getArguments().getString("email") + "/Content/1.txt");
-        File test2 = new File("/data/data/" + getActivity().getPackageName() + "/User/" + getArguments().getString("email") + "/Content/1.jpg");
 
-        Toast.makeText(getActivity().getApplicationContext(), test.getPath(), Toast.LENGTH_SHORT).show();
-        if(test.exists()){
-            Toast.makeText(getActivity().getApplicationContext(), "test", Toast.LENGTH_SHORT).show();
-        }
-        if(test2.exists()){
-            Toast.makeText(getActivity().getApplicationContext(), "test2", Toast.LENGTH_SHORT).show();
-        }
     }
 }

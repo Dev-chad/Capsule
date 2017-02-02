@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.telephony.SmsManager;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -205,7 +206,17 @@ public class JoinPageActivity extends AppCompatActivity {
                         profileEditor.putString("email", editEmail.getText().toString());
                         profileEditor.putString("password", EncryptData.getSHA256(editPassword.getText().toString()));
 
-                        new File("/data/data/" + getPackageName() + "/User/" + editEmail.getText().toString() + "/" + "Contents").mkdirs();
+                        //HACK: does not operating
+                        File file = new File("/data/data/" + getPackageName() + "/User/" + editEmail.getText().toString() + "/Contents");
+                        try{
+                            file.mkdirs();
+                            if(file.exists()){
+                                Toast.makeText(JoinPageActivity.this, "Exist", Toast.LENGTH_SHORT).show();
+                            }
+                        }catch (Exception e){
+                            Log.e("mkdir()", e.toString());
+                        }
+
                         File userDir = new File("/data/data/" + getPackageName() + "/User/" + editEmail.getText().toString());
 
                         if (profileImage != null) {
