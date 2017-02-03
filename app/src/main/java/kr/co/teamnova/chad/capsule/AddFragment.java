@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -75,7 +76,6 @@ public class AddFragment extends Fragment {
         btnUpload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 int numOfContent;
                 SharedPreferences userData = getActivity().getSharedPreferences(userEmail, MODE_PRIVATE);
                 SharedPreferences.Editor userDataEditor = userData.edit();
@@ -89,9 +89,14 @@ public class AddFragment extends Fragment {
                 numOfContent++;
 
                 String contentDetail = editContentDetails.getText().toString();
-                File userContentsDir = new File("/data/data/" + getActivity().getPackageName() + "/User/" + userEmail + "/Content");
 
-                File savefile = new File(userContentsDir.getPath() + "/" + String.valueOf(numOfContent) + ".txt");
+                File userContentsDir = new File("/data/data/" + getActivity().getPackageName() + "/User/" + userEmail + "/Contents");
+                if(!userContentsDir.exists()){
+                    Log.e("error", "userContentDir does not exist");
+                }
+
+                long currentTime = System.currentTimeMillis();
+                File savefile = new File(userContentsDir.getPath() + "/" + currentTime + ".txt");
 
                 try {
                     FileOutputStream fos = new FileOutputStream(savefile);
@@ -99,10 +104,11 @@ public class AddFragment extends Fragment {
                     fos.close();
 
                 } catch (IOException e) {
+                    Log.e("error", e.toString());
                 }
 
                 if (contentImage != null) {
-                    File copyFile = new File(userContentsDir.getPath() + "/" + String.valueOf(numOfContent) + ".jpg");
+                    File copyFile = new File(userContentsDir.getPath() + "/" + currentTime + ".jpg");
                     try {
                         copyFile.createNewFile();
                         BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(copyFile));

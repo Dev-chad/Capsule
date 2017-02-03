@@ -206,7 +206,6 @@ public class JoinPageActivity extends AppCompatActivity {
                         profileEditor.putString("email", editEmail.getText().toString());
                         profileEditor.putString("password", EncryptData.getSHA256(editPassword.getText().toString()));
 
-                        //HACK: does not operating
                         File file = new File("/data/data/" + getPackageName() + "/User/" + editEmail.getText().toString() + "/Contents");
                         try{
                             file.mkdirs();
@@ -214,7 +213,7 @@ public class JoinPageActivity extends AppCompatActivity {
                                 Toast.makeText(JoinPageActivity.this, "Exist", Toast.LENGTH_SHORT).show();
                             }
                         }catch (Exception e){
-                            Log.e("mkdir()", e.toString());
+                            Log.e("error", e.toString());
                         }
 
                         File userDir = new File("/data/data/" + getPackageName() + "/User/" + editEmail.getText().toString());
