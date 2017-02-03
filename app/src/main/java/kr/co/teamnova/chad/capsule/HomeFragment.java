@@ -24,7 +24,7 @@ import java.util.Date;
  * Created by Chad on 2017-01-18.
  */
 
-public class HomeFragment extends Fragment{
+public class HomeFragment extends Fragment {
 
     private ImageView imagePorfile;
     private TextView textContentCount;
@@ -40,6 +40,7 @@ public class HomeFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         SharedPreferences userData = getActivity().getSharedPreferences(getArguments().getString("email"), Context.MODE_PRIVATE);
+
         adapter = new ContentListViewAdapter();
         listViewContent = (ListView) view.findViewById(R.id.listView_content);
         listViewContent.setAdapter(adapter);
@@ -56,9 +57,9 @@ public class HomeFragment extends Fragment{
 
         textContentCount = (TextView) view.findViewById(R.id.text_content_count);
 
-
         // Read content description
         if (userData.getInt("num_of_content", -1) > 0) {
+            textNothingContent.setVisibility(View.GONE);
             File[] file = new File("/data/data/" + getActivity().getPackageName() + "/User/" + getArguments().getString("email") + "/Contents").listFiles();
             if (file.length > 0) {
                 for (int i=file.length-1; i>=0; i--) {
@@ -97,7 +98,6 @@ public class HomeFragment extends Fragment{
         } else {
             textNothingContent.setVisibility(View.VISIBLE);
         }
-
         imagePorfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -110,6 +110,8 @@ public class HomeFragment extends Fragment{
         textContentCount.setText(String.valueOf(listViewContent.getAdapter().getCount()));
         return view;
     }
+
+
 
     @Override
     public void onStart() {

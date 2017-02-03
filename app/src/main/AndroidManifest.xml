@@ -26,7 +26,9 @@
         </activity>
         <activity android:name=".LoginPageActivity" />
         <activity android:name=".JoinPageActivity" />
-        <activity android:name=".MainActivity" />
+        <activity android:name=".MainActivity"
+            android:windowSoftInputMode="adjustPan">
+        </activity>
         <activity android:name=".FindAccountActivity" />
     </application>
 

@@ -209,9 +209,6 @@ public class JoinPageActivity extends AppCompatActivity {
                         File file = new File("/data/data/" + getPackageName() + "/User/" + editEmail.getText().toString() + "/Contents");
                         try{
                             file.mkdirs();
-                            if(file.exists()){
-                                Toast.makeText(JoinPageActivity.this, "Exist", Toast.LENGTH_SHORT).show();
-                            }
                         }catch (Exception e){
                             Log.e("error", e.toString());
                         }
@@ -323,7 +320,6 @@ public class JoinPageActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        Toast.makeText(this, "onStart() called", Toast.LENGTH_LONG).show();
         if (profileImage != null) {
             imageProfile.setImageBitmap(profileImage);
         }
