@@ -10,7 +10,7 @@ public class ListViewUser {
     private String nickname;
     private String email;
     private Uri uriProfileImage;
-    boolean isFollow = false;
+    private boolean isFollow = false;
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
