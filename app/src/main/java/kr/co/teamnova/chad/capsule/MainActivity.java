@@ -15,7 +15,7 @@ import android.widget.ImageButton;
  * Created by Chad on 2017-01-17.
  */
 
-public class MainActivity extends AppCompatActivity implements AddFragment.OnClickAddListener, ContentListViewAdapter.OnClickBtnListener {
+public class MainActivity extends AppCompatActivity implements AddFragment.OnClickAddListener {
     private final int STATE_HOME = 0;
     private final int STATE_SEARCH = 1;
     private final int STATE_PEOPLE = 2;
@@ -158,11 +158,6 @@ public class MainActivity extends AppCompatActivity implements AddFragment.OnCli
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public void btnClickEvent() {
-        setHomeFragment();
     }
 
     @Override

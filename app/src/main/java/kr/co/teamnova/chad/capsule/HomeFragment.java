@@ -17,14 +17,15 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.Arrays;
+import java.util.Comparator;
 
 /**
  * Created by Chad on 2017-01-18.
  */
 
 public class HomeFragment extends Fragment {
+    private static final String TAG = "HomeFragment";
 
     private ImageView imagePorfile;
     private TextView textContentCount;
@@ -36,12 +37,14 @@ public class HomeFragment extends Fragment {
     private Uri uriProfileImage;
     private Uri uriContentImage;
 
+    private SharedPreferences userData;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-        SharedPreferences userData = getActivity().getSharedPreferences(getArguments().getString("email"), Context.MODE_PRIVATE);
+        userData = getActivity().getSharedPreferences(getArguments().getString("email"), Context.MODE_PRIVATE);
 
-        adapter = new ContentListViewAdapter();
+        adapter = new ContentListViewAdapter(HomeFragment.this);
         listViewContent = (ListView) view.findViewById(R.id.listView_content);
         listViewContent.setAdapter(adapter);
 
@@ -57,17 +60,14 @@ public class HomeFragment extends Fragment {
 
         textContentCount = (TextView) view.findViewById(R.id.text_content_count);
 
-        // Read content description
         if (userData.getInt("num_of_content", -1) > 0) {
             textNothingContent.setVisibility(View.GONE);
             File[] file = new File("/data/data/" + getActivity().getPackageName() + "/User/" + getArguments().getString("email") + "/Contents").listFiles();
             if (file.length > 0) {
-                for (int i=file.length-1; i>=0; i--) {
-                    File contentDesc = file[i];
+                Arrays.sort(file, new FileNameSort());
+                for(File contentDesc: file){
                     if (contentDesc.getName().contains(".txt")) {
-                        Log.e("error", contentDesc.getPath());
                         long time = Long.parseLong(contentDesc.getName().split(".txt")[0]);
-                        String strTime = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date(time));
                         String strDesc = "";
                         try {
                             FileInputStream fis = new FileInputStream(contentDesc.getPath());
@@ -82,7 +82,7 @@ public class HomeFragment extends Fragment {
                             fis.close();
                             bufferReader.close();
                         } catch (Exception e) {
-                            Log.e("error", e.toString());
+                            Log.e(TAG, e.toString());
                         }
 
                         File contentImage = new File("/data/data/" + getActivity().getPackageName() + "/User/" + getArguments().getString("email") + "/Contents/" + time + ".jpg");
@@ -91,7 +91,7 @@ public class HomeFragment extends Fragment {
                         } else {
                             uriContentImage = null;
                         }
-                        adapter.addItem(uriContentImage, strDesc, uriProfileImage, userData.getString("nickname", ""), getArguments().getString("email"), strTime, String.valueOf(time));
+                        adapter.addItem(uriContentImage, strDesc, uriProfileImage, userData.getString("nickname", ""), getArguments().getString("email"), time, String.valueOf(time));
                     }
                 }
             }
@@ -107,15 +107,18 @@ public class HomeFragment extends Fragment {
         TextView textNickname;
         textNickname = (TextView) view.findViewById(R.id.text_nickname);
         textNickname.setText(userData.getString("nickname", ""));
-        textContentCount.setText(String.valueOf(listViewContent.getAdapter().getCount()));
+        textContentCount.setText(""+userData.getInt("num_of_content", -1));
         return view;
     }
 
+    public void updateContentCount(int position){
+        textContentCount.setText(""+userData.getInt("num_of_content", -1));
+        listViewContent.smoothScrollToPosition(position);
+    }
 
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
+    class FileNameSort implements Comparator<File> {
+        public int compare(File f1, File f2) {
+            return f1.getName().compareToIgnoreCase(f2.getName());
+        }
     }
 }

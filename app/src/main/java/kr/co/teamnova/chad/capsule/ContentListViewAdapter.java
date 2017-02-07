@@ -23,6 +23,9 @@ import java.util.ArrayList;
 
 public class ContentListViewAdapter extends BaseAdapter {
 
+    private static final String TAG = "ContentListViewAdapter";
+    private HomeFragment fragment;
+
     public class ViewHolder {
         public ImageView imageViewPublisher;
         public ImageView imageViewContent;
@@ -31,16 +34,10 @@ public class ContentListViewAdapter extends BaseAdapter {
         public TextView textViewDate;
         public ImageButton ibtnMenu;
     }
-
-    public interface OnClickBtnListener {
-        public void btnClickEvent();
-    }
-
-    OnClickBtnListener mCallback = null;
     private ArrayList<ListViewContent> listViewContentList = new ArrayList<ListViewContent>();
 
-    public ContentListViewAdapter() {
-
+    public ContentListViewAdapter(HomeFragment fragment) {
+        this.fragment = fragment;
     }
 
     @Override
@@ -69,13 +66,6 @@ public class ContentListViewAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.listview_content, parent, false);
             viewHolder = new ViewHolder();
 
-            try {
-                mCallback = (OnClickBtnListener) context;
-
-            } catch (ClassCastException e) {
-                throw new ClassCastException(context.toString() + "must implement OnArticleSelectedListener");
-            }
-
             viewHolder.imageViewPublisher = (ImageView) convertView.findViewById(R.id.image_publisher);
             viewHolder.imageViewContent = (ImageView) convertView.findViewById(R.id.image_content);
 
@@ -83,50 +73,7 @@ public class ContentListViewAdapter extends BaseAdapter {
             viewHolder.textViewContent = (TextView) convertView.findViewById(R.id.text_content);
             viewHolder.textViewDate = (TextView) convertView.findViewById(R.id.text_date);
             viewHolder.ibtnMenu = (ImageButton) convertView.findViewById(R.id.ibtn_menu);
-            viewHolder.ibtnMenu.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    PopupMenu p = new PopupMenu(parent.getContext(), v);
-                    p.getMenuInflater().inflate(R.menu.popup_menu_listview, p.getMenu());
-                    p.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                        @Override
-                        public boolean onMenuItemClick(MenuItem item) {
-                            switch (item.getItemId()) {
-                                case R.id.menu_edit:
-                                    break;
-                                case R.id.menu_delete:
-                                    File descFile = new File("/data/data/" + context.getPackageName() + "/User/" + listViewContent.getPublisherEmail() + "/Contents/" + listViewContent.getFileName() + ".txt");
-                                    if (descFile.exists()) {
-                                        descFile.delete();
-                                    } else {
-                                        Log.e("error", "descFile does not exist " + descFile.getPath());
-                                    }
 
-                                    File imageFile = new File("/data/data/" + context.getPackageName() + "/User/" + listViewContent.getPublisherEmail() + "/Contents/" + listViewContent.getFileName() + ".jpg");
-                                    if (imageFile.exists()) {
-                                        imageFile.delete();
-                                    }
-                                    listViewContentList.remove(position);
-
-                                    SharedPreferences sp = context.getSharedPreferences(listViewContent.getPublisherEmail(), Context.MODE_PRIVATE);
-                                    SharedPreferences.Editor spEditor = sp.edit();
-
-                                    int numOfContent = sp.getInt("num_of_content", -1);
-                                    numOfContent--;
-                                    spEditor.putInt("num_of_content", numOfContent);
-                                    spEditor.apply();
-
-                                    mCallback.btnClickEvent();
-                                    break;
-                                default:
-                                    return false;
-                            }
-                            return true;
-                        }
-                    });
-                    p.show();
-                }
-            });
 
             convertView.setTag(viewHolder);
         } else {
@@ -143,25 +90,90 @@ public class ContentListViewAdapter extends BaseAdapter {
         viewHolder.imageViewPublisher.setImageURI(listViewContent.getPublisherProfileImage());
         viewHolder.textViewPublisher.setText(listViewContent.getPublisherName());
         viewHolder.textViewContent.setText(listViewContent.getContentDesc());
-        viewHolder.textViewDate.setText(listViewContent.getDate());
+        viewHolder.textViewDate.setText(getTime(listViewContent.getDateToMillisecond()));
+
+        viewHolder.ibtnMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu p = new PopupMenu(parent.getContext(), v);
+                p.getMenuInflater().inflate(R.menu.popup_menu_listview, p.getMenu());
+                p.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.menu_edit:
+                                break;
+                            case R.id.menu_delete:
+                                File descFile = new File("/data/data/" + context.getPackageName() + "/User/" + listViewContent.getPublisherEmail() + "/Contents/" + listViewContent.getFileName() + ".txt");
+                                if (descFile.exists()) {
+                                    descFile.delete();
+                                } else {
+                                    Log.e(TAG, "descFile does not exist " + descFile.getPath());
+                                }
+
+                                File imageFile = new File("/data/data/" + context.getPackageName() + "/User/" + listViewContent.getPublisherEmail() + "/Contents/" + listViewContent.getFileName() + ".jpg");
+                                if (imageFile.exists()) {
+                                    imageFile.delete();
+                                }
+                                listViewContentList.remove(position);
+
+                                SharedPreferences sp = context.getSharedPreferences(listViewContent.getPublisherEmail(), Context.MODE_PRIVATE);
+                                SharedPreferences.Editor spEditor = sp.edit();
+
+                                int numOfContent = sp.getInt("num_of_content", -1);
+                                numOfContent--;
+                                spEditor.putInt("num_of_content", numOfContent);
+                                spEditor.apply();
+
+                                fragment.updateContentCount(position-1);
+                                notifyDataSetChanged();
+                                break;
+                            default:
+                                return false;
+                        }
+                        return true;
+                    }
+                });
+                p.show();
+            }
+        });
 
         return convertView;
     }
 
-    public void addItem(Uri contentImage, String contentDesc, Uri publisherImage, String publisherName, String publisherEmail, String date, String fileName) {
+    public void addItem(Uri contentImage, String contentDesc, Uri publisherImage, String publisherName, String publisherEmail, long date, String fileName) {
         ListViewContent content = new ListViewContent();
 
         if (contentImage != null) {
             content.setImage(contentImage);
         }
 
-        content.setDate(date);
+        content.setDateFromLong(date);
         content.setDesc(contentDesc);
         content.setPublisher(publisherName);
         content.setPublisherEmail(publisherEmail);
         content.setPublisherProfileImage(publisherImage);
         content.setFileName(fileName);
 
-        listViewContentList.add(content);
+        listViewContentList.add(0, content);
+        notifyDataSetChanged();
     }
+
+    public String getTime(long savedTime){
+        String date = "";
+        long currentTime = System.currentTimeMillis();
+        long subTime = currentTime - savedTime;
+
+        if(subTime/60000 < 1){
+            date = "방금 전";
+        }else if(subTime/60000 < 60){
+            date = (subTime/60000) + "분 전";
+        } else if(subTime/3600000 < 24){
+            date = (subTime/3600000) + "시간 전";
+        } else if(subTime/86400000 < 7){
+            date = (subTime/86400000) + "일 전";
+        }
+        return date;
+    }
+
 }

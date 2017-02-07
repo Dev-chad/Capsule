@@ -33,6 +33,8 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class AddFragment extends Fragment {
 
+    private static final String TAG = "AddFragment";
+
     private final int PICK_FROM_ALBUM = 0;
 
     private String userEmail;
@@ -92,7 +94,7 @@ public class AddFragment extends Fragment {
 
                 File userContentsDir = new File("/data/data/" + getActivity().getPackageName() + "/User/" + userEmail + "/Contents");
                 if(!userContentsDir.exists()){
-                    Log.e("error", "userContentDir does not exist");
+                    Log.e(TAG, "userContentDir does not exist");
                 }
 
                 long currentTime = System.currentTimeMillis();
@@ -123,8 +125,8 @@ public class AddFragment extends Fragment {
                 }
 
                 userDataEditor.putInt("num_of_content", numOfContent);
-
                 userDataEditor.apply();
+
                 mCallback.AddClickEvent();
             }
         });
