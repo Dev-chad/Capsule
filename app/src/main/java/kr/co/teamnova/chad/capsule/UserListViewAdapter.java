@@ -9,6 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -25,6 +26,8 @@ public class UserListViewAdapter extends BaseAdapter {
         public Button btnFollow;
         public boolean isFollow;
     }
+
+    private ViewHolder viewHolder;
 
     private ArrayList<ListViewUser> listViewUserList = new ArrayList<ListViewUser>();
 
@@ -50,7 +53,7 @@ public class UserListViewAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View convertView, final ViewGroup parent) {
         final Context context = parent.getContext();
-        final ViewHolder viewHolder;
+
         final ListViewUser listViewContent = listViewUserList.get(position);
 
         if (convertView == null) {
@@ -62,18 +65,7 @@ public class UserListViewAdapter extends BaseAdapter {
             viewHolder.textViewEmail = (TextView) convertView.findViewById(R.id.text_email);
             viewHolder.textViewNickname = (TextView) convertView.findViewById(R.id.text_nickname);
             viewHolder.btnFollow = (Button) convertView.findViewById(R.id.btn_follow);
-            viewHolder.btnFollow.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listViewContent.setFollow();
-                    if(!listViewContent.isFollow()){
-                        viewHolder.btnFollow.setText("follow");
-                    }else{
-                        viewHolder.btnFollow.setText("Unfollow");
-                    }
 
-                }
-            });
 
             convertView.setTag(viewHolder);
         } else {
@@ -84,10 +76,25 @@ public class UserListViewAdapter extends BaseAdapter {
         viewHolder.textViewEmail.setText(listViewContent.getEmail());
         viewHolder.textViewNickname.setText(listViewContent.getNickname());
         if(listViewContent.isFollow()){
+            Toast.makeText(context, "Call", Toast.LENGTH_SHORT).show();
             viewHolder.btnFollow.setText("Unfollow");
         } else {
             viewHolder.btnFollow.setText("Follow");
         }
+
+        viewHolder.btnFollow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listViewContent.setFollow();
+                Toast.makeText(context, "Follow Status: " + listViewContent.isFollow(), Toast.LENGTH_SHORT).show();
+                if(!listViewContent.isFollow()){
+                    viewHolder.btnFollow.setText("Follow");
+                }else{
+                    viewHolder.btnFollow.setText("Unfollow");
+                }
+
+            }
+        });
         return convertView;
     }
 
