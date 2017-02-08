@@ -15,7 +15,9 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by Chad on 2017-02-03.
@@ -58,7 +60,7 @@ public class ContentListViewAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View convertView, final ViewGroup parent) {
         final Context context = parent.getContext();
-        ViewHolder viewHolder;
+        final ViewHolder viewHolder;
         final ListViewContent listViewContent = listViewContentList.get(position);
 
         if (convertView == null) {
@@ -92,6 +94,23 @@ public class ContentListViewAdapter extends BaseAdapter {
         viewHolder.textViewContent.setText(listViewContent.getContentDesc());
         viewHolder.textViewDate.setText(getTime(listViewContent.getDateToMillisecond()));
 
+        viewHolder.textViewDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(listViewContent.getTimeMode() == listViewContent.MODE_TIME_ABSOLUTE && viewHolder.textViewDate.getText().toString().contains("전")){
+                    listViewContent.setTimeMode(ListViewContent.MODE_TIME_RELATIVE);
+                }
+
+                if(listViewContent.getTimeMode() == ListViewContent.MODE_TIME_RELATIVE){
+                    listViewContent.setTimeMode(ListViewContent.MODE_TIME_ABSOLUTE);
+                    viewHolder.textViewDate.setText(listViewContent.getDate());
+                } else {
+                    listViewContent.setTimeMode(ListViewContent.MODE_TIME_RELATIVE);
+                    viewHolder.textViewDate.setText(getTime(listViewContent.getDateToMillisecond()));
+                }
+            }
+        });
+
         viewHolder.ibtnMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -124,9 +143,14 @@ public class ContentListViewAdapter extends BaseAdapter {
                                 numOfContent--;
                                 spEditor.putInt("num_of_content", numOfContent);
                                 spEditor.apply();
-
-                                fragment.updateContentCount(position-1);
                                 notifyDataSetChanged();
+
+                                Log.d(TAG, "Position: " + position + "  size(): " + listViewContentList.size());
+                                if(position == 0){
+                                    fragment.updateContentCount(0);
+                                } else {
+                                    fragment.updateContentCount(position-1);
+                                }
                                 break;
                             default:
                                 return false;
@@ -172,6 +196,8 @@ public class ContentListViewAdapter extends BaseAdapter {
             date = (subTime/3600000) + "시간 전";
         } else if(subTime/86400000 < 7){
             date = (subTime/86400000) + "일 전";
+        } else{
+            date = new SimpleDateFormat("yyyy년 MM월 dd일  HH:mm").format(new Date(savedTime));
         }
         return date;
     }

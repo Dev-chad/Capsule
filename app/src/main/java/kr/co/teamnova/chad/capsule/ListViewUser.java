@@ -7,10 +7,13 @@ import android.net.Uri;
  */
 
 public class ListViewUser {
+
+
     private String nickname;
     private String email;
     private Uri uriProfileImage;
     private boolean isFollow = false;
+
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
@@ -27,6 +30,8 @@ public class ListViewUser {
     public void setFollow(){
         isFollow = !isFollow;
     }
+
+
 
     public void setFollow(boolean isFollow){
         this.isFollow = isFollow;
@@ -47,4 +52,6 @@ public class ListViewUser {
     public boolean isFollow(){
         return isFollow;
     }
+
+
 }

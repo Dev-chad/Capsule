@@ -114,6 +114,9 @@ public class HomeFragment extends Fragment {
     public void updateContentCount(int position){
         textContentCount.setText(""+userData.getInt("num_of_content", -1));
         listViewContent.smoothScrollToPosition(position);
+        if(adapter.getCount() == 0){
+            textNothingContent.setVisibility(View.VISIBLE);
+        }
     }
 
     class FileNameSort implements Comparator<File> {

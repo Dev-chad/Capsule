@@ -4,8 +4,13 @@
     tools:context=".MainActivity">
 
     <item
-        android:id="@+id/menu_logout"
+        android:id="@+id/menu_mypage"
         android:orderInCategory="0"
+        android:title="마이 페이지" />
+
+    <item
+        android:id="@+id/menu_logout"
+        android:orderInCategory="1"
         android:title="로그아웃" />
 
 </menu>
