@@ -23,7 +23,6 @@ public class UserListViewAdapter extends BaseAdapter {
         public TextView textViewNickname;
         public TextView textViewEmail;
         public Button btnFollow;
-        public boolean isFollow;
     }
 
     private ViewHolder viewHolder;
@@ -91,7 +90,7 @@ public class UserListViewAdapter extends BaseAdapter {
                     viewHolder.btnFollow.setText("Unfollow");
                     fragment.addFollow(listViewContent.getEmail());
                 }
-
+                notifyDataSetChanged();
             }
         });
         return convertView;
