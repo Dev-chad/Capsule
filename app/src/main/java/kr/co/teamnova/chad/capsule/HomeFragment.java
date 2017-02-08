@@ -107,12 +107,12 @@ public class HomeFragment extends Fragment {
         TextView textNickname;
         textNickname = (TextView) view.findViewById(R.id.text_nickname);
         textNickname.setText(userData.getString("nickname", ""));
-        textContentCount.setText(""+userData.getInt("num_of_content", -1));
+        textContentCount.setText(""+userData.getInt("num_of_content", 0));
         return view;
     }
 
     public void updateContentCount(int position){
-        textContentCount.setText(""+userData.getInt("num_of_content", -1));
+        textContentCount.setText(""+userData.getInt("num_of_content", 0));
         listViewContent.smoothScrollToPosition(position);
         if(adapter.getCount() == 0){
             textNothingContent.setVisibility(View.VISIBLE);

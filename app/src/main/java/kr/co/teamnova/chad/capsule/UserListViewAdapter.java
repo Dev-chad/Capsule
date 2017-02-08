@@ -9,7 +9,6 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -28,11 +27,11 @@ public class UserListViewAdapter extends BaseAdapter {
     }
 
     private ViewHolder viewHolder;
-
+    private PeopleFragment fragment;
     private ArrayList<ListViewUser> listViewUserList = new ArrayList<ListViewUser>();
 
-    public UserListViewAdapter() {
-
+    public UserListViewAdapter(PeopleFragment fragment) {
+        this.fragment = fragment;
     }
 
     @Override
@@ -76,7 +75,6 @@ public class UserListViewAdapter extends BaseAdapter {
         viewHolder.textViewEmail.setText(listViewContent.getEmail());
         viewHolder.textViewNickname.setText(listViewContent.getNickname());
         if(listViewContent.isFollow()){
-            Toast.makeText(context, "Call", Toast.LENGTH_SHORT).show();
             viewHolder.btnFollow.setText("Unfollow");
         } else {
             viewHolder.btnFollow.setText("Follow");
@@ -86,11 +84,12 @@ public class UserListViewAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 listViewContent.setFollow();
-                Toast.makeText(context, "Follow Status: " + listViewContent.isFollow(), Toast.LENGTH_SHORT).show();
                 if(!listViewContent.isFollow()){
                     viewHolder.btnFollow.setText("Follow");
+                    fragment.removeFollow(listViewContent.getEmail());
                 }else{
                     viewHolder.btnFollow.setText("Unfollow");
+                    fragment.addFollow(listViewContent.getEmail());
                 }
 
             }
