@@ -84,10 +84,8 @@ public class UserListViewAdapter extends BaseAdapter {
             public void onClick(View v) {
                 listViewContent.setFollow();
                 if(!listViewContent.isFollow()){
-                    viewHolder.btnFollow.setText("Follow");
                     fragment.removeFollow(listViewContent.getEmail());
                 }else{
-                    viewHolder.btnFollow.setText("Unfollow");
                     fragment.addFollow(listViewContent.getEmail());
                 }
                 notifyDataSetChanged();
