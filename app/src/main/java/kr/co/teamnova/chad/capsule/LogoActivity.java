@@ -42,7 +42,7 @@ public class LogoActivity extends AppCompatActivity {
     }
 
     public void createTestAccount(){
-        for(int i=1; i<30; i++){
+        for(int i=1; i<=30; i++){
             String email = "test"+i+"@test.com";
             String nickname = "test"+i;
             String firstname = "test"+i;
