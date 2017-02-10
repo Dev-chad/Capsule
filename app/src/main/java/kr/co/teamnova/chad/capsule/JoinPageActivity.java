@@ -98,7 +98,7 @@ public class JoinPageActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                SharedPreferences sp = getSharedPreferences("Nickname", MODE_PRIVATE);
+                SharedPreferences sp = getSharedPreferences("nickname_info", MODE_PRIVATE);
                 if (sp.contains(editNickname.getText().toString())) {
                     textCheckNickname.setTextColor(0x99ff0000);
                     textCheckNickname.setText(R.string.str_not_available);
