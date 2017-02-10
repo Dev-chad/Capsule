@@ -28,6 +28,7 @@ public class ContentListViewAdapter extends BaseAdapter {
 
     private static final String TAG = "ContentListViewAdapter";
     private HomeFragment fragment;
+    private User loginUser;
 
     public class ViewHolder {
         public ImageView imageViewPublisher;
@@ -42,8 +43,9 @@ public class ContentListViewAdapter extends BaseAdapter {
 
     private ArrayList<ListViewContent> listViewContentList = new ArrayList<ListViewContent>();
 
-    public ContentListViewAdapter(HomeFragment fragment) {
+    public ContentListViewAdapter(HomeFragment fragment, User loginUser) {
         this.fragment = fragment;
+        this.loginUser = loginUser;
     }
 
     @Override
@@ -103,7 +105,7 @@ public class ContentListViewAdapter extends BaseAdapter {
         }
 
         viewHolder.textViewDate.setText(getTime(listViewContent.getDateToMillisecond()));
-        if(listViewContent.getLocation() != null){
+        if(listViewContent.getLocation() != null && !listViewContent.getLocation().equals("")){
             viewHolder.layoutLocation.setVisibility(View.VISIBLE);
             viewHolder.textViewLocation.setText(listViewContent.getLocation());
         }else{
@@ -128,6 +130,11 @@ public class ContentListViewAdapter extends BaseAdapter {
             }
         });
 
+        if(!listViewContent.getPublisherEmail().equals(loginUser.getEmail())){
+            viewHolder.ibtnMenu.setVisibility(View.GONE);
+        } else {
+            viewHolder.ibtnMenu.setVisibility(View.VISIBLE);
+        }
         viewHolder.ibtnMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -202,6 +209,11 @@ public class ContentListViewAdapter extends BaseAdapter {
         }
 
         listViewContentList.add(0, content);
+        notifyDataSetChanged();
+    }
+
+    public void addItemFromArray(ArrayList<ListViewContent> list){
+        listViewContentList = list;
         notifyDataSetChanged();
     }
 

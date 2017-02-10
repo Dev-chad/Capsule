@@ -30,7 +30,7 @@ public class ListViewContent implements Parcelable{
 
     }
 
-    public ListViewContent(Uri image, String desc, Uri publisherProfileImage, String publisher, String publisherEmail, long dateMillisecond, String fileName) {
+    public ListViewContent(Uri image, String desc, Uri publisherProfileImage, String publisher, String publisherEmail, long dateMillisecond, String fileName, String location) {
 
         this.fileName = fileName;
         this.dateMillisecond = dateMillisecond;
@@ -40,7 +40,7 @@ public class ListViewContent implements Parcelable{
         this.publisher = publisher;
         this.publisherEmail = publisherEmail;
         this.publisherProfileImage = publisherProfileImage;
-        location = null;
+        this.location = location;
     }
 
     protected ListViewContent(Parcel in) {
