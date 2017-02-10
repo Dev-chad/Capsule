@@ -34,7 +34,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
-import java.util.Timer;
 import java.util.TimerTask;
 
 import static android.app.Activity.RESULT_OK;
@@ -61,8 +60,10 @@ public class AddFragment extends Fragment {
     private ImageButton btnLocation;
     private ImageButton btnCancel;
 
-    private boolean useLocation = false;
+    private ListViewContent editContent;
 
+    private boolean useLocation = false;
+    private boolean isEditMode = false;
 
     public interface OnClickAddListener {
         public void AddClickEvent();
@@ -101,34 +102,54 @@ public class AddFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 int numOfContent;
+                long currentTime;
                 SharedPreferences userData = getActivity().getSharedPreferences(loginUser.getEmail(), MODE_PRIVATE);
                 SharedPreferences.Editor userDataEditor = userData.edit();
-
-                if (!userData.contains("num_of_content")) {
-                    userDataEditor.putInt("num_of_content", 0);
-                    userDataEditor.apply();
-                }
-
-                numOfContent = userData.getInt("num_of_content", -1);
-                numOfContent++;
-
-                String contentDetail = editContentDetails.getText().toString();
 
                 File userContentsDir = new File("/data/data/" + getActivity().getPackageName() + "/User/" + loginUser.getEmail() + "/Contents");
                 if (!userContentsDir.exists()) {
                     Log.e(TAG, "userContentDir does not exist");
                 }
 
-                long currentTime = System.currentTimeMillis();
-                File savefile = new File(userContentsDir.getPath() + "/" + currentTime + ".txt");
+                if(isEditMode){
+                    currentTime = editContent.getDateToMillisecond();
+                    File savefile = new File(userContentsDir.getPath() + "/" + currentTime + ".txt");
+                }else {
+                    currentTime = System.currentTimeMillis();
+                    if (!userData.contains("num_of_content")) {
+                        userDataEditor.putInt("num_of_content", 0);
+                        userDataEditor.apply();
+                    }
 
+                    numOfContent = userData.getInt("num_of_content", 0);
+                    numOfContent++;
+
+                    userDataEditor.putInt("num_of_content", numOfContent);
+                    userDataEditor.apply();
+                }
+
+                String contentDetail = editContentDetails.getText().toString();
+
+                File savefile = new File(userContentsDir.getPath() + "/" + currentTime + ".txt");
                 try {
                     FileOutputStream fos = new FileOutputStream(savefile);
                     fos.write(contentDetail.getBytes());
                     fos.close();
-
                 } catch (IOException e) {
-                    Log.e("error", e.toString());
+                    Log.e(TAG, e.toString());
+                }
+
+                if(useLocation){
+                    File location = new File(userContentsDir.getPath() + "/" + currentTime + "_pref.txt");
+                    String strLocation = "location:" + textLocation.getText().toString();
+                    try {
+                        FileOutputStream fos = new FileOutputStream(location);
+                        fos.write(strLocation.getBytes());
+                        fos.close();
+
+                    } catch (IOException e) {
+                        Log.e("error", e.toString());
+                    }
                 }
 
                 if (contentImage != null) {
@@ -145,9 +166,6 @@ public class AddFragment extends Fragment {
                         e.printStackTrace();
                     }
                 }
-
-                userDataEditor.putInt("num_of_content", numOfContent);
-                userDataEditor.apply();
 
                 mCallback.AddClickEvent();
             }
@@ -170,10 +188,30 @@ public class AddFragment extends Fragment {
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                useLocation = false;
                 textLocation.setText(R.string.str_location);
                 btnCancel.setVisibility(View.GONE);
             }
         });
+
+        editContent = getArguments().getParcelable("edit_content");
+        if(editContent != null){
+            isEditMode = true;
+            if(editContent.getContentImage() != null){
+                btnUpload.setText("수정");
+                imageContent.setImageURI(editContent.getContentImage());
+                try {
+                    contentImage = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), editContent.getContentImage());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(editContent.getLocation() != null){
+                useLocation = true;
+                textLocation.setText(editContent.getLocation());
+            }
+            editContentDetails.setText(editContent.getContentDesc());
+        }
 
         return view;
     }
@@ -221,16 +259,18 @@ public class AddFragment extends Fragment {
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         } else {
-            if (mode.equals(LocationManager.GPS_PROVIDER)) {
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10, mLocationListener);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 1, mLocationListener);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 100, 1, mLocationListener);
+           /* if (mode.equals(LocationManager.GPS_PROVIDER)) {
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mLocationListener);
                 GPSTimer task = new GPSTimer();
 
                 Timer timer = new Timer();
                 timer.schedule(task, 2000);
 
             } else if (mode.equals(LocationManager.NETWORK_PROVIDER)) {
-                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 10, mLocationListener);
-            }
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, mLocationListener);
+            }*/
         }
     }
 
@@ -239,16 +279,22 @@ public class AddFragment extends Fragment {
         public void onLocationChanged(Location location) {
             double longitude = location.getLongitude();
             double latitude = location.getLatitude();
-            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                locationManager.removeUpdates(this);
-            }
+
             String address = getAddress(getContext(), latitude, longitude);
+            String simpleAddress = "";
             if (address != null) {
                 if (textLocation.getText().toString().equals("수신중...")) {
                     useLocation = true;
-                    textLocation.setText(address);
+                    String[] splitAddress = address.split(" ");
+                    for(int i=1; i<splitAddress.length - 1; i++){
+                        simpleAddress += (splitAddress[i]+" ");
+                    }
+                    textLocation.setText(simpleAddress);
                     btnCancel.setVisibility(View.VISIBLE);
                 }
+            }
+            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                locationManager.removeUpdates(this);
             }
         }
 
@@ -316,6 +362,7 @@ public class AddFragment extends Fragment {
     public class GPSTimer extends TimerTask {
         public void run() {
             try {
+                Log.d(TAG, "Run Timer");
                 getLocation(LocationManager.NETWORK_PROVIDER);
             } catch (Exception e) {
                 e.printStackTrace();

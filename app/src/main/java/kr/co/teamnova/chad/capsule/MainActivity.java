@@ -15,7 +15,7 @@ import android.widget.ImageButton;
  * Created by Chad on 2017-01-17.
  */
 
-public class MainActivity extends AppCompatActivity implements AddFragment.OnClickAddListener {
+public class MainActivity extends AppCompatActivity implements AddFragment.OnClickAddListener, HomeFragment.OnClickEditListener {
     private final int STATE_HOME = 0;
     private final int STATE_SEARCH = 1;
     private final int STATE_PEOPLE = 2;
@@ -30,6 +30,8 @@ public class MainActivity extends AppCompatActivity implements AddFragment.OnCli
 
     private FragmentManager fragmentManager;
 
+    private ListViewContent editContent;
+
     private Intent intent;
 
     @Override
@@ -39,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements AddFragment.OnCli
 
         intent = getIntent();
         fragmentManager = getFragmentManager();
-
+        editContent = null;
         btnHome = (ImageButton) findViewById(R.id.btn_home);
         btnHome.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,6 +117,10 @@ public class MainActivity extends AppCompatActivity implements AddFragment.OnCli
                 break;
             }
             case STATE_ADD: {
+                if(editContent != null){
+                    bundle.putParcelable("edit_content",editContent);
+                    editContent = null;
+                }
                 btnHome.setImageResource(R.mipmap.image_btn_home_inactive);
                 btnSearch.setImageResource(R.mipmap.image_btn_search_inactive);
                 btnPeople.setImageResource(R.mipmap.image_btn_people_inactive);
@@ -131,6 +137,11 @@ public class MainActivity extends AppCompatActivity implements AddFragment.OnCli
 
     public void AddClickEvent() {
         btnHome.callOnClick();
+    }
+
+    public void EditClickEvent(ListViewContent origin){
+        editContent = origin;
+        btnAdd.callOnClick();
     }
 
     @Override

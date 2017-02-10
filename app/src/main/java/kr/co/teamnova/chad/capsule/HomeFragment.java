@@ -25,6 +25,11 @@ import java.util.Comparator;
  */
 
 public class HomeFragment extends Fragment {
+
+    public interface OnClickEditListener {
+        public void EditClickEvent(ListViewContent origin);
+    }
+
     private static final String TAG = "HomeFragment";
 
     private TextView textContentCount;
@@ -32,6 +37,8 @@ public class HomeFragment extends Fragment {
 
     private ListView listViewContent;
     private ContentListViewAdapter adapter;
+
+    private OnClickEditListener mCallback;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -58,7 +65,7 @@ public class HomeFragment extends Fragment {
             if (file.length > 0) {
                 Arrays.sort(file, new FileNameSort());
                 for(File contentDesc: file){
-                    if (contentDesc.getName().contains(".txt")) {
+                    if (contentDesc.getName().contains(".txt") && !contentDesc.getName().contains("_pref")) {
                         long time = Long.parseLong(contentDesc.getName().split(".txt")[0]);
                         String strDesc = "";
                         try {
@@ -84,7 +91,24 @@ public class HomeFragment extends Fragment {
                         } else {
                             uriContentImage = null;
                         }
-                        adapter.addItem(uriContentImage, strDesc, loginUser.getUriProfileImage(), loginUser.getNickname(), loginUser.getEmail(), time, String.valueOf(time));
+
+                        File contentPref = new File("/data/data/" + getActivity().getPackageName() + "/User/" + loginUser.getEmail() + "/Contents/" + time + "_pref.txt");
+                        String location;
+                        String strLocation = "";
+                        if(contentPref.exists()){
+                            try {
+                                FileInputStream fis = new FileInputStream(contentPref.getPath());
+                                BufferedReader bufferReader = new BufferedReader(new InputStreamReader(fis));
+                                if ((location = bufferReader.readLine()) != null) {
+                                    strLocation = location.split(":")[1];
+                                }
+                                fis.close();
+                                bufferReader.close();
+                            } catch (Exception e) {
+                                Log.e(TAG, e.toString());
+                            }
+                        }
+                        adapter.addItem(uriContentImage, strDesc, loginUser.getUriProfileImage(), loginUser.getNickname(), loginUser.getEmail(), time, String.valueOf(time), strLocation);
                     }
                 }
             }
@@ -112,9 +136,26 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    public void editContent(ListViewContent origin){
+        mCallback.EditClickEvent(origin);
+    }
+
     class FileNameSort implements Comparator<File> {
         public int compare(File f1, File f2) {
             return f1.getName().compareToIgnoreCase(f2.getName());
+        }
+    }
+
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        try {
+            mCallback = (HomeFragment.OnClickEditListener) context;
+
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + "must implement OnArticleSelectedListener");
         }
     }
 }

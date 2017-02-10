@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
@@ -35,6 +36,8 @@ public class ContentListViewAdapter extends BaseAdapter {
         public TextView textViewContent;
         public TextView textViewDate;
         public ImageButton ibtnMenu;
+        public LinearLayout layoutLocation;
+        public TextView textViewLocation;
     }
 
     private ArrayList<ListViewContent> listViewContentList = new ArrayList<ListViewContent>();
@@ -71,12 +74,12 @@ public class ContentListViewAdapter extends BaseAdapter {
 
             viewHolder.imageViewPublisher = (ImageView) convertView.findViewById(R.id.image_publisher);
             viewHolder.imageViewContent = (ImageView) convertView.findViewById(R.id.image_content);
-
+            viewHolder.layoutLocation = (LinearLayout) convertView.findViewById(R.id.layout_location);
+            viewHolder.textViewLocation = (TextView)convertView.findViewById(R.id.text_location);
             viewHolder.textViewPublisher = (TextView) convertView.findViewById(R.id.text_publisher);
             viewHolder.textViewContent = (TextView) convertView.findViewById(R.id.text_content);
             viewHolder.textViewDate = (TextView) convertView.findViewById(R.id.text_date);
             viewHolder.ibtnMenu = (ImageButton) convertView.findViewById(R.id.ibtn_menu);
-
 
             convertView.setTag(viewHolder);
         } else {
@@ -94,6 +97,13 @@ public class ContentListViewAdapter extends BaseAdapter {
         viewHolder.textViewPublisher.setText(listViewContent.getPublisherName());
         viewHolder.textViewContent.setText(listViewContent.getContentDesc());
         viewHolder.textViewDate.setText(getTime(listViewContent.getDateToMillisecond()));
+        if(listViewContent.getLocation() != null){
+            viewHolder.layoutLocation.setVisibility(View.VISIBLE);
+            viewHolder.textViewLocation.setText(listViewContent.getLocation());
+        }else{
+            viewHolder.layoutLocation.setVisibility(View.GONE);
+            viewHolder.textViewLocation.setText("");
+        }
 
         viewHolder.textViewDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,6 +132,7 @@ public class ContentListViewAdapter extends BaseAdapter {
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.menu_edit:
+                                fragment.editContent(listViewContent);
                                 break;
                             case R.id.menu_delete:
                                 File descFile = new File("/data/data/" + context.getPackageName() + "/User/" + listViewContent.getPublisherEmail() + "/Contents/" + listViewContent.getFileName() + ".txt");
@@ -165,7 +176,7 @@ public class ContentListViewAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public void addItem(Uri contentImage, String contentDesc, Uri publisherImage, String publisherName, String publisherEmail, long date, String fileName) {
+    public void addItem(Uri contentImage, String contentDesc, Uri publisherImage, String publisherName, String publisherEmail, long date, String fileName, String location) {
         ListViewContent content = new ListViewContent();
 
         if (contentImage != null) {
@@ -178,6 +189,9 @@ public class ContentListViewAdapter extends BaseAdapter {
         content.setPublisherEmail(publisherEmail);
         content.setPublisherProfileImage(publisherImage);
         content.setFileName(fileName);
+        if(!location.equals("")){
+            content.setLocation(location);
+        }
 
         listViewContentList.add(0, content);
         notifyDataSetChanged();

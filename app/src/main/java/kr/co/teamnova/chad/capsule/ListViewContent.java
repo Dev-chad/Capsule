@@ -1,6 +1,8 @@
 package kr.co.teamnova.chad.capsule;
 
 import android.net.Uri;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -9,7 +11,7 @@ import java.util.Date;
  * Created by Chad on 2017-02-02.
  */
 
-public class ListViewContent {
+public class ListViewContent implements Parcelable{
     final static int MODE_TIME_RELATIVE = 1;
     final static int MODE_TIME_ABSOLUTE = 2;
 
@@ -20,6 +22,7 @@ public class ListViewContent {
     private String publisherEmail;
     private Uri publisherProfileImage;
     private Uri image;
+    private String location;
     private long dateMillisecond;
     private int timeMode = MODE_TIME_RELATIVE;
 
@@ -37,7 +40,52 @@ public class ListViewContent {
         this.publisher = publisher;
         this.publisherEmail = publisherEmail;
         this.publisherProfileImage = publisherProfileImage;
+        location = null;
     }
+
+    protected ListViewContent(Parcel in) {
+        fileName = in.readString();
+        date = in.readString();
+        desc = in.readString();
+        publisher = in.readString();
+        publisherEmail = in.readString();
+        publisherProfileImage = in.readParcelable(Uri.class.getClassLoader());
+        image = in.readParcelable(Uri.class.getClassLoader());
+        location = in.readString();
+        dateMillisecond = in.readLong();
+        timeMode = in.readInt();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(fileName);
+        dest.writeString(date);
+        dest.writeString(desc);
+        dest.writeString(publisher);
+        dest.writeString(publisherEmail);
+        dest.writeParcelable(publisherProfileImage, flags);
+        dest.writeParcelable(image, flags);
+        dest.writeString(location);
+        dest.writeLong(dateMillisecond);
+        dest.writeInt(timeMode);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<ListViewContent> CREATOR = new Creator<ListViewContent>() {
+        @Override
+        public ListViewContent createFromParcel(Parcel in) {
+            return new ListViewContent(in);
+        }
+
+        @Override
+        public ListViewContent[] newArray(int size) {
+            return new ListViewContent[size];
+        }
+    };
 
     public void setDateFromString(String strDate) {
         date = strDate;
@@ -66,6 +114,14 @@ public class ListViewContent {
 
     public void setPublisherProfileImage(Uri publisherProfileImage) {
         this.publisherProfileImage = publisherProfileImage;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public void setFileName(String fileName) {

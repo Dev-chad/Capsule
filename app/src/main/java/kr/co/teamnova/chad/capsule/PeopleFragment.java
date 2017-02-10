@@ -23,6 +23,7 @@ public class PeopleFragment extends Fragment {
 
     ListView listViewUser;
     UserListViewAdapter adapter;
+    User loginUser;
 
     public PeopleFragment() {
 
@@ -32,11 +33,12 @@ public class PeopleFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_people, container, false);
 
+        loginUser = getArguments().getParcelable("login_user");
         listViewUser = (ListView) view.findViewById(R.id.listView_user);
         adapter = new UserListViewAdapter(PeopleFragment.this);
         listViewUser.setAdapter(adapter);
 
-        SharedPreferences spFollow = getActivity().getSharedPreferences(getArguments().getString("email"), Context.MODE_PRIVATE);
+        SharedPreferences spFollow = getActivity().getSharedPreferences(loginUser.getEmail(), Context.MODE_PRIVATE);
         Set<String> followingSet = spFollow.getStringSet("following", new HashSet<String>());
 
         File[] file = new File("/data/data/" + getActivity().getPackageName() + "/shared_prefs").listFiles();
@@ -44,7 +46,7 @@ public class PeopleFragment extends Fragment {
         for (File user : file) {
             if(user.getName().contains("@")){
                 String email = user.getName().split(".xml")[0];
-                if(!email.equals(getArguments().getString("email"))){
+                if(!email.equals(loginUser.getEmail())){
                     SharedPreferences sp = getActivity().getSharedPreferences(email, Context.MODE_PRIVATE);
                     Uri uriProfileImage;
                     if (sp.getString("profile_image", "").equals("")) {
@@ -61,7 +63,7 @@ public class PeopleFragment extends Fragment {
     }
 
     public void addFollow(String email){
-        SharedPreferences sp = getActivity().getSharedPreferences(getArguments().getString("email"), Context.MODE_PRIVATE);
+        SharedPreferences sp = getActivity().getSharedPreferences(loginUser.getEmail(), Context.MODE_PRIVATE);
         SharedPreferences.Editor spEditor = sp.edit();
 
         Set<String> strFollowingList = sp.getStringSet("following", new HashSet<String>());
@@ -73,14 +75,14 @@ public class PeopleFragment extends Fragment {
         spEditor = sp.edit();
 
         Set<String> strFollowerList = sp.getStringSet("follower", new HashSet<String>());
-        strFollowerList.add(getArguments().getString("email"));
+        strFollowerList.add(loginUser.getEmail());
         spEditor.putStringSet("follower", strFollowerList);
         spEditor.apply();
 
     }
 
     public void removeFollow(String email){
-        SharedPreferences sp = getActivity().getSharedPreferences(getArguments().getString("email"), Context.MODE_PRIVATE);
+        SharedPreferences sp = getActivity().getSharedPreferences(loginUser.getEmail(), Context.MODE_PRIVATE);
         SharedPreferences.Editor spEditor = sp.edit();
 
         Set<String> strFollowingList = sp.getStringSet("following", new HashSet<String>());
@@ -92,7 +94,7 @@ public class PeopleFragment extends Fragment {
         spEditor = sp.edit();
 
         Set<String> strFollowerList = sp.getStringSet("follower", new HashSet<String>());
-        strFollowerList.remove(getArguments().getString("email"));
+        strFollowerList.remove(loginUser.getEmail());
         spEditor.putStringSet("follower", strFollowerList);
         spEditor.apply();
     }
