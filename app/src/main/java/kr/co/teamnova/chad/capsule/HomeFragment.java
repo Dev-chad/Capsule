@@ -122,6 +122,7 @@ public class HomeFragment extends Fragment {
 
             }
         });
+
         textNickname.setText(loginUser.getNickname());
         textContentCount.setText(String.valueOf(adapter.getCount()));
         return view;

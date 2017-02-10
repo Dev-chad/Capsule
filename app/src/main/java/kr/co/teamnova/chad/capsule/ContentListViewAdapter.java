@@ -96,6 +96,12 @@ public class ContentListViewAdapter extends BaseAdapter {
         viewHolder.imageViewPublisher.setImageURI(listViewContent.getPublisherProfileImage());
         viewHolder.textViewPublisher.setText(listViewContent.getPublisherName());
         viewHolder.textViewContent.setText(listViewContent.getContentDesc());
+        if(viewHolder.textViewContent.length() == 0){
+            viewHolder.textViewContent.setVisibility(View.GONE);
+        } else {
+            viewHolder.textViewContent.setVisibility(View.VISIBLE);
+        }
+
         viewHolder.textViewDate.setText(getTime(listViewContent.getDateToMillisecond()));
         if(listViewContent.getLocation() != null){
             viewHolder.layoutLocation.setVisibility(View.VISIBLE);
@@ -172,6 +178,8 @@ public class ContentListViewAdapter extends BaseAdapter {
                 p.show();
             }
         });
+
+
 
         return convertView;
     }
