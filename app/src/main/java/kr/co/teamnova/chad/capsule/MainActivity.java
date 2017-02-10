@@ -79,16 +79,10 @@ public class MainActivity extends AppCompatActivity implements AddFragment.OnCli
 
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-//        setButtonAlpha();
-    }
-
     private void onClickMenu() {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        Bundle bundle = new Bundle(1);
-        bundle.putString("email", intent.getStringExtra("email"));
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("login_user", intent.getParcelableExtra("login_user"));
         switch (stateNum) {
             case STATE_HOME: {
                 btnHome.setImageResource(R.mipmap.image_btn_home);
@@ -135,23 +129,8 @@ public class MainActivity extends AppCompatActivity implements AddFragment.OnCli
         fragmentTransaction.commit();
     }
 
-    public void setHomeFragment() {
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        Bundle bundle = new Bundle(1);
-        bundle.putString("email", intent.getStringExtra("email"));
-        btnHome.setImageResource(R.mipmap.image_btn_home);
-        btnSearch.setImageResource(R.mipmap.image_btn_search_inactive);
-        btnPeople.setImageResource(R.mipmap.image_btn_people_inactive);
-        btnAdd.setImageResource(R.mipmap.image_btn_add_inactive);
-        HomeFragment fragment = new HomeFragment();
-        fragment.setArguments(bundle);
-        fragmentTransaction.replace(R.id.container, fragment);
-        fragmentTransaction.commit();
-    }
-
-
     public void AddClickEvent() {
-        setHomeFragment();
+        btnHome.callOnClick();
     }
 
     @Override
@@ -168,7 +147,8 @@ public class MainActivity extends AppCompatActivity implements AddFragment.OnCli
             case R.id.menu_logout: {
                 SharedPreferences spAutoLogin = getSharedPreferences("login_info", MODE_PRIVATE);
                 SharedPreferences.Editor spEditor = spAutoLogin.edit();
-                spEditor.putString("enable", "false");
+                spEditor.putBoolean("enable", false);
+                spEditor.remove("password");
                 spEditor.apply();
                 Intent intent = new Intent(getApplicationContext(), LoginPageActivity.class);
                 startActivity(intent);

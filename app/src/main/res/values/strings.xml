@@ -43,6 +43,7 @@
     <string name="str_error_auth_incorrect">인증번호가 올바르지 않습니다.</string>
     <string name="str_error_phone_incomplete_auth">핸드폰 인증을 완료하지 않았습니다.</string>
     <string name="str_error_user_found">일치하는 사용자가 없습니다.</string>
+    <string name="str_location">게시물에 현재 위치를 남기려면 GPS 아이콘을 누르세요</string>
 
 
 </resources>

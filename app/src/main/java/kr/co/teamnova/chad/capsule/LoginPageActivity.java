@@ -2,6 +2,7 @@ package kr.co.teamnova.chad.capsule;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -9,9 +10,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import java.io.File;
-
 public class LoginPageActivity extends AppCompatActivity {
+    private static final String TAG = "LoginPageActivity";
 
     private EditText editEmail;
     private EditText editPassword;
@@ -41,18 +41,20 @@ public class LoginPageActivity extends AppCompatActivity {
                 } else if (editPassword.getText().toString().equals("")) {
                     textError.setText(getString(R.string.str_error_empty_password));
                 } else {
-                    File f = new File("/data/data/" + getPackageName() + "/shared_prefs/" + editEmail.getText().toString() + ".xml");
-                    if (f.exists()) {
-                        SharedPreferences profileData = getSharedPreferences(editEmail.getText().toString(), MODE_PRIVATE);
+                    String email = editEmail.getText().toString();
+                    if (getSharedPreferences("email_info", MODE_PRIVATE).contains(email)) {
+                        SharedPreferences profileData = getSharedPreferences(email, MODE_PRIVATE);
                         if (EncryptData.getSHA256(editPassword.getText().toString()).equals(profileData.getString("password", ""))) {
                             SharedPreferences autoLoginData = getSharedPreferences("login_info", MODE_PRIVATE);
                             SharedPreferences.Editor autoLoginEditor = autoLoginData.edit();
-                            autoLoginEditor.putString("email", editEmail.getText().toString());
-                            autoLoginEditor.putString("enable", "true");
+                            autoLoginEditor.putString("email", email);
+                            autoLoginEditor.putString("password", EncryptData.getSHA256(editPassword.getText().toString()));
+                            autoLoginEditor.putBoolean("enable", true);
                             autoLoginEditor.apply();
 
+                            User loginUser = new User(email, profileData.getString("nickname", ""), profileData.getString("phone", ""), Uri.parse(profileData.getString("profile_image", "")));
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                            intent.putExtra("email", editEmail.getText().toString());
+                            intent.putExtra("login_user", loginUser);
                             startActivity(intent);
                             finish();
                         } else {

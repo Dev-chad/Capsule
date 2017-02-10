@@ -67,7 +67,6 @@ public class JoinPageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_join_page);
 
-
         authTimer = new TimerAsyncTask();
 
         layoutPhoneAuth = (RelativeLayout) findViewById(R.id.layout_phone_auth);
@@ -188,15 +187,18 @@ public class JoinPageActivity extends AppCompatActivity {
                     editPassword.setText("");
                     editRePassword.setText("");
                 } else {
-                    File f = new File("/data/data/" + getPackageName() + "/shared_prefs/" + editEmail.getText().toString() + ".xml");
-                    if (f.exists()) {
+                    SharedPreferences spEmail = getSharedPreferences("email_info", MODE_PRIVATE);
+
+                    if (spEmail.contains(editEmail.getText().toString())) {
                         textErrorMessage.setText(getString(R.string.str_error_duplicated_email));
                         editEmail.setText("");
                     } else {
                         SharedPreferences profileData = getSharedPreferences(editEmail.getText().toString(), MODE_PRIVATE);
-                        SharedPreferences nickNameData = getSharedPreferences("Nickname", MODE_PRIVATE);
+                        SharedPreferences nickNameData = getSharedPreferences("nickname_info", MODE_PRIVATE);
                         SharedPreferences.Editor profileEditor = profileData.edit();
                         SharedPreferences.Editor nicknameEditor = nickNameData.edit();
+                        SharedPreferences.Editor spEmailEditor = spEmail.edit();
+                        spEmailEditor.putString(editEmail.getText().toString(), ""+System.currentTimeMillis());
 
                         profileEditor.putString("first_name", editFirstName.getText().toString());
                         profileEditor.putString("last_name", editLastName.getText().toString());
@@ -205,6 +207,7 @@ public class JoinPageActivity extends AppCompatActivity {
                         profileEditor.putString("phone", editPhone.getText().toString());
                         profileEditor.putString("email", editEmail.getText().toString());
                         profileEditor.putString("password", EncryptData.getSHA256(editPassword.getText().toString()));
+                        profileEditor.putInt("num_of_content", 0);
 
                         File file = new File("/data/data/" + getPackageName() + "/User/" + editEmail.getText().toString() + "/Contents");
                         try{
@@ -229,9 +232,13 @@ public class JoinPageActivity extends AppCompatActivity {
                                 e.printStackTrace();
                             }
                             profileEditor.putString("profile_image", Uri.fromFile(copyFile).toString());
+                        } else {
+                            profileEditor.putString("profile_image", Uri.parse("android.resource://" + getPackageName() + "/" + R.mipmap.ic_launcher).toString());
                         }
+
                         nicknameEditor.apply();
                         profileEditor.apply();
+                        spEmailEditor.apply();
                         Toast.makeText(getApplicationContext(), editFirstName.getText() + getString(R.string.str_join_complete), Toast.LENGTH_LONG).show();
                         finish();
                     }

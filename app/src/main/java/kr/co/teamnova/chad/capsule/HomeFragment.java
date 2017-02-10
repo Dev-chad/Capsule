@@ -27,42 +27,34 @@ import java.util.Comparator;
 public class HomeFragment extends Fragment {
     private static final String TAG = "HomeFragment";
 
-    private ImageView imagePorfile;
     private TextView textContentCount;
     private TextView textNothingContent;
 
     private ListView listViewContent;
     private ContentListViewAdapter adapter;
 
-    private Uri uriProfileImage;
-    private Uri uriContentImage;
-
-    private SharedPreferences userData;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-        userData = getActivity().getSharedPreferences(getArguments().getString("email"), Context.MODE_PRIVATE);
+        User loginUser = getArguments().getParcelable("login_user");
+        Log.d(TAG, loginUser.getUriProfileImage().toString());
+        SharedPreferences userData = getActivity().getSharedPreferences(loginUser.getEmail(), Context.MODE_PRIVATE);
 
         adapter = new ContentListViewAdapter(HomeFragment.this);
         listViewContent = (ListView) view.findViewById(R.id.listView_content);
         listViewContent.setAdapter(adapter);
 
-        textNothingContent = (TextView) view.findViewById(R.id.text_nothing_content_const);
-        imagePorfile = (ImageView) view.findViewById(R.id.image_profile);
-        if (userData.getString("profile_image", "").equals("")) {
-            uriProfileImage = Uri.parse("android.resource://" + getActivity().getPackageName() + "/" + R.mipmap.ic_launcher);
-            imagePorfile.setImageResource(R.mipmap.ic_launcher);
-        } else {
-            uriProfileImage = Uri.parse(userData.getString("profile_image", ""));
-            imagePorfile.setImageURI(uriProfileImage);
-        }
+        TextView textNickname = (TextView) view.findViewById(R.id.text_nickname);
 
         textContentCount = (TextView) view.findViewById(R.id.text_content_count);
+        textNothingContent = (TextView) view.findViewById(R.id.text_nothing_content_const);
+        ImageView imageProfile = (ImageView) view.findViewById(R.id.image_profile);
 
-        if (userData.getInt("num_of_content", -1) > 0) {
+        imageProfile.setImageURI(loginUser.getUriProfileImage());
+
+        if (userData.getInt("num_of_content", 0) > 0) {
             textNothingContent.setVisibility(View.GONE);
-            File[] file = new File("/data/data/" + getActivity().getPackageName() + "/User/" + getArguments().getString("email") + "/Contents").listFiles();
+            File[] file = new File("/data/data/" + getActivity().getPackageName() + "/User/" + loginUser.getEmail() + "/Contents").listFiles();
             if (file.length > 0) {
                 Arrays.sort(file, new FileNameSort());
                 for(File contentDesc: file){
@@ -85,34 +77,35 @@ public class HomeFragment extends Fragment {
                             Log.e(TAG, e.toString());
                         }
 
-                        File contentImage = new File("/data/data/" + getActivity().getPackageName() + "/User/" + getArguments().getString("email") + "/Contents/" + time + ".jpg");
+                        File contentImage = new File("/data/data/" + getActivity().getPackageName() + "/User/" + loginUser.getEmail() + "/Contents/" + time + ".jpg");
+                        Uri uriContentImage;
                         if(contentImage.exists()){
                             uriContentImage = Uri.fromFile(contentImage);
                         } else {
                             uriContentImage = null;
                         }
-                        adapter.addItem(uriContentImage, strDesc, uriProfileImage, userData.getString("nickname", ""), getArguments().getString("email"), time, String.valueOf(time));
+                        adapter.addItem(uriContentImage, strDesc, loginUser.getUriProfileImage(), loginUser.getNickname(), loginUser.getEmail(), time, String.valueOf(time));
                     }
                 }
             }
         } else {
             textNothingContent.setVisibility(View.VISIBLE);
         }
-        imagePorfile.setOnClickListener(new View.OnClickListener() {
+
+        imageProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
             }
         });
-        TextView textNickname;
-        textNickname = (TextView) view.findViewById(R.id.text_nickname);
-        textNickname.setText(userData.getString("nickname", ""));
-        textContentCount.setText(""+userData.getInt("num_of_content", 0));
+        textNickname.setText(loginUser.getNickname());
+        textContentCount.setText(String.valueOf(adapter.getCount()));
         return view;
     }
 
     public void updateContentCount(int position){
-        textContentCount.setText(""+userData.getInt("num_of_content", 0));
+        textContentCount.setText(String.valueOf(adapter.getCount()));
+        adapter.notifyDataSetChanged();
         listViewContent.smoothScrollToPosition(position);
         if(adapter.getCount() == 0){
             textNothingContent.setVisibility(View.VISIBLE);

@@ -36,6 +36,7 @@ public class ContentListViewAdapter extends BaseAdapter {
         public TextView textViewDate;
         public ImageButton ibtnMenu;
     }
+
     private ArrayList<ListViewContent> listViewContentList = new ArrayList<ListViewContent>();
 
     public ContentListViewAdapter(HomeFragment fragment) {
@@ -97,11 +98,11 @@ public class ContentListViewAdapter extends BaseAdapter {
         viewHolder.textViewDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(listViewContent.getTimeMode() == listViewContent.MODE_TIME_ABSOLUTE && viewHolder.textViewDate.getText().toString().contains("전")){
+                if (listViewContent.getTimeMode() == listViewContent.MODE_TIME_ABSOLUTE && viewHolder.textViewDate.getText().toString().contains("전")) {
                     listViewContent.setTimeMode(ListViewContent.MODE_TIME_RELATIVE);
                 }
 
-                if(listViewContent.getTimeMode() == ListViewContent.MODE_TIME_RELATIVE){
+                if (listViewContent.getTimeMode() == ListViewContent.MODE_TIME_RELATIVE) {
                     listViewContent.setTimeMode(ListViewContent.MODE_TIME_ABSOLUTE);
                     viewHolder.textViewDate.setText(listViewContent.getDate());
                 } else {
@@ -143,13 +144,12 @@ public class ContentListViewAdapter extends BaseAdapter {
                                 numOfContent--;
                                 spEditor.putInt("num_of_content", numOfContent);
                                 spEditor.apply();
-                                notifyDataSetChanged();
 
                                 Log.d(TAG, "Position: " + position + "  size(): " + listViewContentList.size());
-                                if(position == 0){
+                                if (position == 0) {
                                     fragment.updateContentCount(0);
                                 } else {
-                                    fragment.updateContentCount(position-1);
+                                    fragment.updateContentCount(position - 1);
                                 }
                                 break;
                             default:
@@ -183,20 +183,20 @@ public class ContentListViewAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    public String getTime(long savedTime){
+    public String getTime(long savedTime) {
         String date = "";
         long currentTime = System.currentTimeMillis();
         long subTime = currentTime - savedTime;
 
-        if(subTime/60000 < 1){
+        if (subTime / 60000 < 1) {
             date = "방금 전";
-        }else if(subTime/60000 < 60){
-            date = (subTime/60000) + "분 전";
-        } else if(subTime/3600000 < 24){
-            date = (subTime/3600000) + "시간 전";
-        } else if(subTime/86400000 < 7){
-            date = (subTime/86400000) + "일 전";
-        } else{
+        } else if (subTime / 60000 < 60) {
+            date = (subTime / 60000) + "분 전";
+        } else if (subTime / 3600000 < 24) {
+            date = (subTime / 3600000) + "시간 전";
+        } else if (subTime / 86400000 < 7) {
+            date = (subTime / 86400000) + "일 전";
+        } else {
             date = new SimpleDateFormat("yyyy년 MM월 dd일  HH:mm").format(new Date(savedTime));
         }
         return date;
