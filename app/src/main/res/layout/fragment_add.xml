@@ -27,16 +27,16 @@
         android:id="@+id/edit_content_details"
         android:layout_width="match_parent"
         android:layout_height="200dp"
+        android:layout_above="@+id/textView3"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/image_content"
         android:background="@drawable/frame_round"
         android:gravity="top"
         android:hint="@string/str_content_request_details"
         android:inputType="textMultiLine"
         android:paddingStart="10dp"
         android:paddingTop="10dp"
-        android:textSize="12sp"
-        android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/image_content"
-        android:layout_above="@+id/textView3" />
+        android:textSize="12sp" />
 
     <View
         android:id="@+id/view_line"
@@ -50,17 +50,17 @@
         android:id="@+id/layout_location"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/view_line"
         android:layout_alignParentStart="true"
+        android:layout_below="@+id/view_line"
         android:layout_marginTop="10dp">
 
         <ImageButton
             android:id="@+id/ibtn_location"
             android:layout_width="20dp"
             android:layout_height="15dp"
-            android:background="@mipmap/image_location"
-            android:layout_above="@+id/relativeLayout"
-            android:layout_alignParentTop="true" />
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:background="@mipmap/image_location" />
 
         <TextView
             android:id="@+id/text_const_location"
@@ -69,38 +69,179 @@
             android:layout_marginStart="5dp"
             android:layout_toEndOf="@id/ibtn_location"
             android:text="위치 정보"
-            android:textStyle="bold"
+            android:textColor="@android:color/black"
             android:textSize="15sp"
-            android:textColor="@android:color/black" />
+            android:textStyle="bold" />
 
         <RelativeLayout
-            android:layout_marginTop="5dp"
+            android:id="@+id/relativeLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignStart="@+id/text_const_location"
             android:layout_below="@id/text_const_location"
-            android:id="@+id/relativeLayout">
+            android:layout_marginTop="5dp">
 
             <TextView
                 android:id="@+id/text_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="12sp"
-                android:textStyle="bold"
                 android:layout_centerVertical="true"
-                android:text="@string/str_location"/>
+                android:text="@string/str_location"
+                android:textSize="12sp"
+                android:textStyle="bold" />
 
             <ImageButton
                 android:id="@+id/ibtn_cancel"
                 android:layout_width="15dp"
                 android:layout_height="15dp"
-                android:background="@mipmap/image_btn_cancel"
-                android:layout_toEndOf="@id/text_location"
                 android:layout_centerVertical="true"
-                android:layout_marginTop="5dp"
                 android:layout_marginStart="5dp"
-                android:visibility="gone"/>
+                android:layout_marginTop="5dp"
+                android:layout_toEndOf="@id/text_location"
+                android:background="@mipmap/image_btn_cancel"
+                android:visibility="gone" />
         </RelativeLayout>
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_feeling"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/layout_location"
+        android:layout_marginTop="40dp">
+
+        <ImageView
+            android:id="@+id/image_feeling"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@mipmap/image_feeling" />
+
+        <TextView
+            android:id="@+id/text_const_feeling"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="5dp"
+            android:layout_toEndOf="@id/image_feeling"
+            android:text="지금 기분이 어떠신가요?"
+            android:textColor="@android:color/black"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/layout_feeling"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp">
+
+        <ImageButton
+            android:id="@+id/ibtn_indifferent"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:background="@mipmap/image_btn_indifferent_gray" />
+
+        <TextView
+            android:id="@+id/text_const_indifferent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@id/ibtn_indifferent"
+            android:layout_alignStart="@id/ibtn_indifferent"
+            android:layout_below="@id/ibtn_indifferent"
+            android:layout_marginTop="5dp"
+            android:gravity="center"
+            android:text="보통"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <ImageButton
+            android:id="@+id/ibtn_happy"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="13dp"
+            android:layout_toEndOf="@id/ibtn_indifferent"
+            android:background="@mipmap/image_btn_happy_gray" />
+
+        <TextView
+            android:id="@+id/text_const_happy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@id/ibtn_happy"
+            android:layout_alignStart="@id/ibtn_happy"
+            android:layout_below="@id/ibtn_indifferent"
+            android:layout_marginTop="5dp"
+            android:gravity="center"
+            android:text="좋아"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <ImageButton
+
+            android:id="@+id/ibtn_love"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="13dp"
+            android:layout_toEndOf="@id/ibtn_happy"
+            android:background="@mipmap/image_btn_love_gray" />
+
+        <TextView
+            android:id="@+id/text_const_love"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@id/ibtn_love"
+            android:layout_alignStart="@id/ibtn_love"
+            android:layout_below="@id/ibtn_indifferent"
+            android:layout_marginTop="5dp"
+            android:gravity="center"
+            android:text="대박"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <ImageButton
+            android:id="@+id/ibtn_crying"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="13dp"
+            android:layout_toEndOf="@id/ibtn_love"
+            android:background="@mipmap/image_btn_crying_gray" />
+
+        <TextView
+            android:id="@+id/text_const_crying"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@id/ibtn_crying"
+            android:layout_alignStart="@id/ibtn_crying"
+            android:layout_below="@id/ibtn_indifferent"
+            android:layout_marginTop="5dp"
+            android:gravity="center"
+            android:text="슬퍼"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <ImageButton
+            android:id="@+id/ibtn_angry"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="13dp"
+            android:layout_toEndOf="@id/ibtn_crying"
+            android:background="@mipmap/image_btn_angry_gray" />
+
+        <TextView
+            android:id="@+id/text_const_angry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@id/ibtn_angry"
+            android:layout_alignStart="@id/ibtn_angry"
+            android:layout_below="@id/ibtn_indifferent"
+            android:layout_marginTop="5dp"
+            android:gravity="center"
+            android:text="화나"
+            android:textSize="12sp"
+            android:textStyle="bold" />
 
     </RelativeLayout>
 

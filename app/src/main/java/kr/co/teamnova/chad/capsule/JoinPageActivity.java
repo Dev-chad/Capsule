@@ -193,7 +193,7 @@ public class JoinPageActivity extends AppCompatActivity {
                         textErrorMessage.setText(getString(R.string.str_error_duplicated_email));
                         editEmail.setText("");
                     } else {
-                        SharedPreferences profileData = getSharedPreferences(editEmail.getText().toString(), MODE_PRIVATE);
+                        SharedPreferences profileData = getSharedPreferences("account", MODE_PRIVATE);
                         SharedPreferences nickNameData = getSharedPreferences("nickname_info", MODE_PRIVATE);
                         SharedPreferences.Editor profileEditor = profileData.edit();
                         SharedPreferences.Editor nicknameEditor = nickNameData.edit();
