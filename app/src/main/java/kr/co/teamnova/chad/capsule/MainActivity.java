@@ -156,11 +156,11 @@ public class MainActivity extends AppCompatActivity implements AddFragment.OnCli
 
         switch (id) {
             case R.id.menu_logout: {
-                SharedPreferences spAutoLogin = getSharedPreferences("login_info", MODE_PRIVATE);
-                SharedPreferences.Editor spEditor = spAutoLogin.edit();
-                spEditor.putBoolean("enable", false);
-                spEditor.remove("password");
-                spEditor.apply();
+                SharedPreferences spAppPrefs = getSharedPreferences("app", MODE_PRIVATE);
+                SharedPreferences.Editor spAppPrefsEditor = spAppPrefs.edit();
+                spAppPrefsEditor.putBoolean("auto_login_use", false);
+                spAppPrefsEditor.remove("auto_login_password");
+                spAppPrefsEditor.apply();
                 Intent intent = new Intent(getApplicationContext(), LoginPageActivity.class);
                 startActivity(intent);
                 finish();

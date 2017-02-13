@@ -45,10 +45,10 @@ import static android.content.Context.MODE_PRIVATE;
  */
 
 public class AddFragment extends Fragment {
+    private static final String TAG = "AddFragment";
+
     private final int PICK_FROM_ALBUM = 0;
     private final int GPS = 1;
-
-    private static final String TAG = "AddFragment";
 
     private LocationManager locationManager;
 
@@ -76,10 +76,11 @@ public class AddFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_add, container, false);
 
-        locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
-
-        contentImage = null;
         final User loginUser = getArguments().getParcelable("login_user");
+
+        locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
+        contentImage = null;
+
         textLocation = (TextView) view.findViewById(R.id.text_location);
         btnCancel = (ImageButton) view.findViewById(R.id.ibtn_cancel);
         editContentDetails = (EditText) view.findViewById(R.id.edit_content_details);
@@ -101,71 +102,112 @@ public class AddFragment extends Fragment {
         btnUpload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int numOfContent;
+                String strNewContent;
+
+                String strImageUri;
+                String desc;
+                String strLocation;
+                String strWeather;
                 long currentTime;
-                SharedPreferences userData = getActivity().getSharedPreferences(loginUser.getEmail(), MODE_PRIVATE);
-                SharedPreferences.Editor userDataEditor = userData.edit();
 
-                File userContentsDir = new File("/data/data/" + getActivity().getPackageName() + "/User/" + loginUser.getEmail() + "/Contents");
-                if (!userContentsDir.exists()) {
-                    Log.e(TAG, "userContentDir does not exist");
-                }
+                SharedPreferences spContent = getActivity().getSharedPreferences("contents", MODE_PRIVATE);
+                SharedPreferences.Editor spContentEditor = spContent.edit();
 
-                if(isEditMode){
+                if (isEditMode) {
                     currentTime = editContent.getDateToMillisecond();
-                    File savefile = new File(userContentsDir.getPath() + "/" + currentTime + ".txt");
-                }else {
+
+                } else {
+                    SharedPreferences spAccount = getContext().getSharedPreferences("account", MODE_PRIVATE);
+                    SharedPreferences.Editor spAccountEditor = spAccount.edit();
+
+                    String[] strUserData = spAccount.getString(loginUser.getEmail(), "").split(",");
+
                     currentTime = System.currentTimeMillis();
-                    if (!userData.contains("num_of_content")) {
-                        userDataEditor.putInt("num_of_content", 0);
-                        userDataEditor.apply();
+
+                    int currentNumOfContent = loginUser.getNumOfContent();
+                    loginUser.setNumOfContent(++currentNumOfContent);
+                    strUserData[Const.INDEX_NUM_OF_CONTENT] = String.valueOf(currentNumOfContent);
+
+                    String strEditUserData = strUserData[0];
+                    for (int i = 1; i <= 7; i++) {
+                        strEditUserData += (',' + strUserData[i]);
                     }
 
-                    numOfContent = userData.getInt("num_of_content", 0);
-                    numOfContent++;
-
-                    userDataEditor.putInt("num_of_content", numOfContent);
-                    userDataEditor.apply();
-                }
-
-                String contentDetail = editContentDetails.getText().toString();
-
-                File savefile = new File(userContentsDir.getPath() + "/" + currentTime + ".txt");
-                try {
-                    FileOutputStream fos = new FileOutputStream(savefile);
-                    fos.write(contentDetail.getBytes());
-                    fos.close();
-                } catch (IOException e) {
-                    Log.e(TAG, e.toString());
-                }
-
-                if(useLocation){
-                    File location = new File(userContentsDir.getPath() + "/" + currentTime + "_pref.txt");
-                    String strLocation = "location:" + textLocation.getText().toString();
-                    try {
-                        FileOutputStream fos = new FileOutputStream(location);
-                        fos.write(strLocation.getBytes());
-                        fos.close();
-
-                    } catch (IOException e) {
-                        Log.e("error", e.toString());
-                    }
+                    spAccountEditor.putString(loginUser.getEmail(), strEditUserData);
                 }
 
                 if (contentImage != null) {
-                    File copyFile = new File(userContentsDir.getPath() + "/" + currentTime + ".jpg");
+                    File imageContentFile = new File(getContext().getFilesDir() + "/contents/" + loginUser.getEmail() + '/' + currentTime + ".jpg");
                     try {
-                        copyFile.createNewFile();
-                        BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(copyFile));
+                        imageContentFile.createNewFile();
+                        BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(imageContentFile));
                         contentImage.compress(Bitmap.CompressFormat.JPEG, 100, out);
 
-                        getActivity().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(copyFile)));
                         out.flush();
                         out.close();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                    strImageUri = Uri.fromFile(imageContentFile).toString();
+                } else {
+                    strImageUri = " ";
                 }
+
+                desc = editContentDetails.getText().toString();
+                if (desc.length() > 0) {
+                    desc = getByteStringForm(desc, "+");
+                } else {
+                    desc = " ";
+                }
+
+                if (useLocation) {
+                    strLocation = textLocation.getText().toString();
+                } else {
+                    strLocation = " ";
+                }
+
+                strNewContent =
+                        strImageUri + "::"
+                                + desc + "::"
+                                + strLocation + "::"
+                                + " :: ::"
+                                + currentTime + ":: ";
+
+                String strUserContent = spContent.getString(loginUser.getEmail(), "");
+//TODO: Error
+                if (isEditMode) {
+                    String strEditContent = "";
+                    String[] strContentSet = strEditContent.split(",");
+
+                    for (int i = 0; i < strContentSet.length; i++) {
+                        String[] strcontentDetail = strContentSet[i].split("::");
+                        if (strcontentDetail[Const.CONTENT_TIME].equals(String.valueOf(currentTime))) {
+                            if (strEditContent.length() == 0) {
+                                strEditContent = strNewContent;
+                            } else {
+                                strEditContent += ("," + strNewContent);
+                            }
+                        } else {
+                            if (strEditContent.length() == 0) {
+                                strEditContent = strContentSet[i];
+                            } else {
+                                strEditContent += ("," + strContentSet[i]);
+                            }
+                        }
+
+                    }
+                    strUserContent = strEditContent;
+
+                } else {
+                    if (strUserContent.length() == 0) {
+                        strUserContent = strNewContent;
+                    } else {
+                        strUserContent += (',' + strNewContent);
+                    }
+                }
+
+                spContentEditor.putString(loginUser.getEmail(), strUserContent);
+                spContentEditor.apply();
 
                 mCallback.AddClickEvent();
             }
@@ -195,10 +237,11 @@ public class AddFragment extends Fragment {
         });
 
         editContent = getArguments().getParcelable("edit_content");
-        if(editContent != null){
+        if (editContent != null) {
             isEditMode = true;
-            if(editContent.getContentImage() != null){
-                btnUpload.setText("수정");
+            btnUpload.setText("수정");
+
+            if (editContent.getContentImage() != null) {
                 imageContent.setImageURI(editContent.getContentImage());
                 try {
                     contentImage = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), editContent.getContentImage());
@@ -206,9 +249,10 @@ public class AddFragment extends Fragment {
                     e.printStackTrace();
                 }
             }
-            if(editContent.getLocation() != null){
+            if (editContent.getLocation().length() > 0) {
                 useLocation = true;
                 textLocation.setText(editContent.getLocation());
+                btnCancel.setVisibility(View.VISIBLE);
             }
             editContentDetails.setText(editContent.getContentDesc());
         }
@@ -261,16 +305,6 @@ public class AddFragment extends Fragment {
         } else {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 1, mLocationListener);
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 100, 1, mLocationListener);
-           /* if (mode.equals(LocationManager.GPS_PROVIDER)) {
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mLocationListener);
-                GPSTimer task = new GPSTimer();
-
-                Timer timer = new Timer();
-                timer.schedule(task, 2000);
-
-            } else if (mode.equals(LocationManager.NETWORK_PROVIDER)) {
-                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, mLocationListener);
-            }*/
         }
     }
 
@@ -280,22 +314,24 @@ public class AddFragment extends Fragment {
             double longitude = location.getLongitude();
             double latitude = location.getLatitude();
 
+            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                locationManager.removeUpdates(this);
+            }
+
             String address = getAddress(getContext(), latitude, longitude);
             String simpleAddress = "";
             if (address != null) {
                 if (textLocation.getText().toString().equals("수신중...")) {
                     useLocation = true;
                     String[] splitAddress = address.split(" ");
-                    for(int i=1; i<splitAddress.length - 1; i++){
-                        simpleAddress += (splitAddress[i]+" ");
+                    for (int i = 1; i < splitAddress.length - 1; i++) {
+                        simpleAddress += (splitAddress[i] + " ");
                     }
                     textLocation.setText(simpleAddress);
                     btnCancel.setVisibility(View.VISIBLE);
                 }
             }
-            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                locationManager.removeUpdates(this);
-            }
+
         }
 
         @Override
@@ -368,5 +404,28 @@ public class AddFragment extends Fragment {
                 e.printStackTrace();
             }
         }
+    }
+
+    public static String getByteStringForm(String origin, String separator) {
+        byte[] array = origin.getBytes();
+        String strByteArray = String.valueOf(array[0]);
+
+        for (int i = 1; i < array.length; i++) {
+            strByteArray += (separator + array[i]);
+        }
+
+        return strByteArray;
+    }
+
+    public static String getStringFromByteString(String target, String regex) {
+        String[] strArray = target.split(regex);
+
+        byte[] byteArray = new byte[strArray.length];
+
+        for (int i = 0; i < strArray.length; i++) {
+            byteArray[i] = Byte.valueOf(strArray[i]);
+        }
+
+        return new String(byteArray);
     }
 }

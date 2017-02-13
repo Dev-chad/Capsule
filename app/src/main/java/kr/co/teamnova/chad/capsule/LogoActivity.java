@@ -50,7 +50,7 @@ public class LogoActivity extends AppCompatActivity {
                     intent = new Intent(getApplicationContext(), LoginPageActivity.class);
                 }
 
-                //createTestAccount();
+//                createTestAccount();
                 startActivity(intent);
 
                 finish();
@@ -59,42 +59,37 @@ public class LogoActivity extends AppCompatActivity {
     }
 
     public void createTestAccount() {
+
+        SharedPreferences spAccount = getSharedPreferences("account", MODE_PRIVATE);
+        SharedPreferences.Editor spAccountEditor = spAccount.edit();
+
+        String name = "tester";
+        String password = "test";
+        String phone = "01011111111";
+        String profileImage = Uri.parse("android.resource://" + getPackageName() + "/" + R.mipmap.image_user).toString();
+
         for (int i = 1; i <= 30; i++) {
             String email = "test" + i + "@test.com";
             String nickname = "test" + i;
-            String firstname = "test" + i;
-            String lastname = "test" + i;
-            String password = "test";
-            String phone = "01011111111";
 
-            SharedPreferences profileData = getSharedPreferences(email, MODE_PRIVATE);
-            SharedPreferences nickNameData = getSharedPreferences("nickname_info", MODE_PRIVATE);
-            SharedPreferences emailData = getSharedPreferences("email_info", MODE_PRIVATE);
-            SharedPreferences.Editor profileEditor = profileData.edit();
-            SharedPreferences.Editor nicknameEditor = nickNameData.edit();
-            SharedPreferences.Editor emailEditor = emailData.edit();
-
-            emailEditor.putString(email, "" + System.currentTimeMillis());
-            profileEditor.putString("first_name", firstname);
-            profileEditor.putString("last_name", lastname);
-            profileEditor.putString("nickname", nickname);
-            nicknameEditor.putString(nickname, "");
-            profileEditor.putString("phone", phone);
-            profileEditor.putString("email", email);
-            profileEditor.putString("password", EncryptData.getSHA256(password));
-            profileEditor.putString("profile_image", Uri.parse("android.resource://" + getPackageName() + "/" + R.mipmap.ic_launcher).toString());
-            profileEditor.putInt("num_of_content", 0);
-
-            File file = new File("/data/data/" + getPackageName() + "/User/" + email + "/Contents");
+            File file = new File(getFilesDir() + "/contents/" + email);
             try {
                 file.mkdirs();
             } catch (Exception e) {
                 Log.e("error", e.toString());
             }
 
-            emailEditor.apply();
-            nicknameEditor.apply();
-            profileEditor.apply();
+            String strUserData =
+                    EncryptData.getSHA256(password)+','
+                            + name + ','
+                            + phone + ','
+                            + nickname + ','
+                            + profileImage + ",0, , ";
+
+            spAccountEditor.putString(email, strUserData);
+
         }
+
+        spAccountEditor.apply();
     }
 }

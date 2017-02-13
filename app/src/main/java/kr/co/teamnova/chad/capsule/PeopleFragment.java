@@ -3,15 +3,17 @@ package kr.co.teamnova.chad.capsule;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -35,15 +37,28 @@ public class PeopleFragment extends Fragment {
 
         loginUser = getArguments().getParcelable("login_user");
         listViewUser = (ListView) view.findViewById(R.id.listView_user);
-        adapter = new UserListViewAdapter(PeopleFragment.this);
+        adapter = new UserListViewAdapter(PeopleFragment.this, loginUser);
         listViewUser.setAdapter(adapter);
 
-        SharedPreferences spFollow = getActivity().getSharedPreferences(loginUser.getEmail(), Context.MODE_PRIVATE);
-        Set<String> followingSet = spFollow.getStringSet("following", new HashSet<String>());
+        SharedPreferences spAccount = getActivity().getSharedPreferences("account", Context.MODE_PRIVATE);
+        SharedPreferences.Editor spAccountEditor = spAccount.edit();
 
-        File[] file = new File("/data/data/" + getActivity().getPackageName() + "/shared_prefs").listFiles();
+        ArrayList<User> userList = new ArrayList<>();
 
-        for (File user : file) {
+        Set<String> allUser = spAccount.getAll().keySet();
+        Iterator<String> it = allUser.iterator();
+
+        while(it.hasNext()){
+            String email = it.next();
+            if(!loginUser.getEmail().equals(email)){
+                User user = new User(email, spAccount.getString(email, "").split(","));
+                userList.add(user);
+            }
+        }
+        Collections.sort(userList, new UserListSort());
+
+        adapter.addUserList(userList);
+        /*for (File user : file) {
             if(user.getName().contains("@")){
                 String email = user.getName().split(".xml")[0];
                 if(!email.equals(loginUser.getEmail())){
@@ -57,7 +72,7 @@ public class PeopleFragment extends Fragment {
                     adapter.addItem(uriProfileImage, sp.getString("nickname", ""), email, followingSet.contains(email));
                 }
             }
-        }
+        }*/
 
         return view;
     }
@@ -97,5 +112,12 @@ public class PeopleFragment extends Fragment {
         strFollowerList.remove(loginUser.getEmail());
         spEditor.putStringSet("follower", strFollowerList);
         spEditor.apply();
+    }
+
+    class UserListSort implements Comparator<User> {
+        public int compare(User user1, User user2) {
+            return user1.getNickname().compareTo(user2.getNickname());
+        }
+
     }
 }

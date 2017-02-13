@@ -15,7 +15,6 @@ public class ListViewContent implements Parcelable{
     final static int MODE_TIME_RELATIVE = 1;
     final static int MODE_TIME_ABSOLUTE = 2;
 
-    private String fileName;
     private String date;
     private String desc;
     private String publisher;
@@ -30,12 +29,11 @@ public class ListViewContent implements Parcelable{
 
     }
 
-    public ListViewContent(Uri image, String desc, Uri publisherProfileImage, String publisher, String publisherEmail, long dateMillisecond, String fileName, String location) {
+    public ListViewContent(Uri image, String desc, Uri publisherProfileImage, String publisher, String publisherEmail, long dateMillisecond, String location) {
 
-        this.fileName = fileName;
         this.dateMillisecond = dateMillisecond;
         this.desc = desc;
-        date = new SimpleDateFormat("yyyy/MM/dd/ HH:mm:ss").format(new Date(dateMillisecond));
+        date = new SimpleDateFormat("yyyy년 MM월 dd일 HH:mm").format(new Date(dateMillisecond));
         this.image = image;
         this.publisher = publisher;
         this.publisherEmail = publisherEmail;
@@ -44,7 +42,6 @@ public class ListViewContent implements Parcelable{
     }
 
     protected ListViewContent(Parcel in) {
-        fileName = in.readString();
         date = in.readString();
         desc = in.readString();
         publisher = in.readString();
@@ -58,7 +55,6 @@ public class ListViewContent implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(fileName);
         dest.writeString(date);
         dest.writeString(desc);
         dest.writeString(publisher);
@@ -124,9 +120,6 @@ public class ListViewContent implements Parcelable{
         this.location = location;
     }
 
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
 
     public void setTimeMode(int mode) {
         timeMode = mode;
@@ -156,9 +149,6 @@ public class ListViewContent implements Parcelable{
         return publisherProfileImage;
     }
 
-    public String getFileName() {
-        return fileName;
-    }
 
     public Long getDateToMillisecond() {
         return dateMillisecond;

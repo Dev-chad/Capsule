@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class LoginPageActivity extends AppCompatActivity {
     private static final String TAG = "LoginPageActivity";
@@ -59,9 +58,8 @@ public class LoginPageActivity extends AppCompatActivity {
                             User loginUser = new User(email, strUserData);
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                             intent.putExtra("login_user", loginUser);
-                            Toast.makeText(LoginPageActivity.this, "로그인 성공", Toast.LENGTH_SHORT).show();
-                            /*startActivity(intent);
-                            finish();*/
+                            startActivity(intent);
+                            finish();
                         } else {
                             textError.setText(getString(R.string.str_error_incorrect_password));
                             editPassword.setText("");

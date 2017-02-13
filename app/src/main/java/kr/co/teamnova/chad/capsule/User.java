@@ -24,6 +24,10 @@ public class User implements Parcelable {
     private ArrayList<String> followList;
     private ArrayList<String> followerList;
 
+    public User(){
+
+    }
+
     public User(String email, String[] strUserData){
         this.email = email;
         this.name = strUserData[Const.INDEX_NAME];

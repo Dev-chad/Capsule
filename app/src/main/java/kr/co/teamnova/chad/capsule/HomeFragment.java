@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,29 +12,21 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Created by Chad on 2017-01-18.
  */
 
 public class HomeFragment extends Fragment {
+    private static final String TAG = "HomeFragment";
 
     public interface OnClickEditListener {
         public void EditClickEvent(ListViewContent origin);
     }
 
-    private static final String TAG = "HomeFragment";
-
-    SharedPreferences userData;
     private TextView textContentCount;
     private TextView textNothingContent;
 
@@ -47,139 +38,113 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-        User loginUser = getArguments().getParcelable("login_user");
-        userData = getActivity().getSharedPreferences(loginUser.getEmail(), Context.MODE_PRIVATE);
-        Set<String> followingSet = userData.getStringSet("following", new HashSet<String>());
 
-        ArrayList<ListViewContent> totalContent = new ArrayList<>();
+        User loginUser = getArguments().getParcelable("login_user");
 
         adapter = new ContentListViewAdapter(HomeFragment.this, loginUser);
         listViewContent = (ListView) view.findViewById(R.id.listView_content);
         listViewContent.setAdapter(adapter);
 
         TextView textNickname = (TextView) view.findViewById(R.id.text_nickname);
-
-        textContentCount = (TextView) view.findViewById(R.id.text_content_count);
-        textNothingContent = (TextView) view.findViewById(R.id.text_nothing_content_const);
         ImageView imageProfile = (ImageView) view.findViewById(R.id.image_profile);
         imageProfile.setImageURI(loginUser.getUriProfileImage());
+        textContentCount = (TextView) view.findViewById(R.id.text_content_count);
 
-        for (String strFollow : followingSet) {
-            SharedPreferences followUser = getActivity().getSharedPreferences(strFollow, Context.MODE_PRIVATE);
+        textNothingContent = (TextView) view.findViewById(R.id.text_nothing_content_const);
 
-            File[] file = new File("/data/data/" + getActivity().getPackageName() + "/User/" + strFollow + "/Contents").listFiles();
-            if (file.length > 0) {
-                for (File contentDesc : file) {
-                    if (contentDesc.getName().contains(".txt") && !contentDesc.getName().contains("_pref")) {
-                        long time = Long.parseLong(contentDesc.getName().split(".txt")[0]);
-                        String strDesc = "";
-                        try {
-                            FileInputStream fis = new FileInputStream(contentDesc.getPath());
-                            BufferedReader bufferReader = new BufferedReader(new InputStreamReader(fis));
-                            String str;
-                            if ((str = bufferReader.readLine()) != null) {
-                                strDesc += str;
-                                while ((str = bufferReader.readLine()) != null) {
-                                    strDesc = strDesc + "\n" + str;
-                                }
-                            }
-                            fis.close();
-                            bufferReader.close();
-                        } catch (Exception e) {
-                            Log.e(TAG, e.toString());
-                        }
+        ArrayList<ListViewContent> totalContent = new ArrayList<>();
 
-                        File contentImage = new File("/data/data/" + getActivity().getPackageName() + "/User/" + strFollow + "/Contents/" + time + ".jpg");
-                        Uri uriContentImage;
-                        if (contentImage.exists()) {
-                            uriContentImage = Uri.fromFile(contentImage);
-                        } else {
-                            uriContentImage = null;
-                        }
+        if (loginUser.getNumOfContent() > 0) {
+            SharedPreferences spContent = getActivity().getSharedPreferences("contents", Context.MODE_PRIVATE);
+            String[] strTotalContent = spContent.getString(loginUser.getEmail(), "").split(",");
 
-                        File contentPref = new File("/data/data/" + getActivity().getPackageName() + "/User/" + strFollow + "/Contents/" + time + "_pref.txt");
-                        String location;
-                        String strLocation = "";
-                        if (contentPref.exists()) {
-                            try {
-                                FileInputStream fis = new FileInputStream(contentPref.getPath());
-                                BufferedReader bufferReader = new BufferedReader(new InputStreamReader(fis));
-                                if ((location = bufferReader.readLine()) != null) {
-                                    strLocation = location.split(":")[1];
-                                }
-                                fis.close();
-                                bufferReader.close();
-                            } catch (Exception e) {
-                                Log.e(TAG, e.toString());
-                            }
-                        }
-                        totalContent.add(new ListViewContent(uriContentImage, strDesc, Uri.parse(followUser.getString("profile_image", "")), followUser.getString("nickname", ""), strFollow, time, contentDesc.getName(), strLocation));
-                    }
+            for (String strContent : strTotalContent) {
+                String[] strContentDetail = strContent.split("::");
+
+                Uri uriContentImage;
+                if (strContentDetail[Const.CONTENT_IMAGE_URI].equals(" ")) {
+                    uriContentImage = null;
+                } else {
+                    uriContentImage = Uri.parse(strContentDetail[Const.CONTENT_IMAGE_URI]);
                 }
+
+                String strContentDesc = strContentDetail[Const.CONTENT_DESCRIPTION];
+                if (strContentDesc.equals(" ")) {
+                    strContentDesc = "";
+                } else {
+                    strContentDesc = getStringFromByteString(strContentDetail[Const.CONTENT_DESCRIPTION], "\\+");
+                }
+
+                String strLocation = strContentDetail[Const.CONTENT_LOCATION];
+                if (strLocation.equals(" ")) {
+                    strLocation = "";
+                }
+
+                ListViewContent userContent = new ListViewContent(
+                        uriContentImage,
+                        strContentDesc,
+                        loginUser.getUriProfileImage(),
+                        loginUser.getNickname(),
+                        loginUser.getEmail(),
+                        Long.valueOf(strContentDetail[Const.CONTENT_TIME]),
+                        strLocation);
+
+                totalContent.add(userContent);
             }
         }
 
-        if (userData.getInt("num_of_content", 0) > 0) {
-            textNothingContent.setVisibility(View.GONE);
-            File[] file = new File("/data/data/" + getActivity().getPackageName() + "/User/" + loginUser.getEmail() + "/Contents").listFiles();
-            if (file.length > 0) {
-                for (File contentDesc : file) {
-                    if (contentDesc.getName().contains(".txt") && !contentDesc.getName().contains("_pref")) {
-                        long time = Long.parseLong(contentDesc.getName().split(".txt")[0]);
-                        String strDesc = "";
-                        try {
-                            FileInputStream fis = new FileInputStream(contentDesc.getPath());
-                            BufferedReader bufferReader = new BufferedReader(new InputStreamReader(fis));
-                            String str;
-                            if ((str = bufferReader.readLine()) != null) {
-                                strDesc += str;
-                                while ((str = bufferReader.readLine()) != null) {
-                                    strDesc = strDesc + "\n" + str;
-                                }
-                            }
-                            fis.close();
-                            bufferReader.close();
-                        } catch (Exception e) {
-                            Log.e(TAG, e.toString());
-                        }
+        if (loginUser.getFollowList().size() > 0) {
+            for (String email : loginUser.getFollowList()) {
+                SharedPreferences spContent = getActivity().getSharedPreferences("contents", Context.MODE_PRIVATE);
+                String[] strTotalContent = spContent.getString(email, "").split(",");
 
-                        File contentImage = new File("/data/data/" + getActivity().getPackageName() + "/User/" + loginUser.getEmail() + "/Contents/" + time + ".jpg");
+                if (!strTotalContent[0].equals("")) {
+                    String[] strUserData = getContext().getSharedPreferences("account", Context.MODE_PRIVATE).getString(email, "").split(",");
+                    for (String strContent : strTotalContent) {
+                        String[] strContentDetail = strContent.split("::");
+
                         Uri uriContentImage;
-                        if (contentImage.exists()) {
-                            uriContentImage = Uri.fromFile(contentImage);
-                        } else {
+                        if (strContentDetail[Const.CONTENT_IMAGE_URI].equals(" ")) {
                             uriContentImage = null;
+                        } else {
+                            uriContentImage = Uri.parse(strContentDetail[Const.CONTENT_IMAGE_URI]);
                         }
 
-                        File contentPref = new File("/data/data/" + getActivity().getPackageName() + "/User/" + loginUser.getEmail() + "/Contents/" + time + "_pref.txt");
-                        String location;
-                        String strLocation = "";
-                        if (contentPref.exists()) {
-                            try {
-                                FileInputStream fis = new FileInputStream(contentPref.getPath());
-                                BufferedReader bufferReader = new BufferedReader(new InputStreamReader(fis));
-                                if ((location = bufferReader.readLine()) != null) {
-                                    strLocation = location.split(":")[1];
-                                }
-                                fis.close();
-                                bufferReader.close();
-                            } catch (Exception e) {
-                                Log.e(TAG, e.toString());
-                            }
+                        String strContentDesc = strContentDetail[Const.CONTENT_DESCRIPTION];
+                        if (strContentDesc.equals(" ")) {
+                            strContentDesc = "";
+                        } else {
+                            strContentDesc = getStringFromByteString(strContentDetail[Const.CONTENT_DESCRIPTION], "\\+");
                         }
-                        totalContent.add(new ListViewContent(uriContentImage, strDesc, loginUser.getUriProfileImage(), loginUser.getNickname(), loginUser.getEmail(), time, String.valueOf(time), strLocation));
+
+                        String strLocation = strContentDetail[Const.CONTENT_LOCATION];
+                        if (strLocation.equals(" ")) {
+                            strLocation = "";
+                        }
+
+                        ListViewContent userContent = new ListViewContent(
+                                uriContentImage,
+                                strContentDesc,
+                                Uri.parse(strUserData[Const.INDEX_PROFILE_IMAGE]),
+                                strUserData[Const.INDEX_NICKNAME],
+                                email,
+                                Long.valueOf(strContentDetail[Const.CONTENT_TIME]),
+                                strLocation);
+
+                        totalContent.add(userContent);
                     }
                 }
+
             }
         }
 
-        if(totalContent.size() == 0){
-            textNothingContent.setVisibility(View.VISIBLE);
-        }
         Collections.sort(totalContent, new FileNameSort());
         Collections.reverse(totalContent);
-
         adapter.addItemFromArray(totalContent);
+
+        if (totalContent.size() == 0) {
+            textNothingContent.setVisibility(View.VISIBLE);
+        }
 
         imageProfile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -189,7 +154,7 @@ public class HomeFragment extends Fragment {
         });
 
         textNickname.setText(loginUser.getNickname());
-        textContentCount.setText(String.valueOf(userData.getInt("num_of_content", 0)));
+        textContentCount.setText(String.valueOf(loginUser.getNumOfContent()));
         return view;
     }
 
@@ -224,5 +189,17 @@ public class HomeFragment extends Fragment {
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + "must implement OnArticleSelectedListener");
         }
+    }
+
+    public static String getStringFromByteString(String target, String regex) {
+        String[] strArray = target.split(regex);
+
+        byte[] byteArray = new byte[strArray.length];
+
+        for (int i = 0; i < strArray.length; i++) {
+            byteArray[i] = Byte.valueOf(strArray[i]);
+        }
+
+        return new String(byteArray);
     }
 }

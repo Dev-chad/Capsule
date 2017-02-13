@@ -1,7 +1,7 @@
 package kr.co.teamnova.chad.capsule;
 
 import android.content.Context;
-import android.net.Uri;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,22 +25,24 @@ public class UserListViewAdapter extends BaseAdapter {
         public Button btnFollow;
     }
 
+    private User loginUser;
     private ViewHolder viewHolder;
     private PeopleFragment fragment;
-    private ArrayList<ListViewUser> listViewUserList = new ArrayList<ListViewUser>();
+    private ArrayList<User> userList = new ArrayList<>();
 
-    public UserListViewAdapter(PeopleFragment fragment) {
+    public UserListViewAdapter(PeopleFragment fragment, User loginUser) {
         this.fragment = fragment;
+        this.loginUser = loginUser;
     }
 
     @Override
     public int getCount() {
-        return listViewUserList.size();
+        return userList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return listViewUserList.get(position);
+        return userList.get(position);
     }
 
     @Override
@@ -52,7 +54,7 @@ public class UserListViewAdapter extends BaseAdapter {
     public View getView(final int position, View convertView, final ViewGroup parent) {
         final Context context = parent.getContext();
 
-        final ListViewUser listViewContent = listViewUserList.get(position);
+        final User user = userList.get(position);
 
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -70,10 +72,11 @@ public class UserListViewAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        viewHolder.imageViewProfile.setImageURI(listViewContent.getProfileImageUri());
-        viewHolder.textViewEmail.setText(listViewContent.getEmail());
-        viewHolder.textViewNickname.setText(listViewContent.getNickname());
-        if(listViewContent.isFollow()){
+        viewHolder.imageViewProfile.setImageURI(user.getUriProfileImage());
+        viewHolder.textViewEmail.setText(user.getEmail());
+        viewHolder.textViewNickname.setText(user.getNickname());
+
+        if(loginUser.getFollowList().contains(user.getEmail())){
             viewHolder.btnFollow.setText("Unfollow");
         } else {
             viewHolder.btnFollow.setText("Follow");
@@ -82,25 +85,60 @@ public class UserListViewAdapter extends BaseAdapter {
         viewHolder.btnFollow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listViewContent.setFollow();
-                if(!listViewContent.isFollow()){
-                    fragment.removeFollow(listViewContent.getEmail());
-                }else{
-                    fragment.addFollow(listViewContent.getEmail());
+                SharedPreferences spAccount = fragment.getContext().getSharedPreferences("account", Context.MODE_PRIVATE);
+                SharedPreferences.Editor spAccountEditor = spAccount.edit();
+
+                String strLoginUserFollow = "";
+                String strUserFollower = "";
+
+                if(loginUser.getFollowList().contains(user.getEmail())){
+                    loginUser.getFollowList().remove(user.getEmail());
+                    user.getFollowerList().remove(loginUser.getEmail());
+                } else {
+                    loginUser.getFollowList().add(user.getEmail());
+                    user.getFollowerList().add(loginUser.getEmail());
                 }
+
+                for(String email : loginUser.getFollowList()){
+                    if(strLoginUserFollow.length() == 0){
+                        strLoginUserFollow = email;
+                    } else {
+                        strLoginUserFollow += ("::" + email);
+                    }
+                }
+
+                for(String email : user.getFollowerList()){
+                    if(strUserFollower.length() == 0){
+                        strUserFollower = email;
+                    } else {
+                        strUserFollower += ("::" + email);
+                    }
+                }
+
+                String[] strLoginUserData = spAccount.getString(loginUser.getEmail(), "").split(",");
+                String[] strUserData = spAccount.getString(user.getEmail(), "").split(",");
+
+                strLoginUserData[Const.INDEX_FOLLOW] = strLoginUserFollow;
+                strUserData[Const.INDEX_FOLLOWER] = strUserFollower;
+
+                String strUpdatedLoginUserData = strLoginUserData[0];
+                String strUpdatedUserData = strUserData[0];
+
+                for(int i=1; i<=7; i++){
+                    strUpdatedLoginUserData += (","+strLoginUserData[i]);
+                    strUpdatedUserData += (","+strUserData[i]);
+                }
+                spAccountEditor.putString(loginUser.getEmail(), strUpdatedLoginUserData);
+                spAccountEditor.putString(user.getEmail(), strUpdatedUserData);
+
+                spAccountEditor.apply();
                 notifyDataSetChanged();
             }
         });
         return convertView;
     }
 
-    public void addItem(Uri uriProfileImage, String nickname, String email, boolean isFollow) {
-        ListViewUser user = new ListViewUser();
-
-        user.setEmail(email);
-        user.setNickname(nickname);
-        user.setProfileImageUri(uriProfileImage);
-        user.setFollow(isFollow);
-        listViewUserList.add(user);
+    public void addUserList(ArrayList<User> userList){
+        this.userList = userList;
     }
 }

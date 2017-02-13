@@ -207,6 +207,12 @@ public class JoinPageActivity extends AppCompatActivity {
                         } catch (Exception e) {
                             Log.e("error", e.toString());
                         }
+
+                        File contentDir = new File(getFilesDir()+"/contents/"+editEmail.getText().toString());
+                        if (!contentDir.exists()) {
+                            contentDir.mkdirs();
+                        }
+
                         if (profileImage != null) {
                             File copyFile = new File(file.getPath()+ "/"+ editEmail.getText().toString() +".jpg");
                             try {

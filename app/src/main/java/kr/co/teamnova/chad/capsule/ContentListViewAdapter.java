@@ -3,7 +3,6 @@ package kr.co.teamnova.chad.capsule;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -77,7 +76,7 @@ public class ContentListViewAdapter extends BaseAdapter {
             viewHolder.imageViewPublisher = (ImageView) convertView.findViewById(R.id.image_publisher);
             viewHolder.imageViewContent = (ImageView) convertView.findViewById(R.id.image_content);
             viewHolder.layoutLocation = (LinearLayout) convertView.findViewById(R.id.layout_location);
-            viewHolder.textViewLocation = (TextView)convertView.findViewById(R.id.text_location);
+            viewHolder.textViewLocation = (TextView) convertView.findViewById(R.id.text_location);
             viewHolder.textViewPublisher = (TextView) convertView.findViewById(R.id.text_publisher);
             viewHolder.textViewContent = (TextView) convertView.findViewById(R.id.text_content);
             viewHolder.textViewDate = (TextView) convertView.findViewById(R.id.text_date);
@@ -98,17 +97,17 @@ public class ContentListViewAdapter extends BaseAdapter {
         viewHolder.imageViewPublisher.setImageURI(listViewContent.getPublisherProfileImage());
         viewHolder.textViewPublisher.setText(listViewContent.getPublisherName());
         viewHolder.textViewContent.setText(listViewContent.getContentDesc());
-        if(viewHolder.textViewContent.length() == 0){
+        if (viewHolder.textViewContent.length() == 0) {
             viewHolder.textViewContent.setVisibility(View.GONE);
         } else {
             viewHolder.textViewContent.setVisibility(View.VISIBLE);
         }
 
         viewHolder.textViewDate.setText(getTime(listViewContent.getDateToMillisecond()));
-        if(listViewContent.getLocation() != null && !listViewContent.getLocation().equals("")){
+        if (listViewContent.getLocation().length() > 0) {
             viewHolder.layoutLocation.setVisibility(View.VISIBLE);
             viewHolder.textViewLocation.setText(listViewContent.getLocation());
-        }else{
+        } else {
             viewHolder.layoutLocation.setVisibility(View.GONE);
             viewHolder.textViewLocation.setText("");
         }
@@ -130,7 +129,7 @@ public class ContentListViewAdapter extends BaseAdapter {
             }
         });
 
-        if(!listViewContent.getPublisherEmail().equals(loginUser.getEmail())){
+        if (!listViewContent.getPublisherEmail().equals(loginUser.getEmail())) {
             viewHolder.ibtnMenu.setVisibility(View.GONE);
         } else {
             viewHolder.ibtnMenu.setVisibility(View.VISIBLE);
@@ -148,28 +147,49 @@ public class ContentListViewAdapter extends BaseAdapter {
                                 fragment.editContent(listViewContent);
                                 break;
                             case R.id.menu_delete:
-                                File descFile = new File("/data/data/" + context.getPackageName() + "/User/" + listViewContent.getPublisherEmail() + "/Contents/" + listViewContent.getFileName() + ".txt");
-                                if (descFile.exists()) {
-                                    descFile.delete();
-                                } else {
-                                    Log.e(TAG, "descFile does not exist " + descFile.getPath());
-                                }
-
-                                File imageFile = new File("/data/data/" + context.getPackageName() + "/User/" + listViewContent.getPublisherEmail() + "/Contents/" + listViewContent.getFileName() + ".jpg");
+                                File imageFile = new File(context.getFilesDir() + "/contents/" + loginUser.getEmail() + '/' + listViewContent.getDateToMillisecond() + ".jpg");
                                 if (imageFile.exists()) {
                                     imageFile.delete();
                                 }
+
+                                SharedPreferences spContents = context.getSharedPreferences("contents", Context.MODE_PRIVATE);
+                                SharedPreferences.Editor spContentsEditor = spContents.edit();
+                                SharedPreferences spAccount = context.getSharedPreferences("account", Context.MODE_PRIVATE);
+                                SharedPreferences.Editor spAccountEditor = spAccount.edit();
+
+                                String[] strUserData = spAccount.getString(loginUser.getEmail(), "").split(",");
+
+                                int currentNumOfContent = loginUser.getNumOfContent();
+                                loginUser.setNumOfContent(--currentNumOfContent);
+                                strUserData[Const.INDEX_NUM_OF_CONTENT] = String.valueOf(currentNumOfContent);
+
+                                String strEditUserData = strUserData[0];
+                                for (int i = 1; i <= 7; i++) {
+                                    strEditUserData += (',' + strUserData[i]);
+                                }
+
+                                spAccountEditor.putString(loginUser.getEmail(), strEditUserData);
+                                spAccountEditor.apply();
+
+                                String strEditTotalContents = "";
+                                String[] strTotalContents = spContents.getString(loginUser.getEmail(), "").split(",");
+
+                                for (String strFind : strTotalContents) {
+                                    String[] strDetail = strFind.split("::");
+                                    if (!strDetail[Const.CONTENT_TIME].equals(String.valueOf(listViewContent.getDateToMillisecond()))) {
+                                        if (strEditTotalContents.length() == 0) {
+                                            strEditTotalContents = strFind;
+                                        } else {
+                                            strEditTotalContents += ("," + strFind);
+                                        }
+                                    }
+                                }
+
+                                spContentsEditor.putString(loginUser.getEmail(), strEditTotalContents);
+                                spContentsEditor.apply();
+
                                 listViewContentList.remove(position);
 
-                                SharedPreferences sp = context.getSharedPreferences(listViewContent.getPublisherEmail(), Context.MODE_PRIVATE);
-                                SharedPreferences.Editor spEditor = sp.edit();
-
-                                int numOfContent = sp.getInt("num_of_content", -1);
-                                numOfContent--;
-                                spEditor.putInt("num_of_content", numOfContent);
-                                spEditor.apply();
-
-                                Log.d(TAG, "Position: " + position + "  size(): " + listViewContentList.size());
                                 if (position == 0) {
                                     fragment.updateContentCount(0);
                                 } else {
@@ -187,11 +207,10 @@ public class ContentListViewAdapter extends BaseAdapter {
         });
 
 
-
         return convertView;
     }
 
-    public void addItem(Uri contentImage, String contentDesc, Uri publisherImage, String publisherName, String publisherEmail, long date, String fileName, String location) {
+    public void addItem(Uri contentImage, String contentDesc, Uri publisherImage, String publisherName, String publisherEmail, long date, String location) {
         ListViewContent content = new ListViewContent();
 
         if (contentImage != null) {
@@ -203,8 +222,7 @@ public class ContentListViewAdapter extends BaseAdapter {
         content.setPublisher(publisherName);
         content.setPublisherEmail(publisherEmail);
         content.setPublisherProfileImage(publisherImage);
-        content.setFileName(fileName);
-        if(!location.equals("")){
+        if (!location.equals("")) {
             content.setLocation(location);
         }
 
@@ -212,7 +230,7 @@ public class ContentListViewAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    public void addItemFromArray(ArrayList<ListViewContent> list){
+    public void addItemFromArray(ArrayList<ListViewContent> list) {
         listViewContentList = list;
         notifyDataSetChanged();
     }
