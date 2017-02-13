@@ -16,28 +16,41 @@ import java.io.File;
 
 public class LogoActivity extends AppCompatActivity {
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_logo);
-
-        final SharedPreferences spAutoLogin = getSharedPreferences("login_info", MODE_PRIVATE);
 
         Handler mHandler = new Handler();
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 Intent intent;
-                if (spAutoLogin.getBoolean("enable", false) && spAutoLogin.getString("password", "1").equals(getSharedPreferences(spAutoLogin.getString("email", "trash"), MODE_PRIVATE).getString("password", "0"))) {
-                    SharedPreferences sp = getSharedPreferences(spAutoLogin.getString("email", ""), MODE_PRIVATE);
+                SharedPreferences spAppPrefs = getSharedPreferences("app", MODE_PRIVATE);
 
-                    User loginUser = new User(spAutoLogin.getString("email", ""), sp.getString("nickname", ""), sp.getString("phone", ""), Uri.parse(sp.getString("profile_image", "")));
-                    intent = new Intent(getApplicationContext(), MainActivity.class);
-                    intent.putExtra("login_user", loginUser);
+                if (spAppPrefs.getBoolean("auto_login_use", false)) {
+                    String email = spAppPrefs.getString("auto_login_email", "");
+                    SharedPreferences spAccount = getSharedPreferences("account", MODE_PRIVATE);
+
+                    if (spAccount.contains(email)) {
+                        String[] strUserData = spAccount.getString(email, "").split(",");
+
+                        if (strUserData[Const.INDEX_PASSWORD].equals(spAppPrefs.getString("auto_login_password", ""))) {
+                            User loginUser = new User(email, strUserData);
+                            intent = new Intent(getApplicationContext(), MainActivity.class);
+                            intent.putExtra("login_user", loginUser);
+                        } else {
+                            intent = new Intent(getApplicationContext(), LoginPageActivity.class);
+                        }
+                    } else {
+                        intent = new Intent(getApplicationContext(), LoginPageActivity.class);
+                    }
                 } else {
                     intent = new Intent(getApplicationContext(), LoginPageActivity.class);
                 }
-//                createTestAccount();
+
+                //createTestAccount();
                 startActivity(intent);
 
                 finish();
@@ -61,7 +74,7 @@ public class LogoActivity extends AppCompatActivity {
             SharedPreferences.Editor nicknameEditor = nickNameData.edit();
             SharedPreferences.Editor emailEditor = emailData.edit();
 
-            emailEditor.putString(email, ""+System.currentTimeMillis());
+            emailEditor.putString(email, "" + System.currentTimeMillis());
             profileEditor.putString("first_name", firstname);
             profileEditor.putString("last_name", lastname);
             profileEditor.putString("nickname", nickname);

@@ -33,6 +33,7 @@ import java.util.Random;
  */
 
 public class JoinPageActivity extends AppCompatActivity {
+    private static final String TAG = "JoinPageActivity";
 
     private final int PICK_FROM_ALBUM = 0;
     private final int CROP_FROM_IMAGE = 1;
@@ -67,6 +68,8 @@ public class JoinPageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_join_page);
 
+        final SharedPreferences spAccount = getSharedPreferences("account", MODE_PRIVATE);
+
         authTimer = new TimerAsyncTask();
 
         layoutPhoneAuth = (RelativeLayout) findViewById(R.id.layout_phone_auth);
@@ -98,7 +101,7 @@ public class JoinPageActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                SharedPreferences sp = getSharedPreferences("nickname_info", MODE_PRIVATE);
+                SharedPreferences sp = getSharedPreferences("join", MODE_PRIVATE);
                 if (sp.contains(editNickname.getText().toString())) {
                     textCheckNickname.setTextColor(0x99ff0000);
                     textCheckNickname.setText(R.string.str_not_available);
@@ -124,13 +127,13 @@ public class JoinPageActivity extends AppCompatActivity {
                 if (permissionCheck == PackageManager.PERMISSION_DENIED) {
                     requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS}, SEND_SMS);
                 } else {
-                    if(!editPhone.getText().toString().equals("")){
+                    if (!editPhone.getText().toString().equals("")) {
                         editAuth.setText("");
                         sendAuthSMS();
                         if (layoutPhoneAuth.getVisibility() != View.VISIBLE) {
                             layoutPhoneAuth.setVisibility(View.VISIBLE);
                         }
-                    } else{
+                    } else {
                         textErrorMessage.setText(R.string.str_error_empty_phone);
                     }
                 }
@@ -142,7 +145,7 @@ public class JoinPageActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (editAuth.getText().toString().equals(String.valueOf(authNum))) {
-                    if(!textAuthTime.getText().toString().equals("0:00")){
+                    if (!textAuthTime.getText().toString().equals("0:00")) {
                         authTimer.cancel(true);
                         btnAuth.setClickable(false);
                         btnAuth.setBackgroundColor(0x9900ff00);
@@ -152,7 +155,7 @@ public class JoinPageActivity extends AppCompatActivity {
                         layoutPhoneAuth.setVisibility(View.GONE);
                         textErrorMessage.setText("");
                         isCompletedPhoneAuth = true;
-                    } else{
+                    } else {
                         textErrorMessage.setText(R.string.str_error_auth_overtime);
                     }
                 } else {
@@ -187,39 +190,25 @@ public class JoinPageActivity extends AppCompatActivity {
                     editPassword.setText("");
                     editRePassword.setText("");
                 } else {
-                    SharedPreferences spEmail = getSharedPreferences("email_info", MODE_PRIVATE);
 
-                    if (spEmail.contains(editEmail.getText().toString())) {
+                    if (spAccount.contains(editEmail.getText().toString())) {
                         textErrorMessage.setText(getString(R.string.str_error_duplicated_email));
                         editEmail.setText("");
                     } else {
-                        SharedPreferences profileData = getSharedPreferences("account", MODE_PRIVATE);
-                        SharedPreferences nickNameData = getSharedPreferences("nickname_info", MODE_PRIVATE);
-                        SharedPreferences.Editor profileEditor = profileData.edit();
-                        SharedPreferences.Editor nicknameEditor = nickNameData.edit();
-                        SharedPreferences.Editor spEmailEditor = spEmail.edit();
-                        spEmailEditor.putString(editEmail.getText().toString(), ""+System.currentTimeMillis());
+                        SharedPreferences spJoin = getSharedPreferences("join", MODE_PRIVATE);
+                        SharedPreferences.Editor spAccountEditor = spAccount.edit();
+                        SharedPreferences.Editor spJoinEditor = spJoin.edit();
 
-                        profileEditor.putString("first_name", editFirstName.getText().toString());
-                        profileEditor.putString("last_name", editLastName.getText().toString());
-                        profileEditor.putString("nickname", editNickname.getText().toString());
-                        nicknameEditor.putString(editNickname.getText().toString(), "");
-                        profileEditor.putString("phone", editPhone.getText().toString());
-                        profileEditor.putString("email", editEmail.getText().toString());
-                        profileEditor.putString("password", EncryptData.getSHA256(editPassword.getText().toString()));
-                        profileEditor.putInt("num_of_content", 0);
+                        String strUriProfileImage;
 
-                        File file = new File("/data/data/" + getPackageName() + "/User/" + editEmail.getText().toString() + "/Contents");
-                        try{
+                        File file = new File(getFilesDir() + "/profile_image");
+                        try {
                             file.mkdirs();
-                        }catch (Exception e){
+                        } catch (Exception e) {
                             Log.e("error", e.toString());
                         }
-
-                        File userDir = new File("/data/data/" + getPackageName() + "/User/" + editEmail.getText().toString());
-
                         if (profileImage != null) {
-                            File copyFile = new File(userDir.getPath(), "/profile.jpg");
+                            File copyFile = new File(file.getPath()+ "/"+ editEmail.getText().toString() +".jpg");
                             try {
                                 copyFile.createNewFile();
                                 BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(copyFile));
@@ -231,20 +220,32 @@ public class JoinPageActivity extends AppCompatActivity {
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-                            profileEditor.putString("profile_image", Uri.fromFile(copyFile).toString());
+                            strUriProfileImage = Uri.fromFile(copyFile).toString();
                         } else {
-                            profileEditor.putString("profile_image", Uri.parse("android.resource://" + getPackageName() + "/" + R.mipmap.ic_launcher).toString());
+                            strUriProfileImage = Uri.parse("android.resource://" + getPackageName() + "/" + R.mipmap.image_user).toString();
                         }
 
-                        nicknameEditor.apply();
-                        profileEditor.apply();
-                        spEmailEditor.apply();
+                        String strUserData =
+                                EncryptData.getSHA256(editPassword.getText().toString())+','
+                                + editLastName.getText().toString()+editFirstName.getText().toString() + ','
+                                + editPhone.getText().toString() + ','
+                                + editNickname.getText().toString() + ','
+                                + strUriProfileImage + ",0,,";
+
+                        spAccountEditor.putString(editEmail.getText().toString(), strUserData);
+                        spJoinEditor.putString(editNickname.getText().toString(), "");
+
+                        Log.d(TAG, strUserData);
+
+                        spJoinEditor.apply();
+                        spAccountEditor.apply();
                         Toast.makeText(getApplicationContext(), editFirstName.getText() + getString(R.string.str_join_complete), Toast.LENGTH_LONG).show();
                         finish();
                     }
                 }
             }
         });
+
         Button btnBack = (Button) findViewById(R.id.btn_back);
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -341,7 +342,7 @@ public class JoinPageActivity extends AppCompatActivity {
             SmsManager smsManager = SmsManager.getDefault();
             smsManager.sendTextMessage(editPhone.getText().toString(), null, "[CAPSULE]\n본인인증번호는 " + authNum + " 입니다.\n정확히 입력해주세요.", null, null);
 
-            if(authTimer.getStatus() == AsyncTask.Status.RUNNING){
+            if (authTimer.getStatus() == AsyncTask.Status.RUNNING) {
                 authTimer.cancel(true);
             }
             authTimer = new TimerAsyncTask();
@@ -360,12 +361,12 @@ public class JoinPageActivity extends AppCompatActivity {
             int m = 0;
             int s = 10;
 
-            while(m > -1){
-                if(isCancelled()){
+            while (m > -1) {
+                if (isCancelled()) {
                     break;
                 }
                 publishProgress(String.format("%d:%02d", m, s));
-                if(--s < 0){
+                if (--s < 0) {
                     s = 59;
                     --m;
                 }

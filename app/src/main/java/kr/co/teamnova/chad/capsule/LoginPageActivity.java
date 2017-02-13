@@ -22,10 +22,10 @@ public class LoginPageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_page);
 
-        String email = getSharedPreferences("login_info", MODE_PRIVATE).getString("email", "");
+        String email = getSharedPreferences("app", MODE_PRIVATE).getString("auto_login_email", "");
 
         editEmail = (EditText) findViewById(R.id.edit_email);
-        if(email.length() > 0){
+        if (email.length() > 0) {
             editEmail.setText(email);
         }
 

@@ -5,12 +5,12 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:layout_alignParentBottom="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
         android:layout_marginBottom="20dp"
+        android:layout_marginTop="30dp"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -30,7 +30,7 @@
                     android:layout_height="90dp"
                     android:background="@drawable/frame_round"
                     android:padding="5dp"
-                    android:src="@mipmap/ic_launcher" />
+                    android:src="@mipmap/image_user" />
 
                 <TextView
                     android:id="@+id/text_image"
@@ -172,11 +172,11 @@
                 android:id="@+id/text_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="3:00"
-                android:textSize="20sp"
-                android:layout_toStartOf="@id/edit_auth_check"
                 android:layout_alignBaseline="@id/edit_auth_check"
-                android:layout_marginEnd="10dp"/>
+                android:layout_marginEnd="10dp"
+                android:layout_toStartOf="@id/edit_auth_check"
+                android:text="3:00"
+                android:textSize="20sp" />
 
         </RelativeLayout>
 
@@ -215,8 +215,8 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
             android:layout_gravity="center_horizontal"
+            android:layout_marginTop="30dp"
             android:orientation="horizontal">
 
             <Button
@@ -224,9 +224,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/str_join"
                 android:background="@android:drawable/btn_default"
-
+                android:text="@string/str_join"
                 android:textAllCaps="false" />
 
             <Button
@@ -235,13 +234,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_weight="1"
-                android:text="@string/str_back"
                 android:background="@android:drawable/btn_default"
-
+                android:text="@string/str_back"
                 android:textAllCaps="false" />
         </LinearLayout>
     </LinearLayout>
-
 
 
 </RelativeLayout>
