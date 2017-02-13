@@ -230,7 +230,7 @@ public class JoinPageActivity extends AppCompatActivity {
                                 + editLastName.getText().toString()+editFirstName.getText().toString() + ','
                                 + editPhone.getText().toString() + ','
                                 + editNickname.getText().toString() + ','
-                                + strUriProfileImage + ",0,,";
+                                + strUriProfileImage + ",0, , ";
 
                         spAccountEditor.putString(editEmail.getText().toString(), strUserData);
                         spJoinEditor.putString(editNickname.getText().toString(), "");

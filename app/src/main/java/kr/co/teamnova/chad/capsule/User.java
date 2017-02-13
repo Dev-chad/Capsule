@@ -3,6 +3,7 @@ package kr.co.teamnova.chad.capsule;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,6 +13,7 @@ import java.util.Collections;
  */
 
 public class User implements Parcelable {
+    private static final String TAG = "User";
 
     private String email;
     private String name;
@@ -29,6 +31,9 @@ public class User implements Parcelable {
         this.uriProfileImage = Uri.parse( strUserData[Const.INDEX_PROFILE_IMAGE]);
         this.phone = strUserData[Const.INDEX_PHONE];
         this.numOfContent = Integer.valueOf(strUserData[Const.INDEX_NUM_OF_CONTENT]);
+        followerList = new ArrayList<>();
+        followList = new ArrayList<>();
+        Log.d(TAG, String.valueOf(strUserData.length));
         Collections.addAll(followList, strUserData[Const.INDEX_FOLLOW].split(":"));
         Collections.addAll(followerList, strUserData[Const.INDEX_FOLLOWER].split(":"));
     }

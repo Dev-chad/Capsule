@@ -2,13 +2,13 @@ package kr.co.teamnova.chad.capsule;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class LoginPageActivity extends AppCompatActivity {
     private static final String TAG = "LoginPageActivity";
@@ -42,21 +42,26 @@ public class LoginPageActivity extends AppCompatActivity {
                     textError.setText(getString(R.string.str_error_empty_password));
                 } else {
                     String email = editEmail.getText().toString();
-                    if (getSharedPreferences("email_info", MODE_PRIVATE).contains(email)) {
-                        SharedPreferences profileData = getSharedPreferences(email, MODE_PRIVATE);
-                        if (EncryptData.getSHA256(editPassword.getText().toString()).equals(profileData.getString("password", ""))) {
-                            SharedPreferences autoLoginData = getSharedPreferences("login_info", MODE_PRIVATE);
-                            SharedPreferences.Editor autoLoginEditor = autoLoginData.edit();
-                            autoLoginEditor.putString("email", email);
-                            autoLoginEditor.putString("password", EncryptData.getSHA256(editPassword.getText().toString()));
-                            autoLoginEditor.putBoolean("enable", true);
+                    SharedPreferences spAccount = getSharedPreferences("account", MODE_PRIVATE);
+
+                    if (spAccount.contains(email)) {
+                        String[] strUserData = spAccount.getString(email, "").split(",");
+
+                        if (EncryptData.getSHA256(editPassword.getText().toString()).equals(strUserData[Const.INDEX_PASSWORD])) {
+                            SharedPreferences spAppPrefs = getSharedPreferences("app", MODE_PRIVATE);
+                            SharedPreferences.Editor autoLoginEditor = spAppPrefs.edit();
+
+                            autoLoginEditor.putString("auto_login_email", email);
+                            autoLoginEditor.putString("auto_login_password", EncryptData.getSHA256(editPassword.getText().toString()));
+                            autoLoginEditor.putBoolean("auto_login_use", true);
                             autoLoginEditor.apply();
 
-                            User loginUser = new User(email, profileData.getString("nickname", ""), profileData.getString("phone", ""), Uri.parse(profileData.getString("profile_image", "")));
+                            User loginUser = new User(email, strUserData);
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                             intent.putExtra("login_user", loginUser);
-                            startActivity(intent);
-                            finish();
+                            Toast.makeText(LoginPageActivity.this, "로그인 성공", Toast.LENGTH_SHORT).show();
+                            /*startActivity(intent);
+                            finish();*/
                         } else {
                             textError.setText(getString(R.string.str_error_incorrect_password));
                             editPassword.setText("");
