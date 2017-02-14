@@ -144,7 +144,7 @@ public class ContentListViewAdapter extends BaseAdapter {
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.menu_edit:
-                                fragment.editContent(content);
+                                fragment.editContent(content, position);
                                 break;
                             case R.id.menu_delete:
                                 File imageFile = new File(context.getFilesDir() + "/contents/" + loginUser.getEmail() + '/' + content.getDateToMillisecond() + ".jpg");

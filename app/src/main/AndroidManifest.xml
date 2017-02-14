@@ -30,9 +30,11 @@
         <activity android:name=".JoinPageActivity" />
         <activity
             android:name=".MainActivity"
-            android:windowSoftInputMode="adjustPan"></activity>
-        <activity android:name=".FindAccountActivity" />
-        <activity android:name=".MyPageActivity"></activity>
+            android:windowSoftInputMode="adjustPan"/>
+        <activity android:name=".MyPageActivity"
+            android:label="설정"/>
+        <activity android:name=".AddContentActivity"
+            android:label="업로드"/>
     </application>
 
 </manifest>

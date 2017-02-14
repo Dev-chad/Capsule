@@ -1,9 +1,9 @@
 package kr.co.teamnova.chad.capsule;
 
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.view.View;
 
 public class MyPageActivity extends AppCompatActivity {
 
@@ -12,37 +12,18 @@ public class MyPageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_page);
 
-        ListView listViewOption = (ListView)findViewById(R.id.listView_option);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+    }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
-        adapter.add("프로필 설정");
-        adapter.add("비밀번호 변경");
-        adapter.add("비밀번호 변경");
-        adapter.add("비밀번호 변경");
-        adapter.add("비밀번호 변경");
-        adapter.add("비밀번호 변경");
-        adapter.add("비밀번호 변경");
-        adapter.add("비밀번호 변경");
-        adapter.add("비밀번호 변경");
-        adapter.add("비밀번호 변경");
-        adapter.add("비밀번호 변경");
-        adapter.add("비밀번호 변경");
-        adapter.add("비밀번호 변경");
-        adapter.add("비밀번호 변경");
-        adapter.add("비밀번호 변경");
-        adapter.add("비밀번호 변경");
-        adapter.add("비밀번호 변경");
-        adapter.add("비밀번호 변경");
-        adapter.add("비밀번호 변경");
-        adapter.add("비밀번호 변경");
-        adapter.add("비밀번호 변경");
-        adapter.add("비밀번호 변경");
-        adapter.add("비밀번호 변경");
-        adapter.add("비밀번호 변경");
-        adapter.add("비밀번호 변경");
+    public void onClick(View v){
 
+    }
 
-        listViewOption.setAdapter(adapter);
-
+    @Override
+    public boolean onSupportNavigateUp()
+    {
+        finish();
+        return super.onSupportNavigateUp();
     }
 }

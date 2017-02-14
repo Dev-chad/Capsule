@@ -10,18 +10,20 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 /**
  * Created by Chad on 2017-01-17.
  */
 
-public class MainActivity extends AppCompatActivity implements AddFragment.OnClickAddListener, HomeFragment.OnClickEditListener {
+public class MainActivity extends AppCompatActivity implements HomeFragment.OnClickEditListener {
     private final int STATE_HOME = 0;
     private final int STATE_SEARCH = 1;
     private final int STATE_PEOPLE = 2;
     private final int STATE_ADD = 3;
 
     private int stateNum = 0;
+    private int position;
 
     private ImageButton btnHome;
     private ImageButton btnSearch;
@@ -32,14 +34,14 @@ public class MainActivity extends AppCompatActivity implements AddFragment.OnCli
 
     private Content editContent;
 
-    private Intent intent;
+    private User loginUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        intent = getIntent();
+        loginUser = getIntent().getParcelableExtra("login_user");
         fragmentManager = getFragmentManager();
         editContent = null;
         btnHome = (ImageButton) findViewById(R.id.btn_home);
@@ -84,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements AddFragment.OnCli
     private void onClickMenu() {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         Bundle bundle = new Bundle();
-        bundle.putParcelable("login_user", intent.getParcelableExtra("login_user"));
+        bundle.putParcelable("login_user", loginUser);
         switch (stateNum) {
             case STATE_HOME: {
                 btnHome.setImageResource(R.mipmap.image_btn_home);
@@ -92,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements AddFragment.OnCli
                 btnPeople.setImageResource(R.mipmap.image_btn_people_inactive);
                 btnAdd.setImageResource(R.mipmap.image_btn_add_inactive);
                 HomeFragment fragment = new HomeFragment();
+                bundle.putInt("position", position);
                 fragment.setArguments(bundle);
                 fragmentTransaction.replace(R.id.container, fragment);
                 break;
@@ -117,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements AddFragment.OnCli
                 break;
             }
             case STATE_ADD: {
-                if(editContent != null){
+                /*if(editContent != null){
                     bundle.putParcelable("edit_content",editContent);
                     editContent = null;
                 }
@@ -127,7 +130,16 @@ public class MainActivity extends AppCompatActivity implements AddFragment.OnCli
                 btnAdd.setImageResource(R.mipmap.image_btn_add);
                 AddFragment fragment = new AddFragment();
                 fragment.setArguments(bundle);
-                fragmentTransaction.replace(R.id.container, fragment);
+                fragmentTransaction.replace(R.id.container, fragment);*/
+
+                Intent addIntent = new Intent(this, AddContentActivity.class);
+                addIntent.putExtra("login_user", loginUser);
+                if(editContent != null){
+                    addIntent.putExtra("edit_content", editContent);
+                    addIntent.putExtra("position", position);
+                    editContent = null;
+                }
+                startActivityForResult(addIntent, 0);
                 break;
             }
         }
@@ -135,12 +147,9 @@ public class MainActivity extends AppCompatActivity implements AddFragment.OnCli
         fragmentTransaction.commit();
     }
 
-    public void AddClickEvent() {
-        btnHome.callOnClick();
-    }
-
-    public void EditClickEvent(Content origin){
+    public void EditClickEvent(Content origin, int position){
         editContent = origin;
+        this.position = position;
         btnAdd.callOnClick();
     }
 
@@ -173,5 +182,18 @@ public class MainActivity extends AppCompatActivity implements AddFragment.OnCli
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 0) {
+            if (resultCode == RESULT_OK) {
+                Toast.makeText(this, "호출", Toast.LENGTH_SHORT).show();
+                loginUser = data.getParcelableExtra("updated_login_user");
+                position = data.getIntExtra("position", -1);
+                btnHome.callOnClick();
+            }
+        }
     }
 }

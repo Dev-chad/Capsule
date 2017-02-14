@@ -25,7 +25,7 @@ public class HomeFragment extends Fragment {
     private static final String TAG = "HomeFragment";
 
     public interface OnClickEditListener {
-        public void EditClickEvent(Content origin);
+        public void EditClickEvent(Content origin, int position);
     }
 
     private TextView textContentCount;
@@ -144,6 +144,10 @@ public class HomeFragment extends Fragment {
         Collections.reverse(totalContent);
         adapter.addItemFromArray(totalContent);
 
+        if(getArguments().getInt("position", -1) > -1){
+            listViewContent.smoothScrollToPosition(getArguments().getInt("position"));
+        }
+
         if (totalContent.size() == 0) {
             textNothingContent.setVisibility(View.VISIBLE);
         }
@@ -169,8 +173,8 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    public void editContent(Content origin) {
-        mCallback.EditClickEvent(origin);
+    public void editContent(Content origin, int position) {
+        mCallback.EditClickEvent(origin, position);
     }
 
     class FileNameSort implements Comparator<Content> {
