@@ -29,6 +29,7 @@
     <string name="str_error_duplicated_email">"이미 등록된 이메일 입니다."</string>
     <string name="str_error_nonexistent_email">"존재하지 않는 이메일 입니다."</string>
     <string name="str_error_incorrect_password">"비밀번호가 일치하지 않습니다."</string>
+    <string name="str_error_incorrect">"입력 정보가 올바르지 않습니다."</string>
     <string name="str_error_duplicated_nickname">이미 존재하는 닉네임 입니다.</string>
     <string name="str_total_content">총 게시물:</string>
     <string name="str_content_request_details">내용을 입력해 주세요</string>

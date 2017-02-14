@@ -61,11 +61,11 @@ public class LoginPageActivity extends AppCompatActivity {
                             startActivity(intent);
                             finish();
                         } else {
-                            textError.setText(getString(R.string.str_error_incorrect_password));
+                            textError.setText(getString(R.string.str_error_incorrect));
                             editPassword.setText("");
                         }
                     } else {
-                        textError.setText(getString(R.string.str_error_nonexistent_email));
+                        textError.setText(getString(R.string.str_error_incorrect));
                     }
                 }
             }

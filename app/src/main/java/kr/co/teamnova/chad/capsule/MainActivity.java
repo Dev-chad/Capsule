@@ -155,6 +155,11 @@ public class MainActivity extends AppCompatActivity implements AddFragment.OnCli
         int id = item.getItemId();
 
         switch (id) {
+            case R.id.menu_mypage:{
+                Intent intent = new Intent(getApplicationContext(), MyPageActivity.class);
+                startActivity(intent);
+                break;
+            }
             case R.id.menu_logout: {
                 SharedPreferences spAppPrefs = getSharedPreferences("app", MODE_PRIVATE);
                 SharedPreferences.Editor spAppPrefsEditor = spAppPrefs.edit();
@@ -164,6 +169,7 @@ public class MainActivity extends AppCompatActivity implements AddFragment.OnCli
                 Intent intent = new Intent(getApplicationContext(), LoginPageActivity.class);
                 startActivity(intent);
                 finish();
+                break;
             }
         }
         return super.onOptionsItemSelected(item);
