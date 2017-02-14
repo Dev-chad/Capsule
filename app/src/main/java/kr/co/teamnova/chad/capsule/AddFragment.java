@@ -60,7 +60,7 @@ public class AddFragment extends Fragment {
     private ImageButton btnLocation;
     private ImageButton btnCancel;
 
-    private ListViewContent editContent;
+    private Content editContent;
 
     private boolean useLocation = false;
     private boolean isEditMode = false;
@@ -103,7 +103,6 @@ public class AddFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 String strNewContent;
-
                 String strImageUri;
                 String desc;
                 String strLocation;
@@ -134,6 +133,7 @@ public class AddFragment extends Fragment {
                     }
 
                     spAccountEditor.putString(loginUser.getEmail(), strEditUserData);
+                    spAccountEditor.apply();
                 }
 
                 if (contentImage != null) {
@@ -174,14 +174,15 @@ public class AddFragment extends Fragment {
                                 + currentTime + ":: ";
 
                 String strUserContent = spContent.getString(loginUser.getEmail(), "");
-//TODO: Error
+
                 if (isEditMode) {
                     String strEditContent = "";
-                    String[] strContentSet = strEditContent.split(",");
+                    String[] strContentSet = strUserContent.split(",");
 
                     for (int i = 0; i < strContentSet.length; i++) {
-                        String[] strcontentDetail = strContentSet[i].split("::");
-                        if (strcontentDetail[Const.CONTENT_TIME].equals(String.valueOf(currentTime))) {
+                        String[] strContentDetail = strContentSet[i].split("::");
+                        if (strContentDetail[Const.CONTENT_TIME].equals(String.valueOf(currentTime))) {
+                            Log.d(TAG, "Find");
                             if (strEditContent.length() == 0) {
                                 strEditContent = strNewContent;
                             } else {
@@ -197,7 +198,6 @@ public class AddFragment extends Fragment {
 
                     }
                     strUserContent = strEditContent;
-
                 } else {
                     if (strUserContent.length() == 0) {
                         strUserContent = strNewContent;
@@ -296,7 +296,6 @@ public class AddFragment extends Fragment {
                 break;
             }
         }
-
     }
 
     public void getLocation(String mode) {
@@ -387,13 +386,11 @@ public class AddFragment extends Fragment {
                     nowAddress = currentLocationAddress;
                 }
             }
-
         } catch (IOException e) {
             Log.e(TAG, e.toString());
         }
         return nowAddress;
     }
-
 
     public class GPSTimer extends TimerTask {
         public void run() {

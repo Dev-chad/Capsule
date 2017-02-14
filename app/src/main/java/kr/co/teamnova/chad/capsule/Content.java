@@ -11,7 +11,7 @@ import java.util.Date;
  * Created by Chad on 2017-02-02.
  */
 
-public class ListViewContent implements Parcelable{
+public class Content implements Parcelable{
     final static int MODE_TIME_RELATIVE = 1;
     final static int MODE_TIME_ABSOLUTE = 2;
 
@@ -25,11 +25,11 @@ public class ListViewContent implements Parcelable{
     private long dateMillisecond;
     private int timeMode = MODE_TIME_RELATIVE;
 
-    public ListViewContent() {
+    public Content() {
 
     }
 
-    public ListViewContent(Uri image, String desc, Uri publisherProfileImage, String publisher, String publisherEmail, long dateMillisecond, String location) {
+    public Content(Uri image, String desc, Uri publisherProfileImage, String publisher, String publisherEmail, long dateMillisecond, String location) {
 
         this.dateMillisecond = dateMillisecond;
         this.desc = desc;
@@ -41,7 +41,7 @@ public class ListViewContent implements Parcelable{
         this.location = location;
     }
 
-    protected ListViewContent(Parcel in) {
+    protected Content(Parcel in) {
         date = in.readString();
         desc = in.readString();
         publisher = in.readString();
@@ -71,15 +71,15 @@ public class ListViewContent implements Parcelable{
         return 0;
     }
 
-    public static final Creator<ListViewContent> CREATOR = new Creator<ListViewContent>() {
+    public static final Creator<Content> CREATOR = new Creator<Content>() {
         @Override
-        public ListViewContent createFromParcel(Parcel in) {
-            return new ListViewContent(in);
+        public Content createFromParcel(Parcel in) {
+            return new Content(in);
         }
 
         @Override
-        public ListViewContent[] newArray(int size) {
-            return new ListViewContent[size];
+        public Content[] newArray(int size) {
+            return new Content[size];
         }
     };
 

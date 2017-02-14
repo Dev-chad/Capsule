@@ -40,7 +40,7 @@ public class ContentListViewAdapter extends BaseAdapter {
         public TextView textViewLocation;
     }
 
-    private ArrayList<ListViewContent> listViewContentList = new ArrayList<ListViewContent>();
+    private ArrayList<Content> listViewContentList = new ArrayList<Content>();
 
     public ContentListViewAdapter(HomeFragment fragment, User loginUser) {
         this.fragment = fragment;
@@ -66,7 +66,7 @@ public class ContentListViewAdapter extends BaseAdapter {
     public View getView(final int position, View convertView, final ViewGroup parent) {
         final Context context = parent.getContext();
         final ViewHolder viewHolder;
-        final ListViewContent listViewContent = listViewContentList.get(position);
+        final Content content = listViewContentList.get(position);
 
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -87,26 +87,26 @@ public class ContentListViewAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        if (listViewContent.getContentImage() == null) {
+        if (content.getContentImage() == null) {
             viewHolder.imageViewContent.setVisibility(View.GONE);
         } else {
             viewHolder.imageViewContent.setVisibility(View.VISIBLE);
-            viewHolder.imageViewContent.setImageURI(listViewContent.getContentImage());
+            viewHolder.imageViewContent.setImageURI(content.getContentImage());
         }
 
-        viewHolder.imageViewPublisher.setImageURI(listViewContent.getPublisherProfileImage());
-        viewHolder.textViewPublisher.setText(listViewContent.getPublisherName());
-        viewHolder.textViewContent.setText(listViewContent.getContentDesc());
+        viewHolder.imageViewPublisher.setImageURI(content.getPublisherProfileImage());
+        viewHolder.textViewPublisher.setText(content.getPublisherName());
+        viewHolder.textViewContent.setText(content.getContentDesc());
         if (viewHolder.textViewContent.length() == 0) {
             viewHolder.textViewContent.setVisibility(View.GONE);
         } else {
             viewHolder.textViewContent.setVisibility(View.VISIBLE);
         }
 
-        viewHolder.textViewDate.setText(getTime(listViewContent.getDateToMillisecond()));
-        if (listViewContent.getLocation().length() > 0) {
+        viewHolder.textViewDate.setText(getTime(content.getDateToMillisecond()));
+        if (content.getLocation().length() > 0) {
             viewHolder.layoutLocation.setVisibility(View.VISIBLE);
-            viewHolder.textViewLocation.setText(listViewContent.getLocation());
+            viewHolder.textViewLocation.setText(content.getLocation());
         } else {
             viewHolder.layoutLocation.setVisibility(View.GONE);
             viewHolder.textViewLocation.setText("");
@@ -115,21 +115,21 @@ public class ContentListViewAdapter extends BaseAdapter {
         viewHolder.textViewDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (listViewContent.getTimeMode() == listViewContent.MODE_TIME_ABSOLUTE && viewHolder.textViewDate.getText().toString().contains("전")) {
-                    listViewContent.setTimeMode(ListViewContent.MODE_TIME_RELATIVE);
+                if (content.getTimeMode() == content.MODE_TIME_ABSOLUTE && viewHolder.textViewDate.getText().toString().contains("전")) {
+                    content.setTimeMode(Content.MODE_TIME_RELATIVE);
                 }
 
-                if (listViewContent.getTimeMode() == ListViewContent.MODE_TIME_RELATIVE) {
-                    listViewContent.setTimeMode(ListViewContent.MODE_TIME_ABSOLUTE);
-                    viewHolder.textViewDate.setText(listViewContent.getDate());
+                if (content.getTimeMode() == Content.MODE_TIME_RELATIVE) {
+                    content.setTimeMode(Content.MODE_TIME_ABSOLUTE);
+                    viewHolder.textViewDate.setText(content.getDate());
                 } else {
-                    listViewContent.setTimeMode(ListViewContent.MODE_TIME_RELATIVE);
-                    viewHolder.textViewDate.setText(getTime(listViewContent.getDateToMillisecond()));
+                    content.setTimeMode(Content.MODE_TIME_RELATIVE);
+                    viewHolder.textViewDate.setText(getTime(content.getDateToMillisecond()));
                 }
             }
         });
 
-        if (!listViewContent.getPublisherEmail().equals(loginUser.getEmail())) {
+        if (!content.getPublisherEmail().equals(loginUser.getEmail())) {
             viewHolder.ibtnMenu.setVisibility(View.GONE);
         } else {
             viewHolder.ibtnMenu.setVisibility(View.VISIBLE);
@@ -144,10 +144,10 @@ public class ContentListViewAdapter extends BaseAdapter {
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.menu_edit:
-                                fragment.editContent(listViewContent);
+                                fragment.editContent(content);
                                 break;
                             case R.id.menu_delete:
-                                File imageFile = new File(context.getFilesDir() + "/contents/" + loginUser.getEmail() + '/' + listViewContent.getDateToMillisecond() + ".jpg");
+                                File imageFile = new File(context.getFilesDir() + "/contents/" + loginUser.getEmail() + '/' + content.getDateToMillisecond() + ".jpg");
                                 if (imageFile.exists()) {
                                     imageFile.delete();
                                 }
@@ -176,7 +176,7 @@ public class ContentListViewAdapter extends BaseAdapter {
 
                                 for (String strFind : strTotalContents) {
                                     String[] strDetail = strFind.split("::");
-                                    if (!strDetail[Const.CONTENT_TIME].equals(String.valueOf(listViewContent.getDateToMillisecond()))) {
+                                    if (!strDetail[Const.CONTENT_TIME].equals(String.valueOf(content.getDateToMillisecond()))) {
                                         if (strEditTotalContents.length() == 0) {
                                             strEditTotalContents = strFind;
                                         } else {
@@ -211,7 +211,7 @@ public class ContentListViewAdapter extends BaseAdapter {
     }
 
     public void addItem(Uri contentImage, String contentDesc, Uri publisherImage, String publisherName, String publisherEmail, long date, String location) {
-        ListViewContent content = new ListViewContent();
+        Content content = new Content();
 
         if (contentImage != null) {
             content.setImage(contentImage);
@@ -230,7 +230,7 @@ public class ContentListViewAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    public void addItemFromArray(ArrayList<ListViewContent> list) {
+    public void addItemFromArray(ArrayList<Content> list) {
         listViewContentList = list;
         notifyDataSetChanged();
     }

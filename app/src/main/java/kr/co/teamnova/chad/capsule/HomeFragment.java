@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +25,7 @@ public class HomeFragment extends Fragment {
     private static final String TAG = "HomeFragment";
 
     public interface OnClickEditListener {
-        public void EditClickEvent(ListViewContent origin);
+        public void EditClickEvent(Content origin);
     }
 
     private TextView textContentCount;
@@ -52,10 +53,11 @@ public class HomeFragment extends Fragment {
 
         textNothingContent = (TextView) view.findViewById(R.id.text_nothing_content_const);
 
-        ArrayList<ListViewContent> totalContent = new ArrayList<>();
+        ArrayList<Content> totalContent = new ArrayList<>();
 
         if (loginUser.getNumOfContent() > 0) {
             SharedPreferences spContent = getActivity().getSharedPreferences("contents", Context.MODE_PRIVATE);
+            Log.d(TAG, spContent.getString(loginUser.getEmail(), ""));
             String[] strTotalContent = spContent.getString(loginUser.getEmail(), "").split(",");
 
             for (String strContent : strTotalContent) {
@@ -80,7 +82,7 @@ public class HomeFragment extends Fragment {
                     strLocation = "";
                 }
 
-                ListViewContent userContent = new ListViewContent(
+                Content userContent = new Content(
                         uriContentImage,
                         strContentDesc,
                         loginUser.getUriProfileImage(),
@@ -122,7 +124,7 @@ public class HomeFragment extends Fragment {
                             strLocation = "";
                         }
 
-                        ListViewContent userContent = new ListViewContent(
+                        Content userContent = new Content(
                                 uriContentImage,
                                 strContentDesc,
                                 Uri.parse(strUserData[Const.INDEX_PROFILE_IMAGE]),
@@ -167,12 +169,12 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    public void editContent(ListViewContent origin) {
+    public void editContent(Content origin) {
         mCallback.EditClickEvent(origin);
     }
 
-    class FileNameSort implements Comparator<ListViewContent> {
-        public int compare(ListViewContent f1, ListViewContent f2) {
+    class FileNameSort implements Comparator<Content> {
+        public int compare(Content f1, Content f2) {
             return f1.getDateToMillisecond().compareTo(f2.getDateToMillisecond());
         }
 

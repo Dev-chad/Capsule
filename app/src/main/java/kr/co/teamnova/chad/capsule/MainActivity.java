@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity implements AddFragment.OnCli
 
     private FragmentManager fragmentManager;
 
-    private ListViewContent editContent;
+    private Content editContent;
 
     private Intent intent;
 
@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements AddFragment.OnCli
         btnHome.callOnClick();
     }
 
-    public void EditClickEvent(ListViewContent origin){
+    public void EditClickEvent(Content origin){
         editContent = origin;
         btnAdd.callOnClick();
     }
