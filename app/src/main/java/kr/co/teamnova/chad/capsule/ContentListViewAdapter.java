@@ -2,7 +2,12 @@ package kr.co.teamnova.chad.capsule;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,6 +20,8 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -41,7 +48,7 @@ public class ContentListViewAdapter extends BaseAdapter {
     }
 
     private ArrayList<Content> listViewContentList = new ArrayList<Content>();
-
+    private ViewHolder viewHolder;
     public ContentListViewAdapter(HomeFragment fragment, User loginUser) {
         this.fragment = fragment;
         this.loginUser = loginUser;
@@ -65,7 +72,7 @@ public class ContentListViewAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View convertView, final ViewGroup parent) {
         final Context context = parent.getContext();
-        final ViewHolder viewHolder;
+
         final Content content = listViewContentList.get(position);
 
         if (convertView == null) {
@@ -91,7 +98,9 @@ public class ContentListViewAdapter extends BaseAdapter {
             viewHolder.imageViewContent.setVisibility(View.GONE);
         } else {
             viewHolder.imageViewContent.setVisibility(View.VISIBLE);
-            viewHolder.imageViewContent.setImageURI(content.getContentImage());
+            BitmapWorkerTask task = new BitmapWorkerTask(context, viewHolder.imageViewContent);
+            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,content.getContentImage());
+//            task.execute(content.getContentImage());
         }
 
         viewHolder.imageViewPublisher.setImageURI(content.getPublisherProfileImage());
@@ -254,4 +263,74 @@ public class ContentListViewAdapter extends BaseAdapter {
         return date;
     }
 
+
+
+    public static int calculateInSampleSize(
+            BitmapFactory.Options options, int reqWidth) {
+        // Raw height and width of image
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+        if (width > reqWidth) {
+            final int halfWidth = width / 2;
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfWidth / inSampleSize) >= reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
+    }
+
+    private Bitmap decodeSampledBitmapFromUri(Context context, Uri uriImage) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+
+        try {
+            BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uriImage), null, options);
+            DisplayMetrics dm = context.getResources().getDisplayMetrics();
+            Log.d(TAG, "Original: " + options.outWidth + "x" + options.outHeight);
+            Log.d(TAG, "View width: " + dm.widthPixels);
+            options.inSampleSize = calculateInSampleSize(options, dm.widthPixels);
+            options.inJustDecodeBounds = false;
+            Log.d(TAG, "inSampleSize: " + options.inSampleSize);
+            Bitmap bp = BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uriImage), null, options);
+            Log.d(TAG, "Sampled: " + bp.getWidth() + "x" + bp.getHeight());
+            return bp;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    private class BitmapWorkerTask extends AsyncTask<Uri, Void, Bitmap> {
+        private final WeakReference<ImageView> imageViewReference;
+        private Uri data = null;
+        private Context context;
+
+        public BitmapWorkerTask(Context context, ImageView imageView) {
+            // Use a WeakReference to ensure the ImageView can be garbage collected
+            imageViewReference = new WeakReference<>(imageView);
+            this.context = context;
+        }
+
+        // Decode image in background.
+        @Override
+        protected Bitmap doInBackground(Uri... params) {
+            data = params[0];
+            return decodeSampledBitmapFromUri(context, data);
+        }
+
+        // Once complete, see if ImageView is still around and set bitmap.
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            if (imageViewReference != null && bitmap != null) {
+                final ImageView imageView = imageViewReference.get();
+                if (imageView != null) {
+                    imageView.setImageBitmap(bitmap);
+                }
+            }
+        }
+    }
 }

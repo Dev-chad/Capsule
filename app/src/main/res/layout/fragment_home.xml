@@ -70,11 +70,10 @@
     <ListView
         android:id="@+id/listView_content"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_below="@id/view_line"
         android:divider="#dddddd"
-        android:dividerHeight="15dp"
-        android:paddingTop="0.5dp">
+        android:dividerHeight="15dp">
 
     </ListView>
 
@@ -87,6 +86,5 @@
         android:text="아직 게시물이 없습니다."
         android:textStyle="bold"
         android:visibility="gone" />
-
 
 </RelativeLayout>
