@@ -149,10 +149,6 @@ public class HomeFragment extends Fragment {
         Collections.reverse(totalContent);
         adapter.addItemFromArray(totalContent);
 
-        if (getArguments().getInt("position", -1) > -1) {
-            listViewContent.smoothScrollToPosition(getArguments().getInt("position"));
-        }
-
         if (totalContent.size() == 0) {
             textNothingContent.setVisibility(View.VISIBLE);
         }
@@ -204,7 +200,6 @@ public class HomeFragment extends Fragment {
         public int compare(Content f1, Content f2) {
             return f1.getDateToMillisecond().compareTo(f2.getDateToMillisecond());
         }
-
     }
 
     @Override

@@ -77,6 +77,16 @@ public class AddContentActivity extends AppCompatActivity {
         editContentDetails = (EditText) findViewById(R.id.edit_content_details);
         textLocation = (TextView) findViewById(R.id.text_location);
 
+        ibtnImageCancel = (ImageButton) findViewById(R.id.ibtn_image_cancel);
+        ibtnImageCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                imageContent.setImageBitmap(null);
+                contentImage = null;
+                ibtnImageCancel.setVisibility(View.GONE);
+            }
+        });
+
         imageContent = (ImageView) findViewById(R.id.image_content);
         imageContent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -138,15 +148,7 @@ public class AddContentActivity extends AppCompatActivity {
             editContentDetails.setText(editContent.getContentDesc());
         }
 
-        ibtnImageCancel = (ImageButton) findViewById(R.id.ibtn_image_cancel);
-        ibtnImageCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                imageContent.setImageBitmap(null);
-                contentImage = null;
-                ibtnImageCancel.setVisibility(View.GONE);
-            }
-        });
+
 
     }
 

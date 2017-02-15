@@ -14,9 +14,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -43,8 +41,8 @@ public class UserListFragment extends Fragment {
         listViewUser = (ListView) view.findViewById(R.id.listView_user);
         adapter = new UserListViewAdapter(UserListFragment.this, loginUser);
         listViewUser.setAdapter(adapter);
-        final EditText editSearch = (EditText)view.findViewById(R.id.edit_search);
-        final ImageButton ibtnCancel = (ImageButton)view.findViewById(R.id.ibtn_cancel);
+        final EditText editSearch = (EditText) view.findViewById(R.id.edit_search);
+        final ImageButton ibtnCancel = (ImageButton) view.findViewById(R.id.ibtn_cancel);
         ibtnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,15 +63,15 @@ public class UserListFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(s.length() > 0){
-                    if(ibtnCancel.getVisibility() == View.GONE){
+                if (s.length() > 0) {
+                    if (ibtnCancel.getVisibility() == View.GONE) {
                         ibtnCancel.setVisibility(View.VISIBLE);
                     }
                     String strFind = s.toString();
-                    ArrayList<User> findUserList = new ArrayList<User>();
+                    ArrayList<User> findUserList = new ArrayList<>();
 
-                    for(User user:userList){
-                        if(user.getNickname().contains(strFind)){
+                    for (User user : userList) {
+                        if (user.getNickname().contains(strFind)) {
                             findUserList.add(user);
                         }
                     }
@@ -86,22 +84,19 @@ public class UserListFragment extends Fragment {
             }
         });
 
-
         SharedPreferences spAccount = getActivity().getSharedPreferences("account", Context.MODE_PRIVATE);
 
         userList = new ArrayList<>();
 
         Set<String> allUser = spAccount.getAll().keySet();
-        Iterator<String> it = allUser.iterator();
-
-        while(it.hasNext()){
-            String email = it.next();
-            if(!loginUser.getEmail().equals(email)){
+        for (String email : allUser) {
+            if (!loginUser.getEmail().equals(email)) {
                 User user = new User(email, spAccount.getString(email, "").split(","));
                 userList.add(user);
             }
         }
-        Collections.sort(userList, new UserListSort());
+
+//        Collections.sort(userList, new UserListSort());
 
         adapter.addUserList(userList);
 
