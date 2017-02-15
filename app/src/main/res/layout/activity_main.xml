@@ -2,55 +2,57 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fillViewport="true">
 
-    <LinearLayout
-        android:id="@+id/layout_top"
-        android:layout_alignParentTop="true"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp">
-        <ImageButton
-            android:id="@+id/btn_home"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:id="@+id/layout_top"
+            android:layout_alignParentTop="true"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="#ffffff"
-            android:src="@mipmap/image_btn_home_inactive"
-            />
-        <ImageButton
-            android:id="@+id/btn_search"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="#ffffff"
-            android:src="@mipmap/image_btn_search_inactive" />
-        <ImageButton
-            android:id="@+id/btn_people"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="#ffffff"
-            android:src="@mipmap/image_btn_people_inactive"/>
-        <ImageButton
-            android:id="@+id/btn_add"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="#ffffff"
-            android:src="@mipmap/image_btn_add_inactive"/>
-    </LinearLayout>
-    <View
-        android:id="@+id/line_menu"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_below="@id/layout_top"
-        android:background="#33000000"/>
-    <FrameLayout
-        android:id="@+id/container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/line_menu" />
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp">
+            <ImageButton
+                android:id="@+id/btn_home"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="#ffffff"
+                android:src="@mipmap/image_btn_home_inactive"
+                />
+            <ImageButton
+                android:id="@+id/btn_search"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="#ffffff"
+                android:src="@mipmap/image_btn_search_inactive" />
+            <ImageButton
+                android:id="@+id/btn_people"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="#ffffff"
+                android:src="@mipmap/image_btn_people_inactive"/>
+            <ImageButton
+                android:id="@+id/btn_add"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="#ffffff"
+                android:src="@mipmap/image_btn_add_inactive"/>
+        </LinearLayout>
+        <View
+            android:id="@+id/line_menu"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_below="@id/layout_top"
+            android:background="@drawable/shadow"/>
+        <FrameLayout
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/line_menu" />
+
 </RelativeLayout>

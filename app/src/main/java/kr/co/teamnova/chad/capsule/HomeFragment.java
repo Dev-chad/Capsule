@@ -9,9 +9,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,13 +41,16 @@ public class HomeFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
+        final View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         User loginUser = getArguments().getParcelable("login_user");
 
         adapter = new ContentListViewAdapter(HomeFragment.this, loginUser);
         listViewContent = (ListView) view.findViewById(R.id.listView_content);
         listViewContent.setAdapter(adapter);
+
+        final RelativeLayout layoutProfile = (RelativeLayout)view.findViewById(R.id.layout_profile);
+        final View viewLine = view.findViewById(R.id.view_line);
 
         TextView textNickname = (TextView) view.findViewById(R.id.text_nickname);
         ImageView imageProfile = (ImageView) view.findViewById(R.id.image_profile);
@@ -136,7 +142,6 @@ public class HomeFragment extends Fragment {
                         totalContent.add(userContent);
                     }
                 }
-
             }
         }
 
@@ -144,7 +149,7 @@ public class HomeFragment extends Fragment {
         Collections.reverse(totalContent);
         adapter.addItemFromArray(totalContent);
 
-        if(getArguments().getInt("position", -1) > -1){
+        if (getArguments().getInt("position", -1) > -1) {
             listViewContent.smoothScrollToPosition(getArguments().getInt("position"));
         }
 
@@ -156,6 +161,24 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
+            }
+        });
+
+        final ImageButton ibtnOpen = (ImageButton)view.findViewById(R.id.ibtn_open);
+        ibtnOpen.bringToFront();
+        ibtnOpen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "Call", Toast.LENGTH_SHORT).show();
+                if(layoutProfile.getVisibility() == View.VISIBLE){
+                    layoutProfile.setVisibility(View.GONE);
+                    viewLine.setVisibility(View.GONE);
+                    ibtnOpen.setBackgroundResource(R.mipmap.image_arrow_bottom);
+                } else {
+                    layoutProfile.setVisibility(View.VISIBLE);
+                    viewLine.setVisibility(View.VISIBLE);
+                    ibtnOpen.setBackgroundResource(R.mipmap.image_arrow_above);
+                }
             }
         });
 
@@ -183,7 +206,6 @@ public class HomeFragment extends Fragment {
         }
 
     }
-
 
     @Override
     public void onAttach(Context context) {

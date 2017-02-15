@@ -16,6 +16,7 @@
             android:id="@id/image_profile"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:padding="5dp"
             android:layout_centerVertical="true"
             android:background="@drawable/frame_round"/>
 

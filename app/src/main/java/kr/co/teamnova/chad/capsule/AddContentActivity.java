@@ -52,9 +52,10 @@ public class AddContentActivity extends AppCompatActivity {
     private TextView textLocation;
     private ImageButton btnLocation;
     private ImageButton btnCancel;
+    private ImageButton ibtnImageCancel;
 
     private Content editContent;
-    private Bitmap contentImage;
+    private Bitmap contentImage = null;
 
     private boolean useLocation = false;
     private boolean isEditMode = false;
@@ -122,6 +123,7 @@ public class AddContentActivity extends AppCompatActivity {
             setTitle("수정");
             if (editContent.getContentImage() != null) {
                 imageContent.setImageURI(editContent.getContentImage());
+                ibtnImageCancel.setVisibility(View.VISIBLE);
                 try {
                     contentImage = MediaStore.Images.Media.getBitmap(getContentResolver(), editContent.getContentImage());
                 } catch (IOException e) {
@@ -136,6 +138,15 @@ public class AddContentActivity extends AppCompatActivity {
             editContentDetails.setText(editContent.getContentDesc());
         }
 
+        ibtnImageCancel = (ImageButton) findViewById(R.id.ibtn_image_cancel);
+        ibtnImageCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                imageContent.setImageBitmap(null);
+                contentImage = null;
+                ibtnImageCancel.setVisibility(View.GONE);
+            }
+        });
 
     }
 
@@ -143,23 +154,20 @@ public class AddContentActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode != RESULT_OK) {
-            contentImage = null;
-            imageContent.setImageBitmap(null);
-            return;
-        }
-
-        switch (requestCode) {
-            case PICK_FROM_ALBUM: {
-                if (data.getData() != null) {
-                    try {
-                        contentImage = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
-                    } catch (IOException e) {
-                        e.printStackTrace();
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case PICK_FROM_ALBUM: {
+                    if (data.getData() != null) {
+                        try {
+                            contentImage = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        imageContent.setImageBitmap(contentImage);
+                        ibtnImageCancel.setVisibility(View.VISIBLE);
                     }
-                    imageContent.setImageBitmap(contentImage);
+                    break;
                 }
-                break;
             }
         }
     }
@@ -377,7 +385,6 @@ public class AddContentActivity extends AppCompatActivity {
                 spContentEditor.putString(loginUser.getEmail(), strUserContent);
                 spContentEditor.apply();
 
-
                 Intent intent = new Intent();
                 intent.putExtra("updated_login_user", loginUser);
                 if(isEditMode){
@@ -389,8 +396,6 @@ public class AddContentActivity extends AppCompatActivity {
                 return true;
             }
         }
-
-
 
         return super.onOptionsItemSelected(item);
     }

@@ -50,7 +50,7 @@ public class LogoActivity extends AppCompatActivity {
                     intent = new Intent(getApplicationContext(), LoginPageActivity.class);
                 }
 
-//                createTestAccount();
+                createTestAccount();
                 startActivity(intent);
 
                 finish();

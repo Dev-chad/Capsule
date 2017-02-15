@@ -27,10 +27,10 @@ public class UserListViewAdapter extends BaseAdapter {
 
     private User loginUser;
     private ViewHolder viewHolder;
-    private PeopleFragment fragment;
+    private UserListFragment fragment;
     private ArrayList<User> userList = new ArrayList<>();
 
-    public UserListViewAdapter(PeopleFragment fragment, User loginUser) {
+    public UserListViewAdapter(UserListFragment fragment, User loginUser) {
         this.fragment = fragment;
         this.loginUser = loginUser;
     }
@@ -140,5 +140,6 @@ public class UserListViewAdapter extends BaseAdapter {
 
     public void addUserList(ArrayList<User> userList){
         this.userList = userList;
+        notifyDataSetChanged();
     }
 }

@@ -14,6 +14,14 @@
         android:background="@drawable/frame_round"
         android:padding="5dp" />
 
+    <ImageButton
+        android:id="@+id/ibtn_image_cancel"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@android:drawable/ic_delete"
+        android:layout_alignEnd="@id/image_content"
+        android:visibility="gone"/>
+
     <TextView
         android:id="@+id/textView3"
         android:layout_width="100dp"
@@ -47,7 +55,7 @@
         android:background="@android:color/darker_gray" />
 
     <RelativeLayout
-        android:id="@+id/layout_location"
+        android:id="@+id/layout_const_location"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
@@ -76,10 +84,10 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/relativeLayout"
+        android:id="@+id/layout_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/layout_location"
+        android:layout_below="@id/layout_const_location"
         android:layout_marginStart="25dp"
         android:layout_marginTop="5dp">
 
@@ -243,14 +251,5 @@
             android:textStyle="bold" />
 
     </RelativeLayout>
-
-    <Button
-        android:id="@+id/btn_add"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:background="@android:drawable/btn_default"
-        android:text="@string/str_upload" />
 
 </RelativeLayout>

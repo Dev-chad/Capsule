@@ -114,23 +114,12 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnCl
                 btnSearch.setImageResource(R.mipmap.image_btn_search_inactive);
                 btnPeople.setImageResource(R.mipmap.image_btn_people);
                 btnAdd.setImageResource(R.mipmap.image_btn_add_inactive);
-                PeopleFragment fragment = new PeopleFragment();
+                UserListFragment fragment = new UserListFragment();
                 fragment.setArguments(bundle);
                 fragmentTransaction.replace(R.id.container, fragment);
                 break;
             }
             case STATE_ADD: {
-                /*if(editContent != null){
-                    bundle.putParcelable("edit_content",editContent);
-                    editContent = null;
-                }
-                btnHome.setImageResource(R.mipmap.image_btn_home_inactive);
-                btnSearch.setImageResource(R.mipmap.image_btn_search_inactive);
-                btnPeople.setImageResource(R.mipmap.image_btn_people_inactive);
-                btnAdd.setImageResource(R.mipmap.image_btn_add);
-                AddFragment fragment = new AddFragment();
-                fragment.setArguments(bundle);
-                fragmentTransaction.replace(R.id.container, fragment);*/
 
                 Intent addIntent = new Intent(this, AddContentActivity.class);
                 addIntent.putExtra("login_user", loginUser);
