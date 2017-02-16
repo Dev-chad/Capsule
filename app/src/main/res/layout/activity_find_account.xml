@@ -29,8 +29,8 @@
         android:id="@+id/layout_main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:layout_centerInParent="true">
+        android:layout_centerInParent="true"
+        android:visibility="gone">
 
         <EditText
             android:id="@+id/edit_first_name"
@@ -148,9 +148,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/layout_phone_auth"
+            android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
             android:textColor="#99ff0000"
-            android:layout_centerHorizontal="true"
             android:textSize="12sp"
             android:textStyle="bold" />
 

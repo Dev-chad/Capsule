@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnCl
 
                 Intent addIntent = new Intent(this, AddContentActivity.class);
                 addIntent.putExtra("login_user", loginUser);
-                if(editContent != null){
+                if (editContent != null) {
                     addIntent.putExtra("edit_content", editContent);
                     addIntent.putExtra("position", position);
                     editContent = null;
@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnCl
         fragmentTransaction.commit();
     }
 
-    public void EditClickEvent(Content origin, int position){
+    public void EditClickEvent(Content origin, int position) {
         editContent = origin;
         this.position = position;
         btnAdd.callOnClick();
@@ -153,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnCl
         int id = item.getItemId();
 
         switch (id) {
-            case R.id.menu_mypage:{
+            case R.id.menu_mypage: {
                 Intent intent = new Intent(getApplicationContext(), MyPageActivity.class);
                 startActivity(intent);
                 break;

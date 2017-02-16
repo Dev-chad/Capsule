@@ -208,13 +208,13 @@ public class JoinPageActivity extends AppCompatActivity {
                             Log.e("error", e.toString());
                         }
 
-                        File contentDir = new File(getFilesDir()+"/contents/"+editEmail.getText().toString());
+                        File contentDir = new File(getFilesDir() + "/contents/" + editEmail.getText().toString());
                         if (!contentDir.exists()) {
                             contentDir.mkdirs();
                         }
 
                         if (profileImage != null) {
-                            File copyFile = new File(file.getPath()+ "/"+ editEmail.getText().toString() +".jpg");
+                            File copyFile = new File(file.getPath() + "/" + editEmail.getText().toString() + ".jpg");
                             try {
                                 copyFile.createNewFile();
                                 BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(copyFile));
@@ -232,11 +232,11 @@ public class JoinPageActivity extends AppCompatActivity {
                         }
 
                         String strUserData =
-                                EncryptData.getSHA256(editPassword.getText().toString())+','
-                                + editLastName.getText().toString()+editFirstName.getText().toString() + ','
-                                + editPhone.getText().toString() + ','
-                                + editNickname.getText().toString() + ','
-                                + strUriProfileImage + ",0, , ";
+                                EncryptData.getSHA256(editPassword.getText().toString()) + ','
+                                        + editLastName.getText().toString() + editFirstName.getText().toString() + ','
+                                        + editPhone.getText().toString() + ','
+                                        + editNickname.getText().toString() + ','
+                                        + strUriProfileImage + ",0, , ";
 
                         spAccountEditor.putString(editEmail.getText().toString(), strUserData);
                         spJoinEditor.putString(editNickname.getText().toString(), "");

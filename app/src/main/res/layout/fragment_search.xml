@@ -8,28 +8,28 @@
         android:id="@+id/layout_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="10dp"
-        android:gravity="center">
+        android:gravity="center"
+        android:paddingTop="10dp">
 
         <EditText
             android:id="@+id/edit_search"
             android:layout_width="200dp"
             android:layout_height="40dp"
+            android:layout_centerVertical="true"
             android:background="@drawable/frame_round"
-            android:paddingStart="5dp"
-            android:inputType="text"
             android:imeOptions="flagNoExtractUi"
+            android:inputType="text"
             android:maxLines="1"
-            android:layout_centerVertical="true"/>
+            android:paddingStart="5dp" />
 
         <Button
             android:id="@+id/btn_search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@android:drawable/btn_default"
-            android:layout_toEndOf="@id/edit_search"
             android:layout_centerVertical="true"
             android:layout_marginStart="5dp"
+            android:layout_toEndOf="@id/edit_search"
+            android:background="@android:drawable/btn_default"
             android:text="검색" />
 
     </RelativeLayout>
@@ -39,7 +39,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/layout_search"
-        android:padding="5dp">
-    </ListView>
+        android:padding="5dp" />
 
 </RelativeLayout>

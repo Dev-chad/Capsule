@@ -24,15 +24,15 @@ public class User implements Parcelable {
     private ArrayList<String> followList;
     private ArrayList<String> followerList;
 
-    public User(){
+    public User() {
 
     }
 
-    public User(String email, String[] strUserData){
+    public User(String email, String[] strUserData) {
         this.email = email;
         this.name = strUserData[Const.INDEX_NAME];
         this.nickname = strUserData[Const.INDEX_NICKNAME];
-        this.uriProfileImage = Uri.parse( strUserData[Const.INDEX_PROFILE_IMAGE]);
+        this.uriProfileImage = Uri.parse(strUserData[Const.INDEX_PROFILE_IMAGE]);
         this.phone = strUserData[Const.INDEX_PHONE];
         this.numOfContent = Integer.valueOf(strUserData[Const.INDEX_NUM_OF_CONTENT]);
         followerList = new ArrayList<>();

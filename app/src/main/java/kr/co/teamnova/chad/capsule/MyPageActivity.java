@@ -16,13 +16,12 @@ public class MyPageActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
     }
 
-    public void onClick(View v){
+    public void onClick(View v) {
 
     }
 
     @Override
-    public boolean onSupportNavigateUp()
-    {
+    public boolean onSupportNavigateUp() {
         finish();
         return super.onSupportNavigateUp();
     }

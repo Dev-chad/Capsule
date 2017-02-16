@@ -8,9 +8,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
+        android:layout_marginBottom="10dp"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp">
+        android:layout_marginTop="10dp">
 
         <ImageView
             android:id="@+id/image_profile"
@@ -65,7 +65,7 @@
         android:layout_height="15dp"
         android:layout_above="@id/view_line"
         android:layout_centerHorizontal="true"
-        android:background="@mipmap/image_arrow_above"/>
+        android:background="@mipmap/image_arrow_above" />
 
     <ListView
         android:id="@+id/listView_content"

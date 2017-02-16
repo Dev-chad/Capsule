@@ -149,7 +149,6 @@ public class AddContentActivity extends AppCompatActivity {
         }
 
 
-
     }
 
     @Override
@@ -268,7 +267,6 @@ public class AddContentActivity extends AppCompatActivity {
     }
 
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_add, menu);
@@ -278,8 +276,8 @@ public class AddContentActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch(item.getItemId()){
-            case R.id.btn_upload:{
+        switch (item.getItemId()) {
+            case R.id.btn_upload: {
                 String strNewContent;
                 String strImageUri;
                 String desc;
@@ -389,7 +387,7 @@ public class AddContentActivity extends AppCompatActivity {
 
                 Intent intent = new Intent();
                 intent.putExtra("updated_login_user", loginUser);
-                if(isEditMode){
+                if (isEditMode) {
                     intent.putExtra("position", getIntent().getIntExtra("position", -1));
                 }
                 setResult(RESULT_OK, intent);
@@ -403,8 +401,7 @@ public class AddContentActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onSupportNavigateUp()
-    {
+    public boolean onSupportNavigateUp() {
         finish();
         return super.onSupportNavigateUp();
     }

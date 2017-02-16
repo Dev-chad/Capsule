@@ -11,7 +11,7 @@ import java.util.Date;
  * Created by Chad on 2017-02-02.
  */
 
-public class Content implements Parcelable{
+public class Content implements Parcelable {
     final static int MODE_TIME_RELATIVE = 1;
     final static int MODE_TIME_ABSOLUTE = 2;
 

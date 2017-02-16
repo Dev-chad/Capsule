@@ -18,9 +18,9 @@
         android:id="@+id/ibtn_image_cancel"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:background="@android:drawable/ic_delete"
         android:layout_alignEnd="@id/image_content"
-        android:visibility="gone"/>
+        android:background="@android:drawable/ic_delete"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/textView3"
@@ -74,11 +74,11 @@
             android:id="@+id/text_const_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:layout_marginStart="5dp"
             android:layout_toEndOf="@id/ibtn_location"
             android:text="위치 정보"
             android:textColor="@android:color/black"
-            android:layout_centerVertical="true"
             android:textSize="15sp"
             android:textStyle="bold" />
     </RelativeLayout>

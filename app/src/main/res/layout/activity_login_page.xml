@@ -21,9 +21,9 @@
             android:id="@+id/edit_email"
             android:layout_width="300dp"
             android:layout_height="50dp"
-            android:maxLines="1"
             android:hint="@string/str_email"
             android:inputType="textEmailAddress"
+            android:maxLines="1"
             android:paddingStart="10dp" />
 
         <EditText
@@ -36,11 +36,11 @@
             android:paddingStart="10dp" />
 
         <LinearLayout
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginTop="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="20dp"
             android:orientation="horizontal">
 
             <Button
@@ -48,16 +48,16 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/str_log_in"
                 android:background="@android:drawable/btn_default"
+                android:text="@string/str_log_in"
                 android:textAllCaps="false" />
 
             <Button
                 android:id="@+id/btn_join"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_marginStart="20dp"
+                android:layout_weight="1"
                 android:background="@android:drawable/btn_default"
                 android:text="@string/str_join"
                 android:textAllCaps="false" />
@@ -67,11 +67,11 @@
             android:id="@+id/text_error_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
             android:layout_gravity="center"
+            android:layout_marginTop="30dp"
+            android:textColor="#99ff0000"
             android:textSize="12sp"
-            android:textStyle="bold"
-            android:textColor="#99ff0000"/>
+            android:textStyle="bold" />
     </LinearLayout>
 
     <TextView

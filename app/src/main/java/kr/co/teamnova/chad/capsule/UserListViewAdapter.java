@@ -76,7 +76,7 @@ public class UserListViewAdapter extends BaseAdapter {
         viewHolder.textViewEmail.setText(user.getEmail());
         viewHolder.textViewNickname.setText(user.getNickname());
 
-        if(loginUser.getFollowList().contains(user.getEmail())){
+        if (loginUser.getFollowList().contains(user.getEmail())) {
             viewHolder.btnFollow.setText("Unfollow");
         } else {
             viewHolder.btnFollow.setText("Follow");
@@ -91,7 +91,7 @@ public class UserListViewAdapter extends BaseAdapter {
                 String strLoginUserFollow = "";
                 String strUserFollower = "";
 
-                if(loginUser.getFollowList().contains(user.getEmail())){
+                if (loginUser.getFollowList().contains(user.getEmail())) {
                     loginUser.getFollowList().remove(user.getEmail());
                     user.getFollowerList().remove(loginUser.getEmail());
                 } else {
@@ -99,16 +99,16 @@ public class UserListViewAdapter extends BaseAdapter {
                     user.getFollowerList().add(loginUser.getEmail());
                 }
 
-                for(String email : loginUser.getFollowList()){
-                    if(strLoginUserFollow.length() == 0){
+                for (String email : loginUser.getFollowList()) {
+                    if (strLoginUserFollow.length() == 0) {
                         strLoginUserFollow = email;
                     } else {
                         strLoginUserFollow += ("::" + email);
                     }
                 }
 
-                for(String email : user.getFollowerList()){
-                    if(strUserFollower.length() == 0){
+                for (String email : user.getFollowerList()) {
+                    if (strUserFollower.length() == 0) {
                         strUserFollower = email;
                     } else {
                         strUserFollower += ("::" + email);
@@ -124,9 +124,9 @@ public class UserListViewAdapter extends BaseAdapter {
                 String strUpdatedLoginUserData = strLoginUserData[0];
                 String strUpdatedUserData = strUserData[0];
 
-                for(int i=1; i<=7; i++){
-                    strUpdatedLoginUserData += (","+strLoginUserData[i]);
-                    strUpdatedUserData += (","+strUserData[i]);
+                for (int i = 1; i <= 7; i++) {
+                    strUpdatedLoginUserData += ("," + strLoginUserData[i]);
+                    strUpdatedUserData += ("," + strUserData[i]);
                 }
                 spAccountEditor.putString(loginUser.getEmail(), strUpdatedLoginUserData);
                 spAccountEditor.putString(user.getEmail(), strUpdatedUserData);
@@ -138,7 +138,7 @@ public class UserListViewAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public void addUserList(ArrayList<User> userList){
+    public void addUserList(ArrayList<User> userList) {
         this.userList = userList;
         notifyDataSetChanged();
     }

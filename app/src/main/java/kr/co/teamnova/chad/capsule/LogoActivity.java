@@ -80,7 +80,7 @@ public class LogoActivity extends AppCompatActivity {
             }
 
             String strUserData =
-                    EncryptData.getSHA256(password)+','
+                    EncryptData.getSHA256(password) + ','
                             + name + ','
                             + phone + ','
                             + nickname + ','

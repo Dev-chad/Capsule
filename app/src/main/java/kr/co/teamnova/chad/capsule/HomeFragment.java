@@ -49,7 +49,7 @@ public class HomeFragment extends Fragment {
         listViewContent = (ListView) view.findViewById(R.id.listView_content);
         listViewContent.setAdapter(adapter);
 
-        final RelativeLayout layoutProfile = (RelativeLayout)view.findViewById(R.id.layout_profile);
+        final RelativeLayout layoutProfile = (RelativeLayout) view.findViewById(R.id.layout_profile);
         final View viewLine = view.findViewById(R.id.view_line);
 
         TextView textNickname = (TextView) view.findViewById(R.id.text_nickname);
@@ -160,13 +160,13 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        final ImageButton ibtnOpen = (ImageButton)view.findViewById(R.id.ibtn_open);
+        final ImageButton ibtnOpen = (ImageButton) view.findViewById(R.id.ibtn_open);
         ibtnOpen.bringToFront();
         ibtnOpen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getContext(), "Call", Toast.LENGTH_SHORT).show();
-                if(layoutProfile.getVisibility() == View.VISIBLE){
+                if (layoutProfile.getVisibility() == View.VISIBLE) {
                     layoutProfile.setVisibility(View.GONE);
                     viewLine.setVisibility(View.GONE);
                     ibtnOpen.setBackgroundResource(R.mipmap.image_arrow_bottom);

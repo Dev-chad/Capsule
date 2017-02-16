@@ -49,6 +49,7 @@ public class ContentListViewAdapter extends BaseAdapter {
 
     private ArrayList<Content> listViewContentList = new ArrayList<Content>();
     private ViewHolder viewHolder;
+
     public ContentListViewAdapter(HomeFragment fragment, User loginUser) {
         this.fragment = fragment;
         this.loginUser = loginUser;
@@ -99,7 +100,7 @@ public class ContentListViewAdapter extends BaseAdapter {
         } else {
             viewHolder.imageViewContent.setVisibility(View.VISIBLE);
             BitmapWorkerTask task = new BitmapWorkerTask(context, viewHolder.imageViewContent);
-            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,content.getContentImage());
+            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, content.getContentImage());
 //            task.execute(content.getContentImage());
         }
 
@@ -262,7 +263,6 @@ public class ContentListViewAdapter extends BaseAdapter {
         }
         return date;
     }
-
 
 
     public static int calculateInSampleSize(
