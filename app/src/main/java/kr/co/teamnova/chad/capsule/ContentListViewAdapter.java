@@ -45,6 +45,7 @@ public class ContentListViewAdapter extends BaseAdapter {
         public ImageButton ibtnMenu;
         public LinearLayout layoutLocation;
         public TextView textViewLocation;
+        public TextView textViewContentDetail;
     }
 
     private ArrayList<Content> listViewContentList = new ArrayList<Content>();
@@ -89,7 +90,7 @@ public class ContentListViewAdapter extends BaseAdapter {
             viewHolder.textViewContent = (TextView) convertView.findViewById(R.id.text_content);
             viewHolder.textViewDate = (TextView) convertView.findViewById(R.id.text_date);
             viewHolder.ibtnMenu = (ImageButton) convertView.findViewById(R.id.ibtn_menu);
-
+            viewHolder.textViewContentDetail = (TextView) convertView.findViewById(R.id.text_content_detail);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
@@ -107,10 +108,16 @@ public class ContentListViewAdapter extends BaseAdapter {
         viewHolder.imageViewPublisher.setImageURI(content.getPublisherProfileImage());
         viewHolder.textViewPublisher.setText(content.getPublisherName());
         viewHolder.textViewContent.setText(content.getContentDesc());
+
         if (viewHolder.textViewContent.length() == 0) {
             viewHolder.textViewContent.setVisibility(View.GONE);
+            viewHolder.textViewContentDetail.setVisibility(View.GONE);
         } else {
             viewHolder.textViewContent.setVisibility(View.VISIBLE);
+            if(content.getContentDesc().split("\\n").length > 2){
+                viewHolder.textViewContentDetail.setVisibility(View.VISIBLE);
+            }
+
         }
 
         viewHolder.textViewDate.setText(getTime(content.getDateToMillisecond()));
@@ -213,6 +220,15 @@ public class ContentListViewAdapter extends BaseAdapter {
                     }
                 });
                 p.show();
+            }
+        });
+
+        viewHolder.textViewContentDetail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int maxLine = viewHolder.textViewContent.getLineCount();
+                viewHolder.textViewContent.setMaxLines(maxLine);
+                viewHolder.textViewContentDetail.setVisibility(View.GONE);
             }
         });
 
