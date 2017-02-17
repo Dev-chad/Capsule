@@ -8,6 +8,8 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -62,6 +64,8 @@ public class JoinPageActivity extends AppCompatActivity {
     private Bitmap profileImage = null;
 
     private TimerAsyncTask authTimer;
+    private Handler mHandler;
+    private TimerThread thread;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -71,7 +75,7 @@ public class JoinPageActivity extends AppCompatActivity {
         final SharedPreferences spAccount = getSharedPreferences("account", MODE_PRIVATE);
 
         authTimer = new TimerAsyncTask();
-
+        thread = new TimerThread();
         layoutPhoneAuth = (RelativeLayout) findViewById(R.id.layout_phone_auth);
 
         editAuth = (EditText) findViewById(R.id.edit_auth_check);
@@ -146,7 +150,9 @@ public class JoinPageActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (editAuth.getText().toString().equals(String.valueOf(authNum))) {
                     if (!textAuthTime.getText().toString().equals("0:00")) {
-                        authTimer.cancel(true);
+//                        authTimer.cancel(true);
+                        thread.setRunning(false);
+                        thread.interrupt();
                         btnAuth.setClickable(false);
                         btnAuth.setBackgroundColor(0x9900ff00);
                         btnAuth.setText("완료");
@@ -190,7 +196,6 @@ public class JoinPageActivity extends AppCompatActivity {
                     editPassword.setText("");
                     editRePassword.setText("");
                 } else {
-
                     if (spAccount.contains(editEmail.getText().toString())) {
                         textErrorMessage.setText(getString(R.string.str_error_duplicated_email));
                         editEmail.setText("");
@@ -273,6 +278,13 @@ public class JoinPageActivity extends AppCompatActivity {
                 }
             }
         });
+
+        mHandler = new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                textAuthTime.setText(msg.getData().getString("time"));
+            }
+        };
     }
 
     @Override
@@ -348,17 +360,58 @@ public class JoinPageActivity extends AppCompatActivity {
             SmsManager smsManager = SmsManager.getDefault();
             smsManager.sendTextMessage(editPhone.getText().toString(), null, "[CAPSULE]\n본인인증번호는 " + authNum + " 입니다.\n정확히 입력해주세요.", null, null);
 
-            if (authTimer.getStatus() == AsyncTask.Status.RUNNING) {
+
+            if(thread.running){
+                thread.setRunning(false);
+                thread.interrupt();
+            }
+            thread = new TimerThread();
+            thread.setRunning(true);
+            thread.start();
+            /*if (authTimer.getStatus() == AsyncTask.Status.RUNNING) {
                 authTimer.cancel(true);
             }
             authTimer = new TimerAsyncTask();
-            authTimer.execute();
+            authTimer.execute();*/
         } catch (Exception ex) {
             Toast.makeText(getApplicationContext(), ex.getMessage().toString(),
                     Toast.LENGTH_LONG).show();
             ex.printStackTrace();
         }
 
+    }
+
+    public class TimerThread extends Thread {
+
+        boolean running = false;
+        int m = 0;
+        int s = 10;
+
+        void setRunning(boolean b) {
+            running = b;
+        }
+
+        @Override
+        public void run() {
+            Message msg;
+            Bundle data = new Bundle();
+            while (running && m > -1) {
+                try {
+                    data.putString("time", String.format("%d:%02d", m, s));
+                    Log.d(TAG, String.format("%d:%02d", m, s));
+                    msg = mHandler.obtainMessage();
+                    msg.setData(data);
+                    mHandler.sendMessage(msg);
+                    if (--s < 0) {
+                        s = 59;
+                        --m;
+                    }
+                    sleep(1000);
+                } catch (InterruptedException e) {
+                    return;
+                }
+            }
+        }
     }
 
     public class TimerAsyncTask extends AsyncTask<Void, String, String> {

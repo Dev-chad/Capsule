@@ -60,19 +60,28 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:text=""
             android:textColor="@android:color/black"
             android:textSize="18sp"
+            android:includeFontPadding="false"
             android:maxLines="2" />
+
+        <TextView
+            android:id="@+id/text_content_last"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            android:includeFontPadding="false"
+            android:layout_below="@id/text_content"/>
 
         <TextView
             android:id="@+id/text_content_detail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/text_content"
-            android:layout_toEndOf="@id/text_content"
-            android:text="...더보기"
-            android:visibility="gone" />
+            android:layout_toEndOf="@id/text_content_last"
+            android:layout_alignBaseline="@id/text_content_last"
+            android:textSize="12sp" />
     </RelativeLayout>
 
     <LinearLayout
