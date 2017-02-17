@@ -25,6 +25,8 @@ public class Content implements Parcelable {
     private long dateMillisecond;
     private int timeMode = MODE_TIME_RELATIVE;
 
+    private boolean contentDetailCheck;
+
     public Content() {
 
     }
@@ -39,7 +41,9 @@ public class Content implements Parcelable {
         this.publisherEmail = publisherEmail;
         this.publisherProfileImage = publisherProfileImage;
         this.location = location;
+        contentDetailCheck = false;
     }
+
 
     protected Content(Parcel in) {
         date = in.readString();
@@ -51,6 +55,7 @@ public class Content implements Parcelable {
         location = in.readString();
         dateMillisecond = in.readLong();
         timeMode = in.readInt();
+        contentDetailCheck = in.readByte() != 0;
     }
 
     @Override
@@ -64,6 +69,7 @@ public class Content implements Parcelable {
         dest.writeString(location);
         dest.writeLong(dateMillisecond);
         dest.writeInt(timeMode);
+        dest.writeByte((byte) (contentDetailCheck ? 1 : 0));
     }
 
     @Override
@@ -123,6 +129,14 @@ public class Content implements Parcelable {
 
     public void setTimeMode(int mode) {
         timeMode = mode;
+    }
+
+    public boolean isContentDetailCheck() {
+        return contentDetailCheck;
+    }
+
+    public void setContentDetailCheck(boolean contentDetailCheck) {
+        this.contentDetailCheck = contentDetailCheck;
     }
 
     public String getDate() {

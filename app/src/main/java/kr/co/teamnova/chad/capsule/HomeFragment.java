@@ -9,12 +9,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,7 +24,7 @@ import java.util.Comparator;
  * Created by Chad on 2017-01-18.
  */
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements AbsListView.OnScrollListener{
     private static final String TAG = "HomeFragment";
 
     public interface OnClickEditListener {
@@ -36,17 +36,18 @@ public class HomeFragment extends Fragment {
 
     private ListView listViewContent;
     private ContentListViewAdapter adapter;
-
+    private User loginUser;
     private OnClickEditListener mCallback;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        User loginUser = getArguments().getParcelable("login_user");
+        loginUser = getArguments().getParcelable("login_user");
 
         adapter = new ContentListViewAdapter(HomeFragment.this, loginUser);
         listViewContent = (ListView) view.findViewById(R.id.listView_content);
+        listViewContent.setOnScrollListener(this);
         listViewContent.setAdapter(adapter);
 
         final RelativeLayout layoutProfile = (RelativeLayout) view.findViewById(R.id.layout_profile);
@@ -55,6 +56,7 @@ public class HomeFragment extends Fragment {
         TextView textNickname = (TextView) view.findViewById(R.id.text_nickname);
         ImageView imageProfile = (ImageView) view.findViewById(R.id.image_profile);
         imageProfile.setImageURI(loginUser.getUriProfileImage());
+
         textContentCount = (TextView) view.findViewById(R.id.text_content_count);
 
         textNothingContent = (TextView) view.findViewById(R.id.text_nothing_content_const);
@@ -63,7 +65,6 @@ public class HomeFragment extends Fragment {
 
         if (loginUser.getNumOfContent() > 0) {
             SharedPreferences spContent = getActivity().getSharedPreferences("contents", Context.MODE_PRIVATE);
-            Log.d(TAG, spContent.getString(loginUser.getEmail(), ""));
             String[] strTotalContent = spContent.getString(loginUser.getEmail(), "").split(",");
 
             for (String strContent : strTotalContent) {
@@ -165,7 +166,6 @@ public class HomeFragment extends Fragment {
         ibtnOpen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "Call", Toast.LENGTH_SHORT).show();
                 if (layoutProfile.getVisibility() == View.VISIBLE) {
                     layoutProfile.setVisibility(View.GONE);
                     viewLine.setVisibility(View.GONE);
@@ -184,7 +184,7 @@ public class HomeFragment extends Fragment {
     }
 
     public void updateContentCount(int position) {
-        textContentCount.setText(String.valueOf(adapter.getCount()));
+        textContentCount.setText(String.valueOf(loginUser.getNumOfContent()));
         adapter.notifyDataSetChanged();
         listViewContent.smoothScrollToPosition(position);
         if (adapter.getCount() == 0) {
@@ -200,6 +200,16 @@ public class HomeFragment extends Fragment {
         public int compare(Content f1, Content f2) {
             return f1.getDateToMillisecond().compareTo(f2.getDateToMillisecond());
         }
+    }
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        Log.d(TAG, "Total: " + totalItemCount + "   Visible: " + visibleItemCount + "   First: " + firstVisibleItem);
+        Log.d(TAG, String.valueOf(totalItemCount-visibleItemCount));
     }
 
     @Override

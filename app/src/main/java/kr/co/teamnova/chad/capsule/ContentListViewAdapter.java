@@ -26,11 +26,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import static kr.co.teamnova.chad.capsule.Content.MODE_TIME_ABSOLUTE;
+
 /**
  * Created by Chad on 2017-02-03.
  */
 
-public class ContentListViewAdapter extends BaseAdapter {
+public class ContentListViewAdapter extends BaseAdapter{
 
     private static final String TAG = "ContentListViewAdapter";
     private HomeFragment fragment;
@@ -46,6 +48,7 @@ public class ContentListViewAdapter extends BaseAdapter {
         public LinearLayout layoutLocation;
         public TextView textViewLocation;
         public TextView textViewContentDetail;
+        public TextView textViewLastContent;
     }
 
     private ArrayList<Content> listViewContentList = new ArrayList<Content>();
@@ -91,6 +94,7 @@ public class ContentListViewAdapter extends BaseAdapter {
             viewHolder.textViewDate = (TextView) convertView.findViewById(R.id.text_date);
             viewHolder.ibtnMenu = (ImageButton) convertView.findViewById(R.id.ibtn_menu);
             viewHolder.textViewContentDetail = (TextView) convertView.findViewById(R.id.text_content_detail);
+            viewHolder.textViewLastContent = (TextView) convertView.findViewById(R.id.text_content_last);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
@@ -107,20 +111,47 @@ public class ContentListViewAdapter extends BaseAdapter {
 
         viewHolder.imageViewPublisher.setImageURI(content.getPublisherProfileImage());
         viewHolder.textViewPublisher.setText(content.getPublisherName());
-        viewHolder.textViewContent.setText(content.getContentDesc());
 
-        if (viewHolder.textViewContent.length() == 0) {
+        if (content.getContentDesc().length() == 0) {
             viewHolder.textViewContent.setVisibility(View.GONE);
             viewHolder.textViewContentDetail.setVisibility(View.GONE);
+            viewHolder.textViewLastContent.setVisibility(View.GONE);
         } else {
-            viewHolder.textViewContent.setVisibility(View.VISIBLE);
-            if(content.getContentDesc().split("\\n").length > 2){
+            String[] strContent = content.getContentDesc().split("\\n");
+            if(strContent.length > 2){
+                viewHolder.textViewContent.setVisibility(View.VISIBLE);
+                viewHolder.textViewLastContent.setVisibility(View.VISIBLE);
                 viewHolder.textViewContentDetail.setVisibility(View.VISIBLE);
-            }
+                if(content.isContentDetailCheck()){
+                    int maxLine = content.getContentDesc().split("\\n").length;
+                    viewHolder.textViewContent.setMaxLines(maxLine-1);
+                    viewHolder.textViewContentDetail.setText("   - 접기 -");
 
+                    String strUpper = strContent[0];
+                    for(int i=1; i<strContent.length-1; i++){
+                        strUpper += ('\n' + strContent[i]);
+                    }
+                    String strLower = strContent[strContent.length-1];
+                    viewHolder.textViewContent.setText(strUpper);
+                    viewHolder.textViewLastContent.setText(strLower);
+                } else {
+                    viewHolder.textViewContent.setText(strContent[0]);
+                    viewHolder.textViewLastContent.setText(strContent[1]);
+                    viewHolder.textViewContentDetail.setText(" ...더 보기");
+                }
+            } else {
+                viewHolder.textViewContent.setText(content.getContentDesc());
+                viewHolder.textViewLastContent.setVisibility(View.GONE);
+                viewHolder.textViewContentDetail.setVisibility(View.GONE);
+            }
         }
 
-        viewHolder.textViewDate.setText(getTime(content.getDateToMillisecond()));
+        if (content.getTimeMode() == Content.MODE_TIME_ABSOLUTE) {
+            viewHolder.textViewDate.setText(content.getDate());
+        } else {
+            viewHolder.textViewDate.setText(getTime(content.getDateToMillisecond()));
+
+        }
         if (content.getLocation().length() > 0) {
             viewHolder.layoutLocation.setVisibility(View.VISIBLE);
             viewHolder.textViewLocation.setText(content.getLocation());
@@ -132,17 +163,12 @@ public class ContentListViewAdapter extends BaseAdapter {
         viewHolder.textViewDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (content.getTimeMode() == content.MODE_TIME_ABSOLUTE && viewHolder.textViewDate.getText().toString().contains("전")) {
+                if (content.getTimeMode() == Content.MODE_TIME_ABSOLUTE) {
                     content.setTimeMode(Content.MODE_TIME_RELATIVE);
-                }
-
-                if (content.getTimeMode() == Content.MODE_TIME_RELATIVE) {
-                    content.setTimeMode(Content.MODE_TIME_ABSOLUTE);
-                    viewHolder.textViewDate.setText(content.getDate());
                 } else {
-                    content.setTimeMode(Content.MODE_TIME_RELATIVE);
-                    viewHolder.textViewDate.setText(getTime(content.getDateToMillisecond()));
+                    content.setTimeMode(MODE_TIME_ABSOLUTE);
                 }
+                notifyDataSetChanged();
             }
         });
 
@@ -226,15 +252,19 @@ public class ContentListViewAdapter extends BaseAdapter {
         viewHolder.textViewContentDetail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int maxLine = viewHolder.textViewContent.getLineCount();
-                viewHolder.textViewContent.setMaxLines(maxLine);
-                viewHolder.textViewContentDetail.setVisibility(View.GONE);
+                if(content.isContentDetailCheck()){
+                    content.setContentDetailCheck(false);
+                } else {
+                    content.setContentDetailCheck(true);
+                }
+                notifyDataSetChanged();
             }
         });
 
 
         return convertView;
     }
+
 
     public void addItem(Uri contentImage, String contentDesc, Uri publisherImage, String publisherName, String publisherEmail, long date, String location) {
         Content content = new Content();

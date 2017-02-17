@@ -358,6 +358,7 @@ public class JoinPageActivity extends AppCompatActivity {
                     Toast.LENGTH_LONG).show();
             ex.printStackTrace();
         }
+
     }
 
     public class TimerAsyncTask extends AsyncTask<Void, String, String> {
@@ -411,5 +412,8 @@ public class JoinPageActivity extends AppCompatActivity {
         protected void onCancelled() {
             super.onCancelled();
         }
+
+
+
     }
 }
