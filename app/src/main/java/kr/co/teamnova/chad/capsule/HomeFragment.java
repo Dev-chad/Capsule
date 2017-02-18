@@ -24,7 +24,7 @@ import java.util.Comparator;
  * Created by Chad on 2017-01-18.
  */
 
-public class HomeFragment extends Fragment implements AbsListView.OnScrollListener{
+public class HomeFragment extends Fragment implements AbsListView.OnScrollListener {
     private static final String TAG = "HomeFragment";
 
     public interface OnClickEditListener {
@@ -96,7 +96,9 @@ public class HomeFragment extends Fragment implements AbsListView.OnScrollListen
                         loginUser.getNickname(),
                         loginUser.getEmail(),
                         Long.valueOf(strContentDetail[Const.CONTENT_TIME]),
-                        strLocation);
+                        strLocation,
+                        new ArrayList<User>(),
+                        new ArrayList<Reply>());
 
                 totalContent.add(userContent);
             }
@@ -138,7 +140,9 @@ public class HomeFragment extends Fragment implements AbsListView.OnScrollListen
                                 strUserData[Const.INDEX_NICKNAME],
                                 email,
                                 Long.valueOf(strContentDetail[Const.CONTENT_TIME]),
-                                strLocation);
+                                strLocation,
+                                new ArrayList<User>(),
+                                new ArrayList<Reply>());
 
                         totalContent.add(userContent);
                     }
@@ -209,7 +213,7 @@ public class HomeFragment extends Fragment implements AbsListView.OnScrollListen
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
         Log.d(TAG, "Total: " + totalItemCount + "   Visible: " + visibleItemCount + "   First: " + firstVisibleItem);
-        Log.d(TAG, String.valueOf(totalItemCount-visibleItemCount));
+        Log.d(TAG, String.valueOf(totalItemCount - visibleItemCount));
     }
 
     @Override

@@ -25,8 +25,6 @@ public class Content implements Parcelable {
     private String location;
     private long dateMillisecond;
     private int timeMode = MODE_TIME_RELATIVE;
-    private int likeCount;
-    private int replycCount;
     private ArrayList<User> likeUserList;
     private ArrayList<Reply> replyList;
 
@@ -36,7 +34,7 @@ public class Content implements Parcelable {
 
     }
 
-    public Content(Uri image, String desc, Uri publisherProfileImage, String publisher, String publisherEmail, long dateMillisecond, String location) {
+    public Content(Uri image, String desc, Uri publisherProfileImage, String publisher, String publisherEmail, long dateMillisecond, String location, ArrayList<User> likeUserList, ArrayList<Reply> replyList) {
 
         this.dateMillisecond = dateMillisecond;
         this.desc = desc;
@@ -47,10 +45,8 @@ public class Content implements Parcelable {
         this.publisherProfileImage = publisherProfileImage;
         this.location = location;
         contentDetailCheck = false;
-        likeUserList = new ArrayList<>();
-        likeCount = likeUserList.size();
-        replyList = new ArrayList<>();
-        replycCount = replyList.size();
+        this.likeUserList = likeUserList;
+        this.replyList = replyList;
     }
 
 
@@ -64,8 +60,6 @@ public class Content implements Parcelable {
         location = in.readString();
         dateMillisecond = in.readLong();
         timeMode = in.readInt();
-        likeCount = in.readInt();
-        replycCount = in.readInt();
         likeUserList = in.createTypedArrayList(User.CREATOR);
         replyList = in.createTypedArrayList(Reply.CREATOR);
         contentDetailCheck = in.readByte() != 0;
@@ -82,8 +76,6 @@ public class Content implements Parcelable {
         dest.writeString(location);
         dest.writeLong(dateMillisecond);
         dest.writeInt(timeMode);
-        dest.writeInt(likeCount);
-        dest.writeInt(replycCount);
         dest.writeTypedList(likeUserList);
         dest.writeTypedList(replyList);
         dest.writeByte((byte) (contentDetailCheck ? 1 : 0));
@@ -195,15 +187,10 @@ public class Content implements Parcelable {
 
     public void setLikeUserList(ArrayList<User> likeUserList) {
         this.likeUserList = likeUserList;
-        setLikeCount(likeUserList.size());
     }
 
     public int getLikeCount() {
-        return likeCount;
-    }
-
-    public void setLikeCount(int likeCount) {
-        this.likeCount = likeCount;
+        return likeUserList.size();
     }
 
     public ArrayList<Reply> getReplyList() {
@@ -212,14 +199,9 @@ public class Content implements Parcelable {
 
     public void setReplyList(ArrayList<Reply> replyList) {
         this.replyList = replyList;
-        setReplycCount(replyList.size());
     }
 
-    public int getReplycCount() {
-        return replycCount;
-    }
-
-    public void setReplycCount(int replycCount) {
-        this.replycCount = replycCount;
+    public int getReplyCount() {
+        return replyList.size();
     }
 }
