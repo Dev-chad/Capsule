@@ -37,7 +37,12 @@
         <activity
             android:name=".AddContentActivity"
             android:label="업로드" />
-        <activity android:name=".ContentDetailActivity"></activity>
+        <activity
+            android:name=".ReplyActivity"
+            android:label="댓글"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity android:name=".LikeActivity"
+            android:label ="좋아요"/>
     </application>
 
 </manifest>

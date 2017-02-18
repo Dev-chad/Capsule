@@ -5,6 +5,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -24,6 +25,10 @@ public class Content implements Parcelable {
     private String location;
     private long dateMillisecond;
     private int timeMode = MODE_TIME_RELATIVE;
+    private int likeCount;
+    private int replycCount;
+    private ArrayList<User> likeUserList;
+    private ArrayList<Reply> replyList;
 
     private boolean contentDetailCheck;
 
@@ -42,6 +47,10 @@ public class Content implements Parcelable {
         this.publisherProfileImage = publisherProfileImage;
         this.location = location;
         contentDetailCheck = false;
+        likeUserList = new ArrayList<>();
+        likeCount = likeUserList.size();
+        replyList = new ArrayList<>();
+        replycCount = replyList.size();
     }
 
 
@@ -55,6 +64,10 @@ public class Content implements Parcelable {
         location = in.readString();
         dateMillisecond = in.readLong();
         timeMode = in.readInt();
+        likeCount = in.readInt();
+        replycCount = in.readInt();
+        likeUserList = in.createTypedArrayList(User.CREATOR);
+        replyList = in.createTypedArrayList(Reply.CREATOR);
         contentDetailCheck = in.readByte() != 0;
     }
 
@@ -69,6 +82,10 @@ public class Content implements Parcelable {
         dest.writeString(location);
         dest.writeLong(dateMillisecond);
         dest.writeInt(timeMode);
+        dest.writeInt(likeCount);
+        dest.writeInt(replycCount);
+        dest.writeTypedList(likeUserList);
+        dest.writeTypedList(replyList);
         dest.writeByte((byte) (contentDetailCheck ? 1 : 0));
     }
 
@@ -170,5 +187,39 @@ public class Content implements Parcelable {
 
     public int getTimeMode() {
         return timeMode;
+    }
+
+    public ArrayList<User> getLikeUserList() {
+        return likeUserList;
+    }
+
+    public void setLikeUserList(ArrayList<User> likeUserList) {
+        this.likeUserList = likeUserList;
+        setLikeCount(likeUserList.size());
+    }
+
+    public int getLikeCount() {
+        return likeCount;
+    }
+
+    public void setLikeCount(int likeCount) {
+        this.likeCount = likeCount;
+    }
+
+    public ArrayList<Reply> getReplyList() {
+        return replyList;
+    }
+
+    public void setReplyList(ArrayList<Reply> replyList) {
+        this.replyList = replyList;
+        setReplycCount(replyList.size());
+    }
+
+    public int getReplycCount() {
+        return replycCount;
+    }
+
+    public void setReplycCount(int replycCount) {
+        this.replycCount = replycCount;
     }
 }

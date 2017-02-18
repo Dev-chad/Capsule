@@ -1,6 +1,7 @@
 package kr.co.teamnova.chad.capsule;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -32,7 +33,7 @@ import static kr.co.teamnova.chad.capsule.Content.MODE_TIME_ABSOLUTE;
  * Created by Chad on 2017-02-03.
  */
 
-public class ContentListViewAdapter extends BaseAdapter{
+public class ContentListViewAdapter extends BaseAdapter {
 
     private static final String TAG = "ContentListViewAdapter";
     private HomeFragment fragment;
@@ -49,6 +50,11 @@ public class ContentListViewAdapter extends BaseAdapter{
         public TextView textViewLocation;
         public TextView textViewContentDetail;
         public TextView textViewLastContent;
+        public ImageButton ibtnLike;
+        public ImageButton ibtnReply;
+        public LinearLayout layoutReply;
+        public LinearLayout layoutLike;
+
     }
 
     private ArrayList<Content> listViewContentList = new ArrayList<Content>();
@@ -95,6 +101,11 @@ public class ContentListViewAdapter extends BaseAdapter{
             viewHolder.ibtnMenu = (ImageButton) convertView.findViewById(R.id.ibtn_menu);
             viewHolder.textViewContentDetail = (TextView) convertView.findViewById(R.id.text_content_detail);
             viewHolder.textViewLastContent = (TextView) convertView.findViewById(R.id.text_content_last);
+            viewHolder.ibtnLike = (ImageButton) convertView.findViewById(R.id.ibtn_like);
+            viewHolder.ibtnReply = (ImageButton) convertView.findViewById(R.id.ibtn_reply);
+            viewHolder.layoutLike = (LinearLayout) convertView.findViewById(R.id.layout_like);
+            viewHolder.layoutReply = (LinearLayout) convertView.findViewById(R.id.layout_reply);
+
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
@@ -118,20 +129,20 @@ public class ContentListViewAdapter extends BaseAdapter{
             viewHolder.textViewLastContent.setVisibility(View.GONE);
         } else {
             String[] strContent = content.getContentDesc().split("\\n");
-            if(strContent.length > 2){
+            if (strContent.length > 2) {
                 viewHolder.textViewContent.setVisibility(View.VISIBLE);
                 viewHolder.textViewLastContent.setVisibility(View.VISIBLE);
                 viewHolder.textViewContentDetail.setVisibility(View.VISIBLE);
-                if(content.isContentDetailCheck()){
+                if (content.isContentDetailCheck()) {
                     int maxLine = content.getContentDesc().split("\\n").length;
-                    viewHolder.textViewContent.setMaxLines(maxLine-1);
+                    viewHolder.textViewContent.setMaxLines(maxLine - 1);
                     viewHolder.textViewContentDetail.setText("   - 접기 -");
 
                     String strUpper = strContent[0];
-                    for(int i=1; i<strContent.length-1; i++){
+                    for (int i = 1; i < strContent.length - 1; i++) {
                         strUpper += ('\n' + strContent[i]);
                     }
-                    String strLower = strContent[strContent.length-1];
+                    String strLower = strContent[strContent.length - 1];
                     viewHolder.textViewContent.setText(strUpper);
                     viewHolder.textViewLastContent.setText(strLower);
                 } else {
@@ -246,13 +257,45 @@ public class ContentListViewAdapter extends BaseAdapter{
                     }
                 });
                 p.show();
+
+            }
+        });
+
+        viewHolder.ibtnLike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewHolder.ibtnLike.setBackgroundResource(R.mipmap.image_like_red);
+            }
+        });
+
+        viewHolder.layoutLike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, LikeActivity.class);
+                context.startActivity(intent);
+            }
+        });
+
+        viewHolder.layoutReply.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, ReplyActivity.class);
+                context.startActivity(intent);
+            }
+        });
+
+        viewHolder.ibtnReply.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, ReplyActivity.class);
+                context.startActivity(intent);
             }
         });
 
         viewHolder.textViewContentDetail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(content.isContentDetailCheck()){
+                if (content.isContentDetailCheck()) {
                     content.setContentDetailCheck(false);
                 } else {
                     content.setContentDetailCheck(true);

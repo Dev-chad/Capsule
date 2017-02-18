@@ -58,7 +58,6 @@
         android:layout_below="@id/layout_profile"
         android:background="@drawable/shadow" />
 
-
     <ImageButton
         android:id="@+id/ibtn_open"
         android:layout_width="15dp"
