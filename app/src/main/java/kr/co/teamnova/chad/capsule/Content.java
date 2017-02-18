@@ -25,7 +25,7 @@ public class Content implements Parcelable {
     private String location;
     private long dateMillisecond;
     private int timeMode = MODE_TIME_RELATIVE;
-    private ArrayList<User> likeUserList;
+    private ArrayList<String> likeUserList;
     private ArrayList<Reply> replyList;
 
     private boolean contentDetailCheck;
@@ -34,7 +34,8 @@ public class Content implements Parcelable {
 
     }
 
-    public Content(Uri image, String desc, Uri publisherProfileImage, String publisher, String publisherEmail, long dateMillisecond, String location, ArrayList<User> likeUserList, ArrayList<Reply> replyList) {
+
+    public Content(Uri image, String desc, Uri publisherProfileImage, String publisher, String publisherEmail, long dateMillisecond, String location, ArrayList<String> likeUserList, ArrayList<Reply> replyList) {
 
         this.dateMillisecond = dateMillisecond;
         this.desc = desc;
@@ -60,7 +61,7 @@ public class Content implements Parcelable {
         location = in.readString();
         dateMillisecond = in.readLong();
         timeMode = in.readInt();
-        likeUserList = in.createTypedArrayList(User.CREATOR);
+        likeUserList = in.createStringArrayList();
         replyList = in.createTypedArrayList(Reply.CREATOR);
         contentDetailCheck = in.readByte() != 0;
     }
@@ -76,7 +77,7 @@ public class Content implements Parcelable {
         dest.writeString(location);
         dest.writeLong(dateMillisecond);
         dest.writeInt(timeMode);
-        dest.writeTypedList(likeUserList);
+        dest.writeStringList(likeUserList);
         dest.writeTypedList(replyList);
         dest.writeByte((byte) (contentDetailCheck ? 1 : 0));
     }
@@ -181,11 +182,11 @@ public class Content implements Parcelable {
         return timeMode;
     }
 
-    public ArrayList<User> getLikeUserList() {
+    public ArrayList<String> getLikeUserList() {
         return likeUserList;
     }
 
-    public void setLikeUserList(ArrayList<User> likeUserList) {
+    public void setLikeUserList(ArrayList<String> likeUserList) {
         this.likeUserList = likeUserList;
     }
 

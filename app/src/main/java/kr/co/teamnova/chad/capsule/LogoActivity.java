@@ -37,9 +37,8 @@ public class LogoActivity extends AppCompatActivity {
                         String[] strUserData = spAccount.getString(email, "").split(",");
 
                         if (strUserData[Const.INDEX_PASSWORD].equals(spAppPrefs.getString("auto_login_password", ""))) {
-                            User loginUser = new User(email, strUserData);
                             intent = new Intent(getApplicationContext(), MainActivity.class);
-                            intent.putExtra("login_user", loginUser);
+                            intent.putExtra("login_user", email);
                         } else {
                             intent = new Intent(getApplicationContext(), LoginPageActivity.class);
                         }
@@ -50,7 +49,12 @@ public class LogoActivity extends AppCompatActivity {
                     intent = new Intent(getApplicationContext(), LoginPageActivity.class);
                 }
 
-//                createTestAccount();
+                if(spAppPrefs.getBoolean("first_run", true)){
+                    createTestAccount();
+                    SharedPreferences.Editor edit = spAppPrefs.edit();
+                    edit.putBoolean("first_run", false);
+                    edit.apply();
+                }
                 startActivity(intent);
 
                 finish();
@@ -84,7 +88,7 @@ public class LogoActivity extends AppCompatActivity {
                             + name + ','
                             + phone + ','
                             + nickname + ','
-                            + profileImage + ",0, , ";
+                            + profileImage + ",0, , , ";
 
             spAccountEditor.putString(email, strUserData);
 

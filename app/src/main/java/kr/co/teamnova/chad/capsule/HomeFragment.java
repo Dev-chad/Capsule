@@ -2,6 +2,7 @@ package kr.co.teamnova.chad.capsule;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,10 +16,14 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+
+import static android.app.Activity.RESULT_OK;
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by Chad on 2017-01-18.
@@ -43,7 +48,12 @@ public class HomeFragment extends Fragment implements AbsListView.OnScrollListen
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        loginUser = getArguments().getParcelable("login_user");
+        String loginUserEmail = getArguments().getString("login_user");
+
+        SharedPreferences spAccount = getContext().getSharedPreferences("account", MODE_PRIVATE);
+        String[] strUserData = spAccount.getString(loginUserEmail, "").split(",");
+        Log.d(TAG, spAccount.getString(loginUserEmail, ""));
+        loginUser = new User(loginUserEmail, strUserData);
 
         adapter = new ContentListViewAdapter(HomeFragment.this, loginUser);
         listViewContent = (ListView) view.findViewById(R.id.listView_content);
@@ -64,7 +74,7 @@ public class HomeFragment extends Fragment implements AbsListView.OnScrollListen
         ArrayList<Content> totalContent = new ArrayList<>();
 
         if (loginUser.getNumOfContent() > 0) {
-            SharedPreferences spContent = getActivity().getSharedPreferences("contents", Context.MODE_PRIVATE);
+            SharedPreferences spContent = getActivity().getSharedPreferences("contents", MODE_PRIVATE);
             String[] strTotalContent = spContent.getString(loginUser.getEmail(), "").split(",");
 
             for (String strContent : strTotalContent) {
@@ -89,6 +99,12 @@ public class HomeFragment extends Fragment implements AbsListView.OnScrollListen
                     strLocation = "";
                 }
 
+                String strLikeList = strContentDetail[Const.CONTENT_LIKE_USER];
+                ArrayList<String> likeList = new ArrayList<>();
+                if (!strLikeList.equals(" ")) {
+                    Collections.addAll(likeList, strLikeList.split("\\+"));
+                }
+
                 Content userContent = new Content(
                         uriContentImage,
                         strContentDesc,
@@ -97,7 +113,7 @@ public class HomeFragment extends Fragment implements AbsListView.OnScrollListen
                         loginUser.getEmail(),
                         Long.valueOf(strContentDetail[Const.CONTENT_TIME]),
                         strLocation,
-                        new ArrayList<User>(),
+                        likeList,
                         new ArrayList<Reply>());
 
                 totalContent.add(userContent);
@@ -106,11 +122,11 @@ public class HomeFragment extends Fragment implements AbsListView.OnScrollListen
 
         if (loginUser.getFollowList().size() > 0) {
             for (String email : loginUser.getFollowList()) {
-                SharedPreferences spContent = getActivity().getSharedPreferences("contents", Context.MODE_PRIVATE);
+                SharedPreferences spContent = getActivity().getSharedPreferences("contents", MODE_PRIVATE);
                 String[] strTotalContent = spContent.getString(email, "").split(",");
 
                 if (!strTotalContent[0].equals("")) {
-                    String[] strUserData = getContext().getSharedPreferences("account", Context.MODE_PRIVATE).getString(email, "").split(",");
+                    strUserData = getContext().getSharedPreferences("account", MODE_PRIVATE).getString(email, "").split(",");
                     for (String strContent : strTotalContent) {
                         String[] strContentDetail = strContent.split("::");
 
@@ -141,7 +157,7 @@ public class HomeFragment extends Fragment implements AbsListView.OnScrollListen
                                 email,
                                 Long.valueOf(strContentDetail[Const.CONTENT_TIME]),
                                 strLocation,
-                                new ArrayList<User>(),
+                                new ArrayList<String>(),
                                 new ArrayList<Reply>());
 
                         totalContent.add(userContent);
@@ -157,6 +173,12 @@ public class HomeFragment extends Fragment implements AbsListView.OnScrollListen
         if (totalContent.size() == 0) {
             textNothingContent.setVisibility(View.VISIBLE);
         }
+
+/*        if(getArguments().getInt("position", -1) > -1){
+            Toast.makeText(getContext(), "-1 아님", Toast.LENGTH_SHORT).show();
+            adapter.notifyDataSetChanged();
+            listViewContent.smoothScrollToPosition(getArguments().getInt("position", -1));
+        }*/
 
         imageProfile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -190,10 +212,7 @@ public class HomeFragment extends Fragment implements AbsListView.OnScrollListen
     public void updateContentCount(int position) {
         textContentCount.setText(String.valueOf(loginUser.getNumOfContent()));
         adapter.notifyDataSetChanged();
-        listViewContent.smoothScrollToPosition(position);
-        if (adapter.getCount() == 0) {
-            textNothingContent.setVisibility(View.VISIBLE);
-        }
+        listViewContent.setSelection(position);
     }
 
     public void editContent(Content origin, int position) {
@@ -238,5 +257,28 @@ public class HomeFragment extends Fragment implements AbsListView.OnScrollListen
         }
 
         return new String(byteArray);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Toast.makeText(getContext(), "onStop()", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+
+        if(resultCode == RESULT_OK){
+            int position = data.getIntExtra("position", -1);
+
+            Content editContent = data.getParcelableExtra("edit_content");
+            Log.d(TAG, "Call - position: " + position + editContent.getPublisherName());
+
+            if(position != -1){
+                adapter.editList(position, editContent);
+            }
+        }
     }
 }

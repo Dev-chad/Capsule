@@ -10,7 +10,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 /**
  * Created by Chad on 2017-01-17.
@@ -23,7 +22,6 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnCl
     private final int STATE_ADD = 3;
 
     private int stateNum = 0;
-    private int position;
 
     private ImageButton btnHome;
     private ImageButton btnSearch;
@@ -32,18 +30,15 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnCl
 
     private FragmentManager fragmentManager;
 
-    private Content editContent;
-
-    private User loginUser;
+    private String loginUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        loginUser = getIntent().getParcelableExtra("login_user");
+        loginUser = getIntent().getStringExtra("login_user");
         fragmentManager = getFragmentManager();
-        editContent = null;
         btnHome = (ImageButton) findViewById(R.id.btn_home);
         btnHome.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnCl
     private void onClickMenu() {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         Bundle bundle = new Bundle();
-        bundle.putParcelable("login_user", loginUser);
+        bundle.putString("login_user", loginUser);
         switch (stateNum) {
             case STATE_HOME: {
                 btnHome.setImageResource(R.mipmap.image_btn_home);
@@ -94,7 +89,6 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnCl
                 btnPeople.setImageResource(R.mipmap.image_btn_people_inactive);
                 btnAdd.setImageResource(R.mipmap.image_btn_add_inactive);
                 HomeFragment fragment = new HomeFragment();
-                bundle.putInt("position", position);
                 fragment.setArguments(bundle);
                 fragmentTransaction.replace(R.id.container, fragment);
                 break;
@@ -120,14 +114,8 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnCl
                 break;
             }
             case STATE_ADD: {
-
                 Intent addIntent = new Intent(this, AddContentActivity.class);
                 addIntent.putExtra("login_user", loginUser);
-                if (editContent != null) {
-                    addIntent.putExtra("edit_content", editContent);
-                    addIntent.putExtra("position", position);
-                    editContent = null;
-                }
                 startActivityForResult(addIntent, 0);
                 break;
             }
@@ -137,8 +125,6 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnCl
     }
 
     public void EditClickEvent(Content origin, int position) {
-        editContent = origin;
-        this.position = position;
         btnAdd.callOnClick();
     }
 
@@ -178,9 +164,6 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnCl
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 0) {
             if (resultCode == RESULT_OK) {
-                Toast.makeText(this, "호출", Toast.LENGTH_SHORT).show();
-                loginUser = data.getParcelableExtra("updated_login_user");
-                position = data.getIntExtra("position", -1);
                 btnHome.callOnClick();
             }
         }

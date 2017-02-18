@@ -67,7 +67,11 @@ public class AddContentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_content);
 
-        loginUser = getIntent().getParcelableExtra("login_user");
+        String loginUserEmail = getIntent().getStringExtra("login_user");
+
+        SharedPreferences spAccount = getSharedPreferences("account", MODE_PRIVATE);
+        String[] strUserData = spAccount.getString(loginUserEmail, "").split(",");
+        loginUser = new User(loginUserEmail, strUserData);
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -283,6 +287,7 @@ public class AddContentActivity extends AppCompatActivity {
                 String desc;
                 String strLocation;
                 String strWeather;
+                String strLikeList = " ";
                 long currentTime;
 
                 SharedPreferences spContent = getSharedPreferences("contents", MODE_PRIVATE);
@@ -290,7 +295,13 @@ public class AddContentActivity extends AppCompatActivity {
 
                 if (isEditMode) {
                     currentTime = editContent.getDateToMillisecond();
-
+                        for(String email:editContent.getLikeUserList()){
+                            if(strLikeList.equals(" ")){
+                                strLikeList = email;
+                            } else {
+                                strLikeList += ("+"+email);
+                            }
+                        }
                 } else {
                     SharedPreferences spAccount = getSharedPreferences("account", MODE_PRIVATE);
                     SharedPreferences.Editor spAccountEditor = spAccount.edit();
@@ -304,7 +315,7 @@ public class AddContentActivity extends AppCompatActivity {
                     strUserData[Const.INDEX_NUM_OF_CONTENT] = String.valueOf(currentNumOfContent);
 
                     String strEditUserData = strUserData[0];
-                    for (int i = 1; i <= 7; i++) {
+                    for (int i = 1; i < strUserData.length; i++) {
                         strEditUserData += (',' + strUserData[i]);
                     }
 
@@ -347,7 +358,8 @@ public class AddContentActivity extends AppCompatActivity {
                                 + desc + "::"
                                 + strLocation + "::"
                                 + " :: ::"
-                                + currentTime + ":: ";
+                                + currentTime + "::"
+                                + strLikeList + ":: ";
 
                 String strUserContent = spContent.getString(loginUser.getEmail(), "");
 
@@ -358,7 +370,6 @@ public class AddContentActivity extends AppCompatActivity {
                     for (int i = 0; i < strContentSet.length; i++) {
                         String[] strContentDetail = strContentSet[i].split("::");
                         if (strContentDetail[Const.CONTENT_TIME].equals(String.valueOf(currentTime))) {
-                            Log.d(TAG, "Find");
                             if (strEditContent.length() == 0) {
                                 strEditContent = strNewContent;
                             } else {
@@ -385,14 +396,35 @@ public class AddContentActivity extends AppCompatActivity {
                 spContentEditor.putString(loginUser.getEmail(), strUserContent);
                 spContentEditor.apply();
 
-                Intent intent = new Intent();
-                intent.putExtra("updated_login_user", loginUser);
-                if (isEditMode) {
-                    intent.putExtra("position", getIntent().getIntExtra("position", -1));
-                }
-                setResult(RESULT_OK, intent);
-                finish();
+                if(isEditMode){
+                    if(strImageUri.equals(" ")){
+                        editContent.setImage(null);
+                    } else {
+                        editContent.setImage(Uri.parse(strImageUri));
 
+                    }
+
+                    String description;
+                    if(desc.equals(" ")){
+                        description = " ";
+                    } else {
+                        description = HomeFragment.getStringFromByteString(desc, "\\+");
+                    }
+                    editContent.setDesc(description);
+
+                    if(strLocation.equals(" ")){
+                        editContent.setLocation("");
+                    } else {
+                        editContent.setLocation(strLocation);
+                    }
+
+                    Intent intent = getIntent();
+                    intent.putExtra("edit_content", editContent);
+                    setResult(RESULT_OK, intent);
+                } else {
+                    setResult(RESULT_OK);
+                }
+                finish();
                 return true;
             }
         }

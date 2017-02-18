@@ -55,9 +55,8 @@ public class LoginPageActivity extends AppCompatActivity {
                             autoLoginEditor.putBoolean("auto_login_use", true);
                             autoLoginEditor.apply();
 
-                            User loginUser = new User(email, strUserData);
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                            intent.putExtra("login_user", loginUser);
+                            intent.putExtra("login_user", email);
                             startActivity(intent);
                             finish();
                         } else {

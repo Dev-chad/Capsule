@@ -54,6 +54,8 @@ public class ContentListViewAdapter extends BaseAdapter {
         public ImageButton ibtnReply;
         public LinearLayout layoutReply;
         public LinearLayout layoutLike;
+        public TextView textLikeCount;
+        public TextView textReplyCount;
 
     }
 
@@ -105,12 +107,21 @@ public class ContentListViewAdapter extends BaseAdapter {
             viewHolder.ibtnReply = (ImageButton) convertView.findViewById(R.id.ibtn_reply);
             viewHolder.layoutLike = (LinearLayout) convertView.findViewById(R.id.layout_like);
             viewHolder.layoutReply = (LinearLayout) convertView.findViewById(R.id.layout_reply);
+            viewHolder.textLikeCount = (TextView) convertView.findViewById(R.id.text_like_count);
+            viewHolder.textReplyCount = (TextView) convertView.findViewById(R.id.text_reply_count);
 
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
+
+        // 게시물 프로필
+        viewHolder.imageViewPublisher.setImageURI(content.getPublisherProfileImage());
+        viewHolder.textViewPublisher.setText(content.getPublisherName());
+
+
+        // 게시물 이미지
         if (content.getContentImage() == null) {
             viewHolder.imageViewContent.setVisibility(View.GONE);
         } else {
@@ -120,9 +131,8 @@ public class ContentListViewAdapter extends BaseAdapter {
 //            task.execute(content.getContentImage());
         }
 
-        viewHolder.imageViewPublisher.setImageURI(content.getPublisherProfileImage());
-        viewHolder.textViewPublisher.setText(content.getPublisherName());
 
+        // 게시물 내용 표시 및 더 보기(접기) 글씨 표시 여부
         if (content.getContentDesc().length() == 0) {
             viewHolder.textViewContent.setVisibility(View.GONE);
             viewHolder.textViewContentDetail.setVisibility(View.GONE);
@@ -157,12 +167,7 @@ public class ContentListViewAdapter extends BaseAdapter {
             }
         }
 
-        if (content.getTimeMode() == Content.MODE_TIME_ABSOLUTE) {
-            viewHolder.textViewDate.setText(content.getDate());
-        } else {
-            viewHolder.textViewDate.setText(getTime(content.getDateToMillisecond()));
-
-        }
+        // 게시물 작성 위치
         if (content.getLocation().length() > 0) {
             viewHolder.layoutLocation.setVisibility(View.VISIBLE);
             viewHolder.textViewLocation.setText(content.getLocation());
@@ -171,6 +176,46 @@ public class ContentListViewAdapter extends BaseAdapter {
             viewHolder.textViewLocation.setText("");
         }
 
+        // 게시물 작성 시간
+        if (content.getTimeMode() == Content.MODE_TIME_ABSOLUTE) {
+            viewHolder.textViewDate.setText(content.getDate());
+        } else {
+            viewHolder.textViewDate.setText(getTime(content.getDateToMillisecond()));
+
+        }
+
+        // 게시물 메뉴 표시 여부
+        if (!content.getPublisherEmail().equals(loginUser.getEmail())) {
+            viewHolder.ibtnMenu.setVisibility(View.GONE);
+        } else {
+            viewHolder.ibtnMenu.setVisibility(View.VISIBLE);
+        }
+
+        // 좋아요 버튼 색
+        if(content.getLikeUserList().contains(loginUser.getEmail())){
+            viewHolder.ibtnLike.setBackgroundResource(R.mipmap.image_like_red);
+        } else {
+            viewHolder.ibtnLike.setBackgroundResource(R.mipmap.image_like);
+        }
+
+        // 좋아요 개수 표시 여부
+        if(content.getLikeCount() > 0){
+            viewHolder.layoutLike.setVisibility(View.VISIBLE);
+            viewHolder.textLikeCount.setText(content.getLikeCount() + "개");
+        } else {
+            viewHolder.layoutLike.setVisibility(View.GONE);
+        }
+
+        // 댓글 개수 표시 여부
+        if(content.getReplyCount() > 0){
+            viewHolder.layoutReply.setVisibility(View.VISIBLE);
+            viewHolder.textReplyCount.setText(content.getReplyCount()+"개");
+        } else {
+            viewHolder.layoutReply.setVisibility(View.GONE);
+        }
+
+
+        // 시간 터치
         viewHolder.textViewDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -183,11 +228,8 @@ public class ContentListViewAdapter extends BaseAdapter {
             }
         });
 
-        if (!content.getPublisherEmail().equals(loginUser.getEmail())) {
-            viewHolder.ibtnMenu.setVisibility(View.GONE);
-        } else {
-            viewHolder.ibtnMenu.setVisibility(View.VISIBLE);
-        }
+
+        // 게시물 메뉴 터치
         viewHolder.ibtnMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -198,7 +240,12 @@ public class ContentListViewAdapter extends BaseAdapter {
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.menu_edit:
-                                fragment.editContent(content, position);
+//                                fragment.editContent(content, position);
+                                Intent intent = new Intent(context, AddContentActivity.class);
+                                intent.putExtra("edit_content", content);
+                                intent.putExtra("login_user", loginUser.getEmail());
+                                intent.putExtra("position", position);
+                                fragment.startActivityForResult(intent, 0);
                                 break;
                             case R.id.menu_delete:
                                 File imageFile = new File(context.getFilesDir() + "/contents/" + loginUser.getEmail() + '/' + content.getDateToMillisecond() + ".jpg");
@@ -218,7 +265,7 @@ public class ContentListViewAdapter extends BaseAdapter {
                                 strUserData[Const.INDEX_NUM_OF_CONTENT] = String.valueOf(currentNumOfContent);
 
                                 String strEditUserData = strUserData[0];
-                                for (int i = 1; i <= 7; i++) {
+                                for (int i = 1; i < strUserData.length; i++) {
                                     strEditUserData += (',' + strUserData[i]);
                                 }
 
@@ -243,12 +290,8 @@ public class ContentListViewAdapter extends BaseAdapter {
                                 spContentsEditor.apply();
 
                                 listViewContentList.remove(position);
+                                fragment.updateContentCount(position);
 
-                                if (position == 0) {
-                                    fragment.updateContentCount(0);
-                                } else {
-                                    fragment.updateContentCount(position - 1);
-                                }
                                 break;
                             default:
                                 return false;
@@ -261,13 +304,114 @@ public class ContentListViewAdapter extends BaseAdapter {
             }
         });
 
+        // 좋아요 아이콘 터치
         viewHolder.ibtnLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewHolder.ibtnLike.setBackgroundResource(R.mipmap.image_like_red);
+                int point = 0;
+
+                SharedPreferences spAccount = context.getSharedPreferences("account", Context.MODE_PRIVATE);
+                SharedPreferences.Editor spAccountEditor = spAccount.edit();
+
+                SharedPreferences spContent = context.getSharedPreferences("contents", Context.MODE_PRIVATE);
+                SharedPreferences.Editor spContentEditor = spContent.edit();
+
+                String[] strLoginUser = spAccount.getString(loginUser.getEmail(), "").split(",");
+                String[] strLikeContent = strLoginUser[Const.INDEX_LIKE_CONTENT].split("::");
+
+                String[] strContent = spContent.getString(content.getPublisherEmail(), "").split(",");
+                String[] currentContent = {};
+
+                for (String findContent : strContent) {
+                    String[] findContentDetail = findContent.split("::");
+                    if (findContentDetail[Const.CONTENT_TIME].equals(String.valueOf(content.getDateToMillisecond()))) {
+                        currentContent = findContentDetail;
+                        break;
+                    }
+                    point++;
+                }
+
+                String updateLikeContent = "";
+                String[] strLikeList = currentContent[Const.CONTENT_LIKE_USER].split("\\+");
+                String updateLikeList = "";
+                if (content.getLikeUserList().contains(loginUser.getEmail())) {
+                    viewHolder.ibtnLike.setBackgroundResource(R.mipmap.image_like);
+                    content.getLikeUserList().remove(loginUser.getEmail());
+                    loginUser.getLikeContentList().remove(content.getPublisherEmail()+"+"+content.getDateToMillisecond());
+
+                    for (String email : strLikeList) {
+                        if (!email.equals(loginUser.getEmail())) {
+                            if (updateLikeList.length() == 0) {
+                                updateLikeList = email;
+                            } else {
+                                updateLikeList += ("+" + email);
+                            }
+                        }
+
+                    }
+
+                    for (String likeContent : strLikeContent){
+                        if(!likeContent.contains(content.getPublisherEmail()) && !likeContent.contains(String.valueOf(content.getDateToMillisecond()))){
+                            if(updateLikeContent.length() == 0){
+                                updateLikeContent = likeContent;
+                            }else {
+                                updateLikeContent += ("::" + likeContent);
+                            }
+                        }
+                    }
+
+                    if(updateLikeContent.length() == 0){
+                        updateLikeContent = " ";
+                    }
+
+                    if (updateLikeList.length() == 0) {
+                        updateLikeList = " ";
+                    }
+                } else {
+                    viewHolder.ibtnLike.setBackgroundResource(R.mipmap.image_like_red);
+                    content.getLikeUserList().add(loginUser.getEmail());
+                    loginUser.getLikeContentList().add(content.getPublisherEmail()+"+"+content.getDateToMillisecond());
+                    if (strLikeList[0].equals(" ")) {
+                        updateLikeList = loginUser.getEmail();
+                    } else {
+                        updateLikeList = (currentContent[Const.CONTENT_LIKE_USER] + "+" + loginUser.getEmail());
+                    }
+
+                    if(updateLikeContent.equals(" ")){
+                        updateLikeContent = content.getPublisherEmail()+ "+"+content.getDateToMillisecond();
+                    } else{
+                        updateLikeContent += ("::"+ content.getPublisherEmail()+ "+"+content.getDateToMillisecond());
+                    }
+                }
+
+                currentContent[Const.CONTENT_LIKE_USER] = updateLikeList;
+                String updateCurrentContent = currentContent[0];
+                for(int i=1; i<currentContent.length; i++){
+                    updateCurrentContent += ("::" + currentContent[i]);
+                }
+
+                strContent[point] = updateCurrentContent;
+                String updateContent = strContent[0];
+                for(int i=1; i<strContent.length; i++){
+                    updateContent += ("," + strContent[i]);
+                }
+
+                strLoginUser[Const.INDEX_LIKE_CONTENT] = updateLikeContent;
+                String updateLoginUser = strLoginUser[0];
+                for(int i=1; i<strLoginUser.length; i++){
+                    updateLoginUser += ("," + strLoginUser[i]);
+                }
+
+                spAccountEditor.putString(loginUser.getEmail(), updateLoginUser);
+                spAccountEditor.apply();
+                spContentEditor.putString(content.getPublisherEmail(), updateContent);
+                spContentEditor.apply();
+
+                notifyDataSetChanged();
             }
         });
 
+        // 좋아요 글씨 터치
         viewHolder.layoutLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -276,6 +420,7 @@ public class ContentListViewAdapter extends BaseAdapter {
             }
         });
 
+        // 댓글 글씨 터치
         viewHolder.layoutReply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -284,6 +429,7 @@ public class ContentListViewAdapter extends BaseAdapter {
             }
         });
 
+        // 댓글 아이콘 터치
         viewHolder.ibtnReply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -292,6 +438,7 @@ public class ContentListViewAdapter extends BaseAdapter {
             }
         });
 
+        // 더 보기(접기) 터치
         viewHolder.textViewContentDetail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -421,5 +568,12 @@ public class ContentListViewAdapter extends BaseAdapter {
                 }
             }
         }
+    }
+
+    public void editList(int position, Content content){
+        listViewContentList.remove(position);
+        listViewContentList.add(position, content);
+        Log.d(TAG, listViewContentList.get(position).getContentDesc());
+        notifyDataSetChanged();
     }
 }

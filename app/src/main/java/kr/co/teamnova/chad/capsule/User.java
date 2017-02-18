@@ -3,7 +3,6 @@ package kr.co.teamnova.chad.capsule;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,6 +22,7 @@ public class User implements Parcelable {
     private int numOfContent;
     private ArrayList<String> followList;
     private ArrayList<String> followerList;
+    private ArrayList<String> likeContentList;
 
     public User() {
 
@@ -37,9 +37,18 @@ public class User implements Parcelable {
         this.numOfContent = Integer.valueOf(strUserData[Const.INDEX_NUM_OF_CONTENT]);
         followerList = new ArrayList<>();
         followList = new ArrayList<>();
-        Log.d(TAG, String.valueOf(strUserData.length));
-        Collections.addAll(followList, strUserData[Const.INDEX_FOLLOW].split(":"));
-        Collections.addAll(followerList, strUserData[Const.INDEX_FOLLOWER].split(":"));
+        likeContentList = new ArrayList<>();
+        if (strUserData[Const.INDEX_FOLLOW].length() > 0) {
+            Collections.addAll(followList, strUserData[Const.INDEX_FOLLOW].split("::"));
+        }
+
+        if (strUserData[Const.INDEX_FOLLOWER].length() > 0) {
+            Collections.addAll(followerList, strUserData[Const.INDEX_FOLLOWER].split("::"));
+        }
+
+        if (strUserData[Const.INDEX_LIKE_CONTENT].length() > 0) {
+            Collections.addAll(likeContentList, strUserData[Const.INDEX_LIKE_CONTENT].split("::"));
+        }
     }
 
     protected User(Parcel in) {
@@ -51,6 +60,7 @@ public class User implements Parcelable {
         numOfContent = in.readInt();
         followList = in.createStringArrayList();
         followerList = in.createStringArrayList();
+        likeContentList = in.createStringArrayList();
     }
 
     @Override
@@ -63,6 +73,7 @@ public class User implements Parcelable {
         dest.writeInt(numOfContent);
         dest.writeStringList(followList);
         dest.writeStringList(followerList);
+        dest.writeStringList(likeContentList);
     }
 
     @Override
@@ -144,5 +155,13 @@ public class User implements Parcelable {
 
     public void setFollowerList(ArrayList<String> followerList) {
         this.followerList = followerList;
+    }
+
+    public ArrayList<String> getLikeContentList() {
+        return likeContentList;
+    }
+
+    public void setLikeContentList(ArrayList<String> likeContentList) {
+        this.likeContentList = likeContentList;
     }
 }

@@ -1,7 +1,6 @@
 package kr.co.teamnova.chad.capsule;
 
 import android.app.Fragment;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
@@ -16,6 +15,8 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Set;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by Chad on 2017-01-18.
@@ -37,7 +38,11 @@ public class UserListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_user_list, container, false);
 
-        loginUser = getArguments().getParcelable("login_user");
+        String loginUserEmail = getArguments().getString("login_user");
+        SharedPreferences spAccount = getContext().getSharedPreferences("account", MODE_PRIVATE);
+        String[] strUserData = spAccount.getString(loginUserEmail, "").split(",");
+        loginUser = new User(loginUserEmail, strUserData);
+
         listViewUser = (ListView) view.findViewById(R.id.listView_user);
         adapter = new UserListViewAdapter(UserListFragment.this, loginUser);
         listViewUser.setAdapter(adapter);
@@ -84,7 +89,6 @@ public class UserListFragment extends Fragment {
             }
         });
 
-        SharedPreferences spAccount = getActivity().getSharedPreferences("account", Context.MODE_PRIVATE);
 
         userList = new ArrayList<>();
 
