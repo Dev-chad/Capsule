@@ -30,6 +30,9 @@ public class UserListViewAdapter extends BaseAdapter {
     private UserListFragment fragment;
     private ArrayList<User> userList = new ArrayList<>();
 
+    public UserListViewAdapter() {
+    }
+
     public UserListViewAdapter(UserListFragment fragment, User loginUser) {
         this.fragment = fragment;
         this.loginUser = loginUser;
@@ -115,6 +118,14 @@ public class UserListViewAdapter extends BaseAdapter {
                     }
                 }
 
+                if(strLoginUserFollow.equals("")){
+                    strLoginUserFollow = " ";
+                }
+
+                if(strUserFollower.equals("")){
+                    strUserFollower = " ";
+                }
+
                 String[] strLoginUserData = spAccount.getString(loginUser.getEmail(), "").split(",");
                 String[] strUserData = spAccount.getString(user.getEmail(), "").split(",");
 
@@ -124,7 +135,7 @@ public class UserListViewAdapter extends BaseAdapter {
                 String strUpdatedLoginUserData = strLoginUserData[0];
                 String strUpdatedUserData = strUserData[0];
 
-                for (int i = 1; i <= 7; i++) {
+                for (int i = 1; i < strLoginUserData.length; i++) {
                     strUpdatedLoginUserData += ("," + strLoginUserData[i]);
                     strUpdatedUserData += ("," + strUserData[i]);
                 }

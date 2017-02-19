@@ -415,6 +415,8 @@ public class ContentListViewAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, LikeActivity.class);
+                intent.putExtra("login_user", loginUser.getEmail());
+                intent.putExtra("like_user_list", content.getLikeUserList());
                 context.startActivity(intent);
             }
         });

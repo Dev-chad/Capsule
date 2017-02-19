@@ -142,6 +142,12 @@ public class HomeFragment extends Fragment implements AbsListView.OnScrollListen
                             strLocation = "";
                         }
 
+                        String strLikeList = strContentDetail[Const.CONTENT_LIKE_USER];
+                        ArrayList<String> likeList = new ArrayList<>();
+                        if (!strLikeList.equals(" ")) {
+                            Collections.addAll(likeList, strLikeList.split("\\+"));
+                        }
+
                         Content userContent = new Content(
                                 uriContentImage,
                                 strContentDesc,
@@ -150,7 +156,7 @@ public class HomeFragment extends Fragment implements AbsListView.OnScrollListen
                                 email,
                                 Long.valueOf(strContentDetail[Const.CONTENT_TIME]),
                                 strLocation,
-                                new ArrayList<String>(),
+                                likeList,
                                 new ArrayList<Reply>());
 
                         totalContent.add(userContent);
