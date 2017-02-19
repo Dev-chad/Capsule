@@ -15,7 +15,7 @@ import android.widget.ImageButton;
  * Created by Chad on 2017-01-17.
  */
 
-public class MainActivity extends AppCompatActivity implements HomeFragment.OnClickEditListener {
+public class MainActivity extends AppCompatActivity{
     private final int STATE_HOME = 0;
     private final int STATE_SEARCH = 1;
     private final int STATE_PEOPLE = 2;
@@ -122,10 +122,6 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnCl
         }
 
         fragmentTransaction.commit();
-    }
-
-    public void EditClickEvent(Content origin, int position) {
-        btnAdd.callOnClick();
     }
 
     @Override

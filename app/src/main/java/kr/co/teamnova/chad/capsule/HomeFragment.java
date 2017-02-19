@@ -1,7 +1,6 @@
 package kr.co.teamnova.chad.capsule;
 
 import android.app.Fragment;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -16,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,17 +30,12 @@ import static android.content.Context.MODE_PRIVATE;
 public class HomeFragment extends Fragment implements AbsListView.OnScrollListener {
     private static final String TAG = "HomeFragment";
 
-    public interface OnClickEditListener {
-        public void EditClickEvent(Content origin, int position);
-    }
-
     private TextView textContentCount;
     private TextView textNothingContent;
 
     private ListView listViewContent;
     private ContentListViewAdapter adapter;
     private User loginUser;
-    private OnClickEditListener mCallback;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -174,12 +167,6 @@ public class HomeFragment extends Fragment implements AbsListView.OnScrollListen
             textNothingContent.setVisibility(View.VISIBLE);
         }
 
-/*        if(getArguments().getInt("position", -1) > -1){
-            Toast.makeText(getContext(), "-1 아님", Toast.LENGTH_SHORT).show();
-            adapter.notifyDataSetChanged();
-            listViewContent.smoothScrollToPosition(getArguments().getInt("position", -1));
-        }*/
-
         imageProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -215,10 +202,6 @@ public class HomeFragment extends Fragment implements AbsListView.OnScrollListen
         listViewContent.setSelection(position);
     }
 
-    public void editContent(Content origin, int position) {
-        mCallback.EditClickEvent(origin, position);
-    }
-
     class FileNameSort implements Comparator<Content> {
         public int compare(Content f1, Content f2) {
             return f1.getDateToMillisecond().compareTo(f2.getDateToMillisecond());
@@ -231,20 +214,7 @@ public class HomeFragment extends Fragment implements AbsListView.OnScrollListen
 
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-        Log.d(TAG, "Total: " + totalItemCount + "   Visible: " + visibleItemCount + "   First: " + firstVisibleItem);
-        Log.d(TAG, String.valueOf(totalItemCount - visibleItemCount));
-    }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        try {
-            mCallback = (HomeFragment.OnClickEditListener) context;
-
-        } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + "must implement OnArticleSelectedListener");
-        }
     }
 
     public static String getStringFromByteString(String target, String regex) {
@@ -259,22 +229,15 @@ public class HomeFragment extends Fragment implements AbsListView.OnScrollListen
         return new String(byteArray);
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        Toast.makeText(getContext(), "onStop()", Toast.LENGTH_SHORT).show();
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-
         if(resultCode == RESULT_OK){
             int position = data.getIntExtra("position", -1);
 
             Content editContent = data.getParcelableExtra("edit_content");
-            Log.d(TAG, "Call - position: " + position + editContent.getPublisherName());
 
             if(position != -1){
                 adapter.editList(position, editContent);

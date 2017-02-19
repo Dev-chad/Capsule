@@ -225,7 +225,6 @@ public class JoinPageActivity extends AppCompatActivity {
                                 BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(copyFile));
                                 profileImage.compress(Bitmap.CompressFormat.JPEG, 100, out);
 
-                                sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(copyFile)));
                                 out.flush();
                                 out.close();
                             } catch (Exception e) {

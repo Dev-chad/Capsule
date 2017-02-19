@@ -56,7 +56,6 @@ public class ContentListViewAdapter extends BaseAdapter {
         public LinearLayout layoutLike;
         public TextView textLikeCount;
         public TextView textReplyCount;
-
     }
 
     private ArrayList<Content> listViewContentList = new ArrayList<Content>();
@@ -167,7 +166,7 @@ public class ContentListViewAdapter extends BaseAdapter {
             }
         }
 
-        // 게시물 작성 위치
+        // 위치
         if (content.getLocation().length() > 0) {
             viewHolder.layoutLocation.setVisibility(View.VISIBLE);
             viewHolder.textViewLocation.setText(content.getLocation());

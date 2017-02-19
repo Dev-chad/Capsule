@@ -258,19 +258,6 @@ public class AddContentActivity extends AppCompatActivity {
         return strByteArray;
     }
 
-    public static String getStringFromByteString(String target, String regex) {
-        String[] strArray = target.split(regex);
-
-        byte[] byteArray = new byte[strArray.length];
-
-        for (int i = 0; i < strArray.length; i++) {
-            byteArray[i] = Byte.valueOf(strArray[i]);
-        }
-
-        return new String(byteArray);
-    }
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_add, menu);
@@ -295,13 +282,8 @@ public class AddContentActivity extends AppCompatActivity {
 
                 if (isEditMode) {
                     currentTime = editContent.getDateToMillisecond();
-                        for(String email:editContent.getLikeUserList()){
-                            if(strLikeList.equals(" ")){
-                                strLikeList = email;
-                            } else {
-                                strLikeList += ("+"+email);
-                            }
-                        }
+                    strLikeList = spContent.getString(editContent.getPublisherEmail(), "").split("::")[Const.CONTENT_LIKE_USER];
+
                 } else {
                     SharedPreferences spAccount = getSharedPreferences("account", MODE_PRIVATE);
                     SharedPreferences.Editor spAccountEditor = spAccount.edit();
@@ -396,8 +378,8 @@ public class AddContentActivity extends AppCompatActivity {
                 spContentEditor.putString(loginUser.getEmail(), strUserContent);
                 spContentEditor.apply();
 
-                if(isEditMode){
-                    if(strImageUri.equals(" ")){
+                if (isEditMode) {
+                    if (strImageUri.equals(" ")) {
                         editContent.setImage(null);
                     } else {
                         editContent.setImage(Uri.parse(strImageUri));
@@ -405,14 +387,14 @@ public class AddContentActivity extends AppCompatActivity {
                     }
 
                     String description;
-                    if(desc.equals(" ")){
+                    if (desc.equals(" ")) {
                         description = " ";
                     } else {
                         description = HomeFragment.getStringFromByteString(desc, "\\+");
                     }
                     editContent.setDesc(description);
 
-                    if(strLocation.equals(" ")){
+                    if (strLocation.equals(" ")) {
                         editContent.setLocation("");
                     } else {
                         editContent.setLocation(strLocation);
