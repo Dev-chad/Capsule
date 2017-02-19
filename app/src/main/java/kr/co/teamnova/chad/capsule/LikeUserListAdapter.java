@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,6 +21,7 @@ public class LikeUserListAdapter extends BaseAdapter {
         public ImageView imageViewProfile;
         public TextView textViewNickname;
         public TextView textViewEmail;
+        public Button btnFollow;
     }
 
     private ArrayList<User> likeUserList = new ArrayList<>();
@@ -62,7 +64,7 @@ public class LikeUserListAdapter extends BaseAdapter {
             viewHolder.imageViewProfile = (ImageView) convertView.findViewById(R.id.image_profile);
             viewHolder.textViewEmail = (TextView) convertView.findViewById(R.id.text_email);
             viewHolder.textViewNickname = (TextView) convertView.findViewById(R.id.text_nickname);
-
+            viewHolder.btnFollow = (Button) convertView.findViewById(R.id.btn_follow);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (LikeUserListAdapter.ViewHolder) convertView.getTag();
@@ -71,7 +73,7 @@ public class LikeUserListAdapter extends BaseAdapter {
         viewHolder.imageViewProfile.setImageURI(user.getUriProfileImage());
         viewHolder.textViewEmail.setText(user.getEmail());
         viewHolder.textViewNickname.setText(user.getNickname());
-
+        viewHolder.btnFollow.setVisibility(View.GONE);
         return convertView;
     }
 }

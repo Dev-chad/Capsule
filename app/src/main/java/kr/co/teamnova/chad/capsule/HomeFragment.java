@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,7 +44,6 @@ public class HomeFragment extends Fragment implements AbsListView.OnScrollListen
 
         SharedPreferences spAccount = getContext().getSharedPreferences("account", MODE_PRIVATE);
         String[] strUserData = spAccount.getString(loginUserEmail, "").split(",");
-        Log.d(TAG, spAccount.getString(loginUserEmail, ""));
         loginUser = new User(loginUserEmail, strUserData);
 
         adapter = new ContentListViewAdapter(HomeFragment.this, loginUser);

@@ -38,15 +38,15 @@ public class User implements Parcelable {
         followerList = new ArrayList<>();
         followList = new ArrayList<>();
         likeContentList = new ArrayList<>();
-        if (strUserData[Const.INDEX_FOLLOW].length() > 0) {
+        if (!strUserData[Const.INDEX_FOLLOW].equals(" ")) {
             Collections.addAll(followList, strUserData[Const.INDEX_FOLLOW].split("::"));
         }
 
-        if (strUserData[Const.INDEX_FOLLOWER].length() > 0) {
+        if (!strUserData[Const.INDEX_FOLLOWER].equals(" ")) {
             Collections.addAll(followerList, strUserData[Const.INDEX_FOLLOWER].split("::"));
         }
 
-        if (strUserData[Const.INDEX_LIKE_CONTENT].length() > 0) {
+        if (!strUserData[Const.INDEX_LIKE_CONTENT].equals(" ")) {
             Collections.addAll(likeContentList, strUserData[Const.INDEX_LIKE_CONTENT].split("::"));
         }
     }

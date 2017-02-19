@@ -191,14 +191,14 @@ public class ContentListViewAdapter extends BaseAdapter {
         }
 
         // 좋아요 버튼 색
-        if(content.getLikeUserList().contains(loginUser.getEmail())){
+        if (content.getLikeUserList().contains(loginUser.getEmail())) {
             viewHolder.ibtnLike.setBackgroundResource(R.mipmap.image_like_red);
         } else {
             viewHolder.ibtnLike.setBackgroundResource(R.mipmap.image_like);
         }
 
         // 좋아요 개수 표시 여부
-        if(content.getLikeCount() > 0){
+        if (content.getLikeCount() > 0) {
             viewHolder.layoutLike.setVisibility(View.VISIBLE);
             viewHolder.textLikeCount.setText(content.getLikeCount() + "개");
         } else {
@@ -206,9 +206,9 @@ public class ContentListViewAdapter extends BaseAdapter {
         }
 
         // 댓글 개수 표시 여부
-        if(content.getReplyCount() > 0){
+        if (content.getReplyCount() > 0) {
             viewHolder.layoutReply.setVisibility(View.VISIBLE);
-            viewHolder.textReplyCount.setText(content.getReplyCount()+"개");
+            viewHolder.textReplyCount.setText(content.getReplyCount() + "개");
         } else {
             viewHolder.layoutReply.setVisibility(View.GONE);
         }
@@ -316,7 +316,10 @@ public class ContentListViewAdapter extends BaseAdapter {
                 SharedPreferences.Editor spContentEditor = spContent.edit();
 
                 String[] strLoginUser = spAccount.getString(loginUser.getEmail(), "").split(",");
-                String[] strLikeContent = strLoginUser[Const.INDEX_LIKE_CONTENT].split("::");
+                String[] strLikeContent = {};
+                if (!strLoginUser[Const.INDEX_LIKE_CONTENT].equals(" ")) {
+                    strLikeContent = strLoginUser[Const.INDEX_LIKE_CONTENT].split("::");
+                }
 
                 String[] strContent = spContent.getString(content.getPublisherEmail(), "").split(",");
                 String[] currentContent = {};
@@ -331,12 +334,16 @@ public class ContentListViewAdapter extends BaseAdapter {
                 }
 
                 String updateLikeContent = "";
-                String[] strLikeList = currentContent[Const.CONTENT_LIKE_USER].split("\\+");
                 String updateLikeList = "";
+                String[] strLikeList = {};
+                if (!currentContent[Const.CONTENT_LIKE_USER].equals(" ")) {
+                    strLikeList = currentContent[Const.CONTENT_LIKE_USER].split("\\+");
+                }
+
                 if (content.getLikeUserList().contains(loginUser.getEmail())) {
                     viewHolder.ibtnLike.setBackgroundResource(R.mipmap.image_like);
                     content.getLikeUserList().remove(loginUser.getEmail());
-                    loginUser.getLikeContentList().remove(content.getPublisherEmail()+"+"+content.getDateToMillisecond());
+                    loginUser.getLikeContentList().remove(content.getPublisherEmail() + "+" + content.getDateToMillisecond());
 
                     for (String email : strLikeList) {
                         if (!email.equals(loginUser.getEmail())) {
@@ -349,17 +356,17 @@ public class ContentListViewAdapter extends BaseAdapter {
 
                     }
 
-                    for (String likeContent : strLikeContent){
-                        if(!likeContent.contains(content.getPublisherEmail()) && !likeContent.contains(String.valueOf(content.getDateToMillisecond()))){
-                            if(updateLikeContent.length() == 0){
+                    for (String likeContent : strLikeContent) {
+                        if (!likeContent.contains(content.getPublisherEmail()) && !likeContent.contains(String.valueOf(content.getDateToMillisecond()))) {
+                            if (updateLikeContent.length() == 0) {
                                 updateLikeContent = likeContent;
-                            }else {
+                            } else {
                                 updateLikeContent += ("::" + likeContent);
                             }
                         }
                     }
 
-                    if(updateLikeContent.length() == 0){
+                    if (updateLikeContent.length() == 0) {
                         updateLikeContent = " ";
                     }
 
@@ -369,35 +376,36 @@ public class ContentListViewAdapter extends BaseAdapter {
                 } else {
                     viewHolder.ibtnLike.setBackgroundResource(R.mipmap.image_like_red);
                     content.getLikeUserList().add(loginUser.getEmail());
-                    loginUser.getLikeContentList().add(content.getPublisherEmail()+"+"+content.getDateToMillisecond());
+                    loginUser.getLikeContentList().add(content.getPublisherEmail() + "+" + content.getDateToMillisecond());
+
                     if (strLikeList[0].equals(" ")) {
                         updateLikeList = loginUser.getEmail();
                     } else {
-                        updateLikeList = (currentContent[Const.CONTENT_LIKE_USER] + "+" + loginUser.getEmail());
+                        updateLikeList = currentContent[Const.CONTENT_LIKE_USER] + "+" + loginUser.getEmail();
                     }
 
-                    if(updateLikeContent.equals(" ")){
-                        updateLikeContent = content.getPublisherEmail()+ "+"+content.getDateToMillisecond();
-                    } else{
-                        updateLikeContent += ("::"+ content.getPublisherEmail()+ "+"+content.getDateToMillisecond());
+                    if (updateLikeContent.equals(" ")) {
+                        updateLikeContent = content.getPublisherEmail() + "+" + content.getDateToMillisecond();
+                    } else {
+                        updateLikeContent += ("::" + content.getPublisherEmail() + "+" + content.getDateToMillisecond());
                     }
                 }
 
                 currentContent[Const.CONTENT_LIKE_USER] = updateLikeList;
                 String updateCurrentContent = currentContent[0];
-                for(int i=1; i<currentContent.length; i++){
+                for (int i = 1; i < currentContent.length; i++) {
                     updateCurrentContent += ("::" + currentContent[i]);
                 }
 
                 strContent[point] = updateCurrentContent;
                 String updateContent = strContent[0];
-                for(int i=1; i<strContent.length; i++){
+                for (int i = 1; i < strContent.length; i++) {
                     updateContent += ("," + strContent[i]);
                 }
 
                 strLoginUser[Const.INDEX_LIKE_CONTENT] = updateLikeContent;
                 String updateLoginUser = strLoginUser[0];
-                for(int i=1; i<strLoginUser.length; i++){
+                for (int i = 1; i < strLoginUser.length; i++) {
                     updateLoginUser += ("," + strLoginUser[i]);
                 }
 
@@ -571,7 +579,7 @@ public class ContentListViewAdapter extends BaseAdapter {
         }
     }
 
-    public void editList(int position, Content content){
+    public void editList(int position, Content content) {
         listViewContentList.remove(position);
         listViewContentList.add(position, content);
         Log.d(TAG, listViewContentList.get(position).getContentDesc());

@@ -2,6 +2,7 @@ package kr.co.teamnova.chad.capsule;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
  */
 
 public class UserListViewAdapter extends BaseAdapter {
+    private static final String TAG = "UserListViewAdapter";
 
     public class ViewHolder {
         public ImageView imageViewProfile;
@@ -139,6 +141,10 @@ public class UserListViewAdapter extends BaseAdapter {
                     strUpdatedLoginUserData += ("," + strLoginUserData[i]);
                     strUpdatedUserData += ("," + strUserData[i]);
                 }
+
+                Log.d(TAG, "Login: " + strUpdatedLoginUserData);
+                Log.d(TAG, "User: " + strUpdatedUserData);
+
                 spAccountEditor.putString(loginUser.getEmail(), strUpdatedLoginUserData);
                 spAccountEditor.putString(user.getEmail(), strUpdatedUserData);
 
