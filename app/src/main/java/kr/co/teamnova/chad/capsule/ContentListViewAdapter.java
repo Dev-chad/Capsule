@@ -307,7 +307,9 @@ public class ContentListViewAdapter extends BaseAdapter {
         viewHolder.ibtnLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int point = 0;
+
+                // sp에 저장된 게시물 리스트에서 현재 게시물이 어디에 위치한지 알기 위한 변수
+                int contentPosition = 0;
 
                 SharedPreferences spAccount = context.getSharedPreferences("account", Context.MODE_PRIVATE);
                 SharedPreferences.Editor spAccountEditor = spAccount.edit();
@@ -315,103 +317,92 @@ public class ContentListViewAdapter extends BaseAdapter {
                 SharedPreferences spContent = context.getSharedPreferences("contents", Context.MODE_PRIVATE);
                 SharedPreferences.Editor spContentEditor = spContent.edit();
 
-                String[] strLoginUser = spAccount.getString(loginUser.getEmail(), "").split(",");
-                String[] strLikeContent = {};
-                if (!strLoginUser[Const.INDEX_LIKE_CONTENT].equals(" ")) {
-                    strLikeContent = strLoginUser[Const.INDEX_LIKE_CONTENT].split("::");
-                }
+                //로그인 유저의 data
+                String[] strLoginUserArray = spAccount.getString(loginUser.getEmail(), "").split(",");
 
-                String[] strContent = spContent.getString(content.getPublisherEmail(), "").split(",");
-                String[] currentContent = {};
+                //현재 게시물 작성자의 전체 content data
+                String[] strTotalContentArray = spContent.getString(content.getPublisherEmail(), "").split(",");
 
-                for (String findContent : strContent) {
-                    String[] findContentDetail = findContent.split("::");
-                    if (findContentDetail[Const.CONTENT_TIME].equals(String.valueOf(content.getDateToMillisecond()))) {
-                        currentContent = findContentDetail;
+                //현재 게시물 데이터를 저장할 어레이
+                String[] strContentArray = {};
+
+                for(String strFindContent:strTotalContentArray){
+                    String[] strFindContentDetail = strFindContent.split("::");
+                    if(strFindContentDetail[Const.CONTENT_TIME].equals(String.valueOf(content.getDateToMillisecond()))){
+                        //현재 게시물의 작성시간과 일치하면 현재 게시물에 대한 데이터
+                        strContentArray = strFindContentDetail;
                         break;
                     }
-                    point++;
+                    contentPosition++;
                 }
 
                 String updateLikeContent = "";
-                String updateLikeList = "";
-                String[] strLikeList = {};
-                if (!currentContent[Const.CONTENT_LIKE_USER].equals(" ")) {
-                    strLikeList = currentContent[Const.CONTENT_LIKE_USER].split("\\+");
-                }
-
+                String updateLikeUser = "";
                 if (content.getLikeUserList().contains(loginUser.getEmail())) {
                     viewHolder.ibtnLike.setBackgroundResource(R.mipmap.image_like);
                     content.getLikeUserList().remove(loginUser.getEmail());
                     loginUser.getLikeContentList().remove(content.getPublisherEmail() + "+" + content.getDateToMillisecond());
 
-                    for (String email : strLikeList) {
-                        if (!email.equals(loginUser.getEmail())) {
-                            if (updateLikeList.length() == 0) {
-                                updateLikeList = email;
-                            } else {
-                                updateLikeList += ("+" + email);
-                            }
+                    if(loginUser.getLikeContentList().size() > 0){
+                        updateLikeContent = loginUser.getLikeContentList().get(0);
+                        for(int i=1; i<loginUser.getLikeContentList().size(); i++){
+                            updateLikeContent += ("::" + loginUser.getLikeContentList().get(i));
                         }
-
-                    }
-
-                    for (String likeContent : strLikeContent) {
-                        if (!likeContent.contains(content.getPublisherEmail()) && !likeContent.contains(String.valueOf(content.getDateToMillisecond()))) {
-                            if (updateLikeContent.length() == 0) {
-                                updateLikeContent = likeContent;
-                            } else {
-                                updateLikeContent += ("::" + likeContent);
-                            }
-                        }
-                    }
-
-                    if (updateLikeContent.length() == 0) {
+                    } else {
                         updateLikeContent = " ";
                     }
 
-                    if (updateLikeList.length() == 0) {
-                        updateLikeList = " ";
+                    if(content.getLikeCount() > 0){
+                        updateLikeUser =  content.getLikeUserList().get(0);
+                        for(int i=1; i<content.getLikeUserList().size(); i++){
+                            updateLikeUser += ("+" + content.getLikeUserList().get(i));
+                        }
+                    } else {
+                        updateLikeUser = " ";
                     }
                 } else {
                     viewHolder.ibtnLike.setBackgroundResource(R.mipmap.image_like_red);
                     content.getLikeUserList().add(loginUser.getEmail());
                     loginUser.getLikeContentList().add(content.getPublisherEmail() + "+" + content.getDateToMillisecond());
 
-                    if (strLikeList[0].equals(" ")) {
-                        updateLikeList = loginUser.getEmail();
-                    } else {
-                        updateLikeList = currentContent[Const.CONTENT_LIKE_USER] + "+" + loginUser.getEmail();
+                    updateLikeContent = loginUser.getLikeContentList().get(0);
+                    for(int i=1; i<loginUser.getLikeContentList().size(); i++){
+                        updateLikeContent += ("::" + loginUser.getLikeContentList().get(i));
                     }
 
-                    if (updateLikeContent.equals(" ")) {
-                        updateLikeContent = content.getPublisherEmail() + "+" + content.getDateToMillisecond();
-                    } else {
-                        updateLikeContent += ("::" + content.getPublisherEmail() + "+" + content.getDateToMillisecond());
+                    updateLikeUser =  content.getLikeUserList().get(0);
+                    for(int i=1; i<content.getLikeUserList().size(); i++){
+                        updateLikeUser += ("+" + content.getLikeUserList().get(i));
                     }
                 }
 
-                currentContent[Const.CONTENT_LIKE_USER] = updateLikeList;
-                String updateCurrentContent = currentContent[0];
-                for (int i = 1; i < currentContent.length; i++) {
-                    updateCurrentContent += ("::" + currentContent[i]);
+                strLoginUserArray[Const.INDEX_LIKE_CONTENT] = updateLikeContent;
+                String updateLoginUser = strLoginUserArray[0];
+                for(int i=1; i<strLoginUserArray.length; i++){
+                    updateLoginUser += (","+strLoginUserArray[i]);
                 }
 
-                strContent[point] = updateCurrentContent;
-                String updateContent = strContent[0];
-                for (int i = 1; i < strContent.length; i++) {
-                    updateContent += ("," + strContent[i]);
+                strContentArray[Const.CONTENT_LIKE_USER] = updateLikeUser;
+                String updateContent = strContentArray[0];
+
+                for(int i=1; i<strContentArray.length; i++){
+                    updateContent += ("::"+strContentArray[i]);
                 }
 
-                strLoginUser[Const.INDEX_LIKE_CONTENT] = updateLikeContent;
-                String updateLoginUser = strLoginUser[0];
-                for (int i = 1; i < strLoginUser.length; i++) {
-                    updateLoginUser += ("," + strLoginUser[i]);
+                strTotalContentArray[contentPosition] = updateContent;
+                String updateTotalContent = strTotalContentArray[0];
+
+                for(int i=1; i<strTotalContentArray.length; i++){
+                    updateTotalContent += (","+strTotalContentArray[i]);
                 }
 
                 spAccountEditor.putString(loginUser.getEmail(), updateLoginUser);
+                spContentEditor.putString(content.getPublisherEmail(), updateTotalContent);
+
+                Log.d(TAG, "Login user: " + updateLoginUser);
+                Log.d(TAG, "Content: " + updateContent);
+
                 spAccountEditor.apply();
-                spContentEditor.putString(content.getPublisherEmail(), updateContent);
                 spContentEditor.apply();
 
                 notifyDataSetChanged();
