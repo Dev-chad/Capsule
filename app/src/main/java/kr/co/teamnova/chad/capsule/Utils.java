@@ -2,6 +2,8 @@ package kr.co.teamnova.chad.capsule;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by Chad on 2017-02-20.
@@ -50,5 +52,24 @@ public class Utils {
         }
 
         return strByteArray;
+    }
+
+    public static String getTime(long savedTime) {
+        String date = "";
+        long currentTime = System.currentTimeMillis();
+        long subTime = currentTime - savedTime;
+
+        if (subTime / 60000 < 1) {
+            date = "방금 전";
+        } else if (subTime / 60000 < 60) {
+            date = (subTime / 60000) + "분 전";
+        } else if (subTime / 3600000 < 24) {
+            date = (subTime / 3600000) + "시간 전";
+        } else if (subTime / 86400000 < 7) {
+            date = (subTime / 86400000) + "일 전";
+        } else {
+            date = new SimpleDateFormat("yyyy년 MM월 dd일  HH:mm").format(new Date(savedTime));
+        }
+        return date;
     }
 }

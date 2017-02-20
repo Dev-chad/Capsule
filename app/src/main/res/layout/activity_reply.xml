@@ -15,7 +15,8 @@
         android:id="@+id/listView_reply"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:divider="@null">
 
     </ListView>
 
@@ -37,7 +38,7 @@
             android:maxLines="1"/>
 
         <ImageButton
-            android:id="@+id/btn_reply"
+            android:id="@+id/ibtn_reply"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

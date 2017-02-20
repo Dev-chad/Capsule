@@ -22,7 +22,6 @@ public class Reply implements Parcelable {
         replyList = new ArrayList<>();
     }
 
-
     protected Reply(Parcel in) {
         user = in.readParcelable(User.class.getClassLoader());
         desc = in.readString();

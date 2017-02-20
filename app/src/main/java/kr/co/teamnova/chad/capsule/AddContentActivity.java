@@ -390,7 +390,7 @@ public class AddContentActivity extends AppCompatActivity {
                     if (desc.equals(" ")) {
                         description = " ";
                     } else {
-                        description = HomeFragment.getStringFromByteString(desc, "\\+");
+                        description = Utils.getStringFromByteString(desc, "\\+");
                     }
                     editContent.setDesc(description);
 

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +37,8 @@ public class HomeFragment extends Fragment implements AbsListView.OnScrollListen
     private ContentListViewAdapter adapter;
     private User loginUser;
 
+    private ArrayList<Content> totalContent;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_home, container, false);
@@ -62,7 +65,7 @@ public class HomeFragment extends Fragment implements AbsListView.OnScrollListen
 
         textNothingContent = (TextView) view.findViewById(R.id.text_nothing_content_const);
 
-        ArrayList<Content> totalContent = new ArrayList<>();
+        totalContent = new ArrayList<>();
 
         if (loginUser.getNumOfContent() > 0) {
             SharedPreferences spContent = getActivity().getSharedPreferences("contents", MODE_PRIVATE);
@@ -96,6 +99,18 @@ public class HomeFragment extends Fragment implements AbsListView.OnScrollListen
                     Collections.addAll(likeList, strLikeList.split("\\+"));
                 }
 
+                String strReplyList = strContentDetail[Const.CONTENT_REPLY];
+                Log.d(TAG, strReplyList);
+                ArrayList<Reply> replyList = new ArrayList<>();
+                if(!strReplyList.equals(" ")){
+                    String[] strReplyArray = strReplyList.split("\\+");
+                    for(String strReply:strReplyArray){
+                        String[] strReplyDetail = strReply.split("/");
+                        Reply replyItem = new Reply(new User(strReplyDetail[0], spAccount.getString(strReplyDetail[0], "").split(",")), Utils.getStringFromByteString(strReplyDetail[1], "#"), Long.valueOf(strReplyDetail[2]));
+                        replyList.add(replyItem);
+                    }
+                }
+
                 Content userContent = new Content(
                         uriContentImage,
                         strContentDesc,
@@ -105,7 +120,7 @@ public class HomeFragment extends Fragment implements AbsListView.OnScrollListen
                         Long.valueOf(strContentDetail[Const.CONTENT_TIME]),
                         strLocation,
                         likeList,
-                        new ArrayList<Reply>());
+                        replyList);
 
                 totalContent.add(userContent);
             }
@@ -146,6 +161,18 @@ public class HomeFragment extends Fragment implements AbsListView.OnScrollListen
                             Collections.addAll(likeList, strLikeList.split("\\+"));
                         }
 
+                        String strReplyList = strContentDetail[Const.CONTENT_REPLY];
+                        Log.d(TAG, strReplyList);
+                        ArrayList<Reply> replyList = new ArrayList<>();
+                        if(!strReplyList.equals(" ")){
+                            String[] strReplyArray = strReplyList.split("\\+");
+                            for(String strReply:strReplyArray){
+                                String[] strReplyDetail = strReply.split("/");
+                                Reply replyItem = new Reply(new User(strReplyDetail[0], spAccount.getString(strReplyDetail[0], "").split(",")), Utils.getStringFromByteString(strReplyDetail[1], "#"), Long.valueOf(strReplyDetail[2]));
+                                replyList.add(replyItem);
+                            }
+                        }
+
                         Content userContent = new Content(
                                 uriContentImage,
                                 strContentDesc,
@@ -155,7 +182,7 @@ public class HomeFragment extends Fragment implements AbsListView.OnScrollListen
                                 Long.valueOf(strContentDetail[Const.CONTENT_TIME]),
                                 strLocation,
                                 likeList,
-                                new ArrayList<Reply>());
+                                replyList);
 
                         totalContent.add(userContent);
                     }
@@ -239,12 +266,18 @@ public class HomeFragment extends Fragment implements AbsListView.OnScrollListen
         super.onActivityResult(requestCode, resultCode, data);
 
         if(resultCode == RESULT_OK){
-            int position = data.getIntExtra("position", -1);
-
-            Content editContent = data.getParcelableExtra("edit_content");
-
-            if(position != -1){
-                adapter.editList(position, editContent);
+            if(requestCode == 0){
+                int position = data.getIntExtra("position", -1);
+                Log.d(TAG, String.valueOf(position));
+                Content editContent = data.getParcelableExtra("edit_content");
+                totalContent.remove(position);
+                totalContent.add(position, editContent);
+                adapter.notifyDataSetChanged();
+            } else if (requestCode == 1){
+                int position = data.getIntExtra("position", 0);
+                totalContent.remove(position);
+                totalContent.add(position, (Content)data.getParcelableExtra("content"));
+                adapter.notifyDataSetChanged();
             }
         }
     }

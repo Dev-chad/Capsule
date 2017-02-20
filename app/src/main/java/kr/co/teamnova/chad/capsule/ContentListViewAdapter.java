@@ -137,16 +137,15 @@ public class ContentListViewAdapter extends BaseAdapter {
             viewHolder.textViewContentDetail.setVisibility(View.GONE);
             viewHolder.textViewLastContent.setVisibility(View.GONE);
         } else {
+            viewHolder.textViewContent.setVisibility(View.VISIBLE);
             String[] strContent = content.getContentDesc().split("\\n");
             if (strContent.length > 2) {
-                viewHolder.textViewContent.setVisibility(View.VISIBLE);
                 viewHolder.textViewLastContent.setVisibility(View.VISIBLE);
                 viewHolder.textViewContentDetail.setVisibility(View.VISIBLE);
                 if (content.isContentDetailCheck()) {
                     int maxLine = content.getContentDesc().split("\\n").length;
                     viewHolder.textViewContent.setMaxLines(maxLine - 1);
                     viewHolder.textViewContentDetail.setText("   - 접기 -");
-
                     String strUpper = strContent[0];
                     for (int i = 1; i < strContent.length - 1; i++) {
                         strUpper += ('\n' + strContent[i]);
@@ -425,7 +424,10 @@ public class ContentListViewAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, ReplyActivity.class);
-                context.startActivity(intent);
+                intent.putExtra("content", content);
+                intent.putExtra("login_user", loginUser);
+                intent.putExtra("position", position);
+                fragment.startActivityForResult(intent, 1);
             }
         });
 
@@ -434,7 +436,9 @@ public class ContentListViewAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, ReplyActivity.class);
-                context.startActivity(intent);
+                intent.putExtra("content", content);
+                intent.putExtra("login_user", loginUser);
+                fragment.startActivityForResult(intent, 1);
             }
         });
 
