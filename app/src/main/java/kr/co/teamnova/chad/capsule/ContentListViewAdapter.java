@@ -525,13 +525,13 @@ public class ContentListViewAdapter extends BaseAdapter {
         try {
             BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uriImage), null, options);
             DisplayMetrics dm = context.getResources().getDisplayMetrics();
-            Log.d(TAG, "Original: " + options.outWidth + "x" + options.outHeight);
-            Log.d(TAG, "View width: " + dm.widthPixels);
+//            Log.d(TAG, "Original: " + options.outWidth + "x" + options.outHeight);
+//            Log.d(TAG, "View width: " + dm.widthPixels);
             options.inSampleSize = calculateInSampleSize(options, dm.widthPixels);
             options.inJustDecodeBounds = false;
-            Log.d(TAG, "inSampleSize: " + options.inSampleSize);
+//            Log.d(TAG, "inSampleSize: " + options.inSampleSize);
             Bitmap bp = BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uriImage), null, options);
-            Log.d(TAG, "Sampled: " + bp.getWidth() + "x" + bp.getHeight());
+//            Log.d(TAG, "Sampled: " + bp.getWidth() + "x" + bp.getHeight());
             return bp;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -573,7 +573,7 @@ public class ContentListViewAdapter extends BaseAdapter {
     public void editList(int position, Content content) {
         listViewContentList.remove(position);
         listViewContentList.add(position, content);
-        Log.d(TAG, listViewContentList.get(position).getContentDesc());
+//        Log.d(TAG, listViewContentList.get(position).getContentDesc());
         notifyDataSetChanged();
     }
 }
