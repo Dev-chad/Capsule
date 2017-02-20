@@ -110,10 +110,10 @@
                     android:layout_marginEnd="15dp"
                     android:layout_marginStart="5dp"
                     android:layout_toEndOf="@id/image_profile_reply"
-                    android:maxLength="100"
+                    android:maxLength="30"
                     android:maxLines="1"
                     android:includeFontPadding="false"
-                    android:text="sdfdsfsdfdsfsdfsdfsdfsdfsdf" />
+                    android:text="sdfdsfsdfdsfsdfsdfsdfsdfsdfdddd" />
 
             </RelativeLayout>
         </LinearLayout>
