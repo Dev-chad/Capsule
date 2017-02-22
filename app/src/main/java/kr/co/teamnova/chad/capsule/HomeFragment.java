@@ -106,7 +106,17 @@ public class HomeFragment extends Fragment implements AbsListView.OnScrollListen
                     String[] strReplyArray = strReplyList.split("\\+");
                     for(String strReply:strReplyArray){
                         String[] strReplyDetail = strReply.split("/");
-                        Reply replyItem = new Reply(new User(strReplyDetail[0], spAccount.getString(strReplyDetail[0], "").split(",")), Utils.getStringFromByteString(strReplyDetail[1], "#"), Long.valueOf(strReplyDetail[2]));
+                        String strReply2 = strReplyDetail[Const.REPLY_REPLY];
+                        ArrayList<Reply> reply2List = new ArrayList<>();
+                        if(!strReply2.equals(" ")){
+                            String[] strTotalReply2 = strReply2.split("#");
+                            for(String strInnerReply : strTotalReply2){
+                                String[] strInnerReplyDetail = strInnerReply.split("&");
+                                Reply innerReply = new Reply(new User(strInnerReplyDetail[Const.REPLY_NICKNAME], spAccount.getString(strInnerReplyDetail[Const.REPLY_NICKNAME], "").split(",")), Utils.getStringFromByteString(strInnerReplyDetail[Const.REPLY_DECS], "\\*"), Long.valueOf(strInnerReplyDetail[Const.REPLY_TIME]));
+                                reply2List.add(innerReply);
+                            }
+                        }
+                        Reply replyItem = new Reply(new User(strReplyDetail[0], spAccount.getString(strReplyDetail[0], "").split(",")), Utils.getStringFromByteString(strReplyDetail[1], "#"), Long.valueOf(strReplyDetail[2]), reply2List);
                         replyList.add(replyItem);
                     }
                 }
@@ -168,7 +178,17 @@ public class HomeFragment extends Fragment implements AbsListView.OnScrollListen
                             String[] strReplyArray = strReplyList.split("\\+");
                             for(String strReply:strReplyArray){
                                 String[] strReplyDetail = strReply.split("/");
-                                Reply replyItem = new Reply(new User(strReplyDetail[0], spAccount.getString(strReplyDetail[0], "").split(",")), Utils.getStringFromByteString(strReplyDetail[1], "#"), Long.valueOf(strReplyDetail[2]));
+                                String strReply2 = strReplyDetail[Const.REPLY_REPLY];
+                                ArrayList<Reply> reply2List = new ArrayList<>();
+                                if(!strReply2.equals(" ")){
+                                    String[] strTotalReply2 = strReply2.split("#");
+                                    for(String strInnerReply : strTotalReply2){
+                                        String[] strInnerReplyDetail = strInnerReply.split("&");
+                                        Reply innerReply = new Reply(new User(strInnerReplyDetail[Const.REPLY_NICKNAME], spAccount.getString(strInnerReplyDetail[Const.REPLY_NICKNAME], "").split(",")), Utils.getStringFromByteString(strInnerReplyDetail[Const.REPLY_DECS], "\\*"), Long.valueOf(strInnerReplyDetail[Const.REPLY_TIME]));
+                                        reply2List.add(innerReply);
+                                    }
+                                }
+                                Reply replyItem = new Reply(new User(strReplyDetail[0], spAccount.getString(strReplyDetail[0], "").split(",")), Utils.getStringFromByteString(strReplyDetail[1], "#"), Long.valueOf(strReplyDetail[2]), reply2List);
                                 replyList.add(replyItem);
                             }
                         }

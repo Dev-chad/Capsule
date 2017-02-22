@@ -24,5 +24,10 @@ public class Const {
     public static final int CONTENT_LIKE_USER = 6;
     public static final int CONTENT_REPLY = 7;
 
+    public static final int REPLY_NICKNAME = 0;
+    public static final int REPLY_DECS = 1;
+    public static final int REPLY_TIME = 2;
+    public static final int REPLY_REPLY = 3;
+
 
 }

@@ -2,11 +2,11 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:paddingBottom="10dp"
     android:paddingEnd="10dp"
     android:paddingStart="10dp"
-    android:paddingTop="10dp"
-    android:orientation="vertical">
+    android:paddingTop="10dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -30,6 +30,7 @@
             android:layout_toEndOf="@id/image_profile"
             android:text="JACKSON"
             android:textColor="@android:color/black"
+            android:textSize="16sp"
             android:textStyle="bold" />
 
         <TextView
@@ -38,10 +39,10 @@
             android:layout_height="wrap_content"
             android:layout_alignStart="@id/text_nickname"
             android:layout_below="@id/text_nickname"
-            android:layout_marginTop="5dp"
-            android:text="정말 좋아보이네요 ㅋㅋㅋㅋㅋ\nsdfㄴㅇㄹㄴㅇsdfsㄴㅇㄹㄴㅇㄹㄴㅇㄹsdfsdfsdf]\nsdfsdfsdfssdfsdf\nssdf"
+            android:layout_marginBottom="5dp"
+            android:text="gg"
             android:textColor="@android:color/black"
-            android:textSize="12sp" />
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/text_time"
@@ -74,10 +75,10 @@
             android:background="@mipmap/ic_menu" />
 
         <LinearLayout
-            android:layout_below="@id/text_time"
-            android:layout_alignStart="@id/text_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignStart="@id/text_time"
+            android:layout_below="@id/text_time"
             android:orientation="vertical">
 
             <TextView
@@ -85,37 +86,51 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
+                android:text="이전 답글 12개"
                 android:textSize="11sp"
-                android:textStyle="bold"
-                android:text="이전 답글 12개"/>
+                android:textStyle="bold" />
 
             <RelativeLayout
                 android:id="@+id/layout_reply_small"
-                android:layout_marginTop="5dp"
-                android:layout_marginStart="20dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp">
 
                 <ImageView
                     android:id="@+id/image_profile_reply"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
+                    android:background="@drawable/frame_round"
                     android:padding="2dp"
-                    android:src="@mipmap/ic_launcher"
-                    android:background="@drawable/frame_round"/>
+                    android:src="@mipmap/ic_launcher" />
+
+                <TextView
+                    android:id="@+id/text_last_reply_nickname"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="5dp"
+                    android:layout_toEndOf="@id/image_profile_reply"
+                    android:includeFontPadding="false"
+                    android:text="test1"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/text_last_reply"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginEnd="15dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_toEndOf="@id/image_profile_reply"
+                    android:layout_marginStart="4dp"
+                    android:layout_toEndOf="@id/text_last_reply_nickname"
+                    android:ellipsize="end"
+                    android:includeFontPadding="false"
                     android:maxLength="30"
                     android:maxLines="1"
-                    android:includeFontPadding="false"
-                    android:text="sdfdsfsdfdsfsdfsdfsdfsdfsdfdddd" />
+                    android:text="sdfdsfssdfsd"
+                    android:textColor="@android:color/black"
+                    android:textSize="10sp" />
 
             </RelativeLayout>
         </LinearLayout>

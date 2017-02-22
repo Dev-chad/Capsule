@@ -438,6 +438,7 @@ public class ContentListViewAdapter extends BaseAdapter {
                 Intent intent = new Intent(context, ReplyActivity.class);
                 intent.putExtra("content", content);
                 intent.putExtra("login_user", loginUser);
+                intent.putExtra("position", position);
                 fragment.startActivityForResult(intent, 1);
             }
         });

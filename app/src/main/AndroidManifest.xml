@@ -43,6 +43,8 @@
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity android:name=".LikeActivity"
             android:label ="좋아요"/>
+        <activity android:name=".Reply2Activity"
+            android:label ="답글"/>
     </application>
 
 </manifest>

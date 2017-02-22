@@ -23,6 +23,8 @@ public class ReplyActivity extends AppCompatActivity {
     private SharedPreferences.Editor spContentEditor;
     private Content content;
 
+    private ReplyListAdapter adapter;
+
     private boolean isChanged = false;
 
     @Override
@@ -36,12 +38,9 @@ public class ReplyActivity extends AppCompatActivity {
         final User loginUser = getIntent().getParcelableExtra("login_user");
         content = getIntent().getParcelableExtra("content");
 
-
         ListView listViewReply = (ListView) findViewById(R.id.listView_reply);
 
-        ArrayList<Reply> replyList = content.getReplyList();
-
-        final ReplyListAdapter adapter = new ReplyListAdapter(loginUser, replyList);
+        adapter = new ReplyListAdapter(this, loginUser, content);
         listViewReply.setAdapter(adapter);
 
         final EditText editReply = (EditText) findViewById(R.id.edit_reply);
@@ -65,10 +64,11 @@ public class ReplyActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String strReply = strCurrentContentArray[Const.CONTENT_REPLY];
+                Long currentTime = System.currentTimeMillis();
                 if (strReply.equals(" ")) {
-                    strReply = loginUser.getEmail() + "/" + Utils.getByteStringForm(editReply.getText().toString(), "#") + "/" + System.currentTimeMillis() + "/" + " ";
+                    strReply = loginUser.getEmail() + "/" + Utils.getByteStringForm(editReply.getText().toString(), "#") + "/" + currentTime + "/" + " ";
                 } else {
-                    strReply += ("+" + loginUser.getEmail() + "/" + Utils.getByteStringForm(editReply.getText().toString(), "#") + "/" + System.currentTimeMillis() + "/" + " ");
+                    strReply += ("+" + loginUser.getEmail() + "/" + Utils.getByteStringForm(editReply.getText().toString(), "#") + "/" + currentTime + "/" + " ");
                 }
 
                 strCurrentContentArray[Const.CONTENT_REPLY] = strReply;
@@ -87,7 +87,7 @@ public class ReplyActivity extends AppCompatActivity {
                 spContentEditor.putString(content.getPublisherEmail(), updatedTotalContent);
                 spContentEditor.apply();
 
-                Reply reply = new Reply(loginUser, editReply.getText().toString(), System.currentTimeMillis());
+                Reply reply = new Reply(loginUser, editReply.getText().toString(), currentTime);
                 adapter.addReply(reply);
 
                 isChanged = true;
@@ -122,5 +122,17 @@ public class ReplyActivity extends AppCompatActivity {
         }
 
         finish();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(resultCode == RESULT_OK){
+            int position = data.getIntExtra("position", 0);
+            ArrayList<Reply> reply = data.getParcelableArrayListExtra("reply_list");
+            content.getReplyList().get(position).setReplyList(reply);
+            adapter.notifyDataSetChanged();
+        }
     }
 }

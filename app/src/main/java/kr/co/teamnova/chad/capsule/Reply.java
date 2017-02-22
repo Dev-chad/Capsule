@@ -22,6 +22,13 @@ public class Reply implements Parcelable {
         replyList = new ArrayList<>();
     }
 
+    public Reply(User user, String desc, long dateMilliSec, ArrayList<Reply> replyList) {
+        this.user = user;
+        this.desc = desc;
+        this.dateMilliSec = dateMilliSec;
+        this.replyList = replyList;
+    }
+
     protected Reply(Parcel in) {
         user = in.readParcelable(User.class.getClassLoader());
         desc = in.readString();

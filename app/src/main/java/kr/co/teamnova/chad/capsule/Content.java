@@ -203,6 +203,12 @@ public class Content implements Parcelable {
     }
 
     public int getReplyCount() {
-        return replyList.size();
+        int size = 0;
+        for(Reply reply : replyList){
+            size += reply.getReplyList().size();
+        }
+
+        size += replyList.size();
+        return size;
     }
 }
