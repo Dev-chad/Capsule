@@ -36,7 +36,7 @@ public class Reply2Activity extends AppCompatActivity {
         replyList = upperReply.getReplyList();
 
         ListView listView = (ListView)findViewById(R.id.listView_reply);
-        final ReplyList2Adapter adapter = new ReplyList2Adapter(this, loginUser, replyList);
+        final ReplyList2Adapter adapter = new ReplyList2Adapter(this, loginUser, replyList, content, upperReply);
         listView.setAdapter(adapter);
 
         final EditText editReply = (EditText) findViewById(R.id.edit_reply);
@@ -128,6 +128,10 @@ public class Reply2Activity extends AppCompatActivity {
             }
         });
 
+    }
+
+    public void setChanged(boolean isChanged){
+        this.isChanged = isChanged;
     }
 
     @Override

@@ -124,11 +124,16 @@ public class ReplyActivity extends AppCompatActivity {
         finish();
     }
 
+    public void setChanged(boolean isChanged){
+        this.isChanged = isChanged;
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(resultCode == RESULT_OK){
+            isChanged = true;
             int position = data.getIntExtra("position", 0);
             ArrayList<Reply> reply = data.getParcelableArrayListExtra("reply_list");
             content.getReplyList().get(position).setReplyList(reply);

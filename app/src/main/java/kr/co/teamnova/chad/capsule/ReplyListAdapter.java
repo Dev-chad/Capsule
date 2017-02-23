@@ -2,12 +2,15 @@ package kr.co.teamnova.chad.capsule;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -61,7 +64,7 @@ public class ReplyListAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, final ViewGroup parent) {
         final Context context = parent.getContext();
         final Reply reply = replyList.get(position);
         if (convertView == null) {
@@ -121,6 +124,81 @@ public class ReplyListAdapter extends BaseAdapter {
         viewHolder.ibtnMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                PopupMenu p = new PopupMenu(parent.getContext(), v);
+                p.getMenuInflater().inflate(R.menu.popup_menu_listview, p.getMenu());
+                p.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.menu_edit:
+                                /*Intent intent = new Intent(context, AddContentActivity.class);
+                                intent.putExtra("edit_content", content);
+                                intent.putExtra("login_user", loginUser.getEmail());
+                                intent.putExtra("position", position);
+                                activity.startActivityForResult(intent, 0);*/
+                                break;
+                            case R.id.menu_delete:
+                                SharedPreferences spContents = context.getSharedPreferences("contents", Context.MODE_PRIVATE);
+                                SharedPreferences.Editor spContentsEditor = spContents.edit();
+
+                                String[] strTotalContents = spContents.getString(content.getPublisherEmail(), "").split(",");
+                                String[] strContentsDetail = {};
+                                int contentPosition = 0;
+
+                                for(String strContentFind : strTotalContents){
+                                    String[] strContentFindDetail = strContentFind.split("::");
+                                    if(strContentFindDetail[Const.CONTENT_TIME].equals(String.valueOf(content.getDateToMillisecond()))){
+                                        strContentsDetail = strContentFindDetail;
+                                        break;
+                                    }
+                                    contentPosition++;
+                                }
+
+                                String[] strTotalReply = strContentsDetail[Const.CONTENT_REPLY].split("\\+");
+                                String updatedReply = "";
+
+                                for(String strReply : strTotalReply){
+                                    String[] strReplyDetail = strReply.split("/");
+
+                                    if(!strReplyDetail[Const.REPLY_TIME].equals(String.valueOf(reply.getDateMilliSec()))){
+                                        if(updatedReply.equals("")){
+                                            updatedReply = strReply;
+                                        } else {
+                                            updatedReply += ("+" + strReply);
+                                        }
+                                    }
+                                }
+
+                                if(updatedReply.equals("")){
+                                    updatedReply = " ";
+                                }
+
+                                strContentsDetail[Const.CONTENT_REPLY] = updatedReply;
+                                String updatedContent = strContentsDetail[0];
+                                for(int i=1; i<strContentsDetail.length; i++){
+                                    updatedContent += ("::" + strContentsDetail[i]);
+                                }
+
+                                strTotalContents[contentPosition] = updatedContent;
+                                String updatedTotalContent = strTotalContents[0];
+                                for(int i=1; i<strTotalContents.length; i++){
+                                    updatedTotalContent += (","+strTotalContents[i]);
+                                }
+
+                                spContentsEditor.putString(content.getPublisherEmail(), updatedTotalContent);
+                                spContentsEditor.apply();
+
+                                replyList.remove(position);
+                                activity.setChanged(true);
+                                notifyDataSetChanged();
+                                break;
+                            default:
+                                return false;
+                        }
+                        return true;
+                    }
+                });
+                p.show();
 
             }
         });
