@@ -41,10 +41,15 @@
             android:name=".ReplyActivity"
             android:label="댓글"
             android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity android:name=".LikeActivity"
-            android:label ="좋아요"/>
-        <activity android:name=".Reply2Activity"
-            android:label ="답글"/>
+        <activity
+            android:name=".LikeActivity"
+            android:label="좋아요" />
+        <activity
+            android:name=".Reply2Activity"
+            android:label="답글" />
+        <activity
+            android:name=".ReplyEditActivity"
+            android:theme="@style/Theme.AppCompat.Light.Dialog"/>
     </application>
 
 </manifest>

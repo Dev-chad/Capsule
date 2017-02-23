@@ -22,7 +22,7 @@ import java.util.ArrayList;
 
 public class ReplyListAdapter extends BaseAdapter {
 
-    public class ViewHolder{
+    public class ViewHolder {
         ImageView imageProfile;
         ImageView imageProfileSmall;
         TextView textNickname;
@@ -41,7 +41,7 @@ public class ReplyListAdapter extends BaseAdapter {
     private User loginUser;
     private Content content;
 
-    public ReplyListAdapter(ReplyActivity activity, User loginUser, Content content){
+    public ReplyListAdapter(ReplyActivity activity, User loginUser, Content content) {
         this.loginUser = loginUser;
         this.content = content;
         replyList = content.getReplyList();
@@ -74,14 +74,14 @@ public class ReplyListAdapter extends BaseAdapter {
 
             viewHolder.imageProfile = (ImageView) convertView.findViewById(R.id.image_profile);
             viewHolder.imageProfileSmall = (ImageView) convertView.findViewById(R.id.image_profile_reply);
-            viewHolder.textNickname = (TextView)convertView.findViewById(R.id.text_nickname);
-            viewHolder.textReply = (TextView)convertView.findViewById(R.id.text_reply);
-            viewHolder.textTime = (TextView)convertView.findViewById(R.id.text_time);
-            viewHolder.textAddReply = (TextView)convertView.findViewById(R.id.text_add_reply);
-            viewHolder.textLastReply = (TextView)convertView.findViewById(R.id.text_last_reply);
-            viewHolder.textViewBeforeReply = (TextView)convertView.findViewById(R.id.text_reply_before);
-            viewHolder.layoutReplySmall = (RelativeLayout)convertView.findViewById(R.id.layout_reply_small);
-            viewHolder.ibtnMenu = (ImageButton)convertView.findViewById(R.id.ibtn_menu);
+            viewHolder.textNickname = (TextView) convertView.findViewById(R.id.text_nickname);
+            viewHolder.textReply = (TextView) convertView.findViewById(R.id.text_reply);
+            viewHolder.textTime = (TextView) convertView.findViewById(R.id.text_time);
+            viewHolder.textAddReply = (TextView) convertView.findViewById(R.id.text_add_reply);
+            viewHolder.textLastReply = (TextView) convertView.findViewById(R.id.text_last_reply);
+            viewHolder.textViewBeforeReply = (TextView) convertView.findViewById(R.id.text_reply_before);
+            viewHolder.layoutReplySmall = (RelativeLayout) convertView.findViewById(R.id.layout_reply_small);
+            viewHolder.ibtnMenu = (ImageButton) convertView.findViewById(R.id.ibtn_menu);
 
             convertView.setTag(viewHolder);
         } else {
@@ -91,22 +91,23 @@ public class ReplyListAdapter extends BaseAdapter {
         viewHolder.imageProfile.setImageURI(reply.getUser().getUriProfileImage());
         viewHolder.textNickname.setText(reply.getUser().getNickname());
         viewHolder.textReply.setText(reply.getDesc());
+
         viewHolder.textTime.setText(Utils.getTime(reply.getDateMilliSec()));
 
-        if(reply.getUser().getNickname().equals(loginUser.getNickname())){
+        if (reply.getUser().getNickname().equals(loginUser.getNickname())) {
             viewHolder.ibtnMenu.setVisibility(View.VISIBLE);
         } else {
             viewHolder.ibtnMenu.setVisibility(View.GONE);
         }
 
-        if(reply.getReplyList().size() > 0 ){
+        if (reply.getReplyList().size() > 0) {
             viewHolder.layoutReplySmall.setVisibility(View.VISIBLE);
-            viewHolder.imageProfileSmall.setImageURI(reply.getReplyList().get(reply.getReplyList().size()-1).getUser().getUriProfileImage());
-            viewHolder.textLastReply.setText(reply.getReplyList().get(reply.getReplyList().size()-1).getDesc());
-            if(reply.getReplyList().size() > 1){
+            viewHolder.imageProfileSmall.setImageURI(reply.getReplyList().get(reply.getReplyList().size() - 1).getUser().getUriProfileImage());
+            viewHolder.textLastReply.setText(reply.getReplyList().get(reply.getReplyList().size() - 1).getDesc());
+            if (reply.getReplyList().size() > 1) {
                 viewHolder.textViewBeforeReply.setVisibility(View.VISIBLE);
-                viewHolder.textViewBeforeReply.setText("이전 답글 " + (reply.getReplyList().size()-1) + "개");
-            } else{
+                viewHolder.textViewBeforeReply.setText("이전 답글 " + (reply.getReplyList().size() - 1) + "개");
+            } else {
                 viewHolder.textViewBeforeReply.setVisibility(View.GONE);
             }
         } else {
@@ -131,11 +132,10 @@ public class ReplyListAdapter extends BaseAdapter {
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.menu_edit:
-                                /*Intent intent = new Intent(context, AddContentActivity.class);
-                                intent.putExtra("edit_content", content);
-                                intent.putExtra("login_user", loginUser.getEmail());
+                                Intent intent = new Intent(context, ReplyEditActivity.class);
                                 intent.putExtra("position", position);
-                                activity.startActivityForResult(intent, 0);*/
+                                intent.putExtra("publisher", content.getPublisherEmail());
+                                activity.startActivityForResult(intent, 1);
                                 break;
                             case R.id.menu_delete:
                                 SharedPreferences spContents = context.getSharedPreferences("contents", Context.MODE_PRIVATE);
@@ -145,9 +145,9 @@ public class ReplyListAdapter extends BaseAdapter {
                                 String[] strContentsDetail = {};
                                 int contentPosition = 0;
 
-                                for(String strContentFind : strTotalContents){
+                                for (String strContentFind : strTotalContents) {
                                     String[] strContentFindDetail = strContentFind.split("::");
-                                    if(strContentFindDetail[Const.CONTENT_TIME].equals(String.valueOf(content.getDateToMillisecond()))){
+                                    if (strContentFindDetail[Const.CONTENT_TIME].equals(String.valueOf(content.getDateToMillisecond()))) {
                                         strContentsDetail = strContentFindDetail;
                                         break;
                                     }
@@ -157,11 +157,11 @@ public class ReplyListAdapter extends BaseAdapter {
                                 String[] strTotalReply = strContentsDetail[Const.CONTENT_REPLY].split("\\+");
                                 String updatedReply = "";
 
-                                for(String strReply : strTotalReply){
+                                for (String strReply : strTotalReply) {
                                     String[] strReplyDetail = strReply.split("/");
 
-                                    if(!strReplyDetail[Const.REPLY_TIME].equals(String.valueOf(reply.getDateMilliSec()))){
-                                        if(updatedReply.equals("")){
+                                    if (!strReplyDetail[Const.REPLY_TIME].equals(String.valueOf(reply.getDateMilliSec()))) {
+                                        if (updatedReply.equals("")) {
                                             updatedReply = strReply;
                                         } else {
                                             updatedReply += ("+" + strReply);
@@ -169,20 +169,20 @@ public class ReplyListAdapter extends BaseAdapter {
                                     }
                                 }
 
-                                if(updatedReply.equals("")){
+                                if (updatedReply.equals("")) {
                                     updatedReply = " ";
                                 }
 
                                 strContentsDetail[Const.CONTENT_REPLY] = updatedReply;
                                 String updatedContent = strContentsDetail[0];
-                                for(int i=1; i<strContentsDetail.length; i++){
+                                for (int i = 1; i < strContentsDetail.length; i++) {
                                     updatedContent += ("::" + strContentsDetail[i]);
                                 }
 
                                 strTotalContents[contentPosition] = updatedContent;
                                 String updatedTotalContent = strTotalContents[0];
-                                for(int i=1; i<strTotalContents.length; i++){
-                                    updatedTotalContent += (","+strTotalContents[i]);
+                                for (int i = 1; i < strTotalContents.length; i++) {
+                                    updatedTotalContent += ("," + strTotalContents[i]);
                                 }
 
                                 spContentsEditor.putString(content.getPublisherEmail(), updatedTotalContent);
@@ -230,8 +230,9 @@ public class ReplyListAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public void addReply(Reply reply){
+    public void addReply(Reply reply) {
         replyList.add(reply);
         notifyDataSetChanged();
     }
+
 }
