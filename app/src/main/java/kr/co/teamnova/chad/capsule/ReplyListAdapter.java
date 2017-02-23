@@ -33,6 +33,7 @@ public class ReplyListAdapter extends BaseAdapter {
         TextView textLastReply;
         RelativeLayout layoutReplySmall;
         ImageButton ibtnMenu;
+        TextView textLastReplyNickname;
     }
 
     private ReplyActivity activity;
@@ -82,6 +83,7 @@ public class ReplyListAdapter extends BaseAdapter {
             viewHolder.textViewBeforeReply = (TextView) convertView.findViewById(R.id.text_reply_before);
             viewHolder.layoutReplySmall = (RelativeLayout) convertView.findViewById(R.id.layout_reply_small);
             viewHolder.ibtnMenu = (ImageButton) convertView.findViewById(R.id.ibtn_menu);
+            viewHolder.textLastReplyNickname = (TextView) convertView.findViewById(R.id.text_last_reply_nickname);
 
             convertView.setTag(viewHolder);
         } else {
@@ -104,6 +106,7 @@ public class ReplyListAdapter extends BaseAdapter {
             viewHolder.layoutReplySmall.setVisibility(View.VISIBLE);
             viewHolder.imageProfileSmall.setImageURI(reply.getReplyList().get(reply.getReplyList().size() - 1).getUser().getUriProfileImage());
             viewHolder.textLastReply.setText(reply.getReplyList().get(reply.getReplyList().size() - 1).getDesc());
+            viewHolder.textLastReplyNickname.setText(reply.getReplyList().get(reply.getReplyList().size() - 1).getUser().getNickname());
             if (reply.getReplyList().size() > 1) {
                 viewHolder.textViewBeforeReply.setVisibility(View.VISIBLE);
                 viewHolder.textViewBeforeReply.setText("이전 답글 " + (reply.getReplyList().size() - 1) + "개");
@@ -133,7 +136,10 @@ public class ReplyListAdapter extends BaseAdapter {
                         switch (item.getItemId()) {
                             case R.id.menu_edit:
                                 Intent intent = new Intent(context, ReplyEditActivity.class);
+                                intent.putExtra("content", content);
+                                intent.putExtra("reply", reply);
                                 intent.putExtra("position", position);
+                                intent.putExtra("mode", "댓글");
                                 intent.putExtra("publisher", content.getPublisherEmail());
                                 activity.startActivityForResult(intent, 1);
                                 break;

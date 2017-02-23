@@ -29,8 +29,6 @@ public class ReplyActivity extends AppCompatActivity {
 
     private ReplyListAdapter adapter;
 
-    private Reply editTargetReply;
-    private int editReplyPosition;
 
     private boolean isChanged = false;
     private boolean isEdited = false;
@@ -71,89 +69,44 @@ public class ReplyActivity extends AppCompatActivity {
         ibtnAddReply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isEdited){
-                    String[] strReply = strCurrentContentArray[Const.CONTENT_REPLY].split("\\+");
-                    Long replyTime = editTargetReply.getDateMilliSec();
 
-                    String updatedReply = "";
-                    for(String strFindReply : strReply){
-                        String[] strFindReplyDetail = strFindReply.split("/");
-                        if(strFindReplyDetail[Const.REPLY_TIME].equals(String.valueOf(replyTime))){
-                            strFindReplyDetail[Const.REPLY_DECS] = Utils.getByteStringForm(editReply.getText().toString(), "#");
-
-                            strFindReply = strFindReplyDetail[0];
-                            for(int i=1; i<strFindReplyDetail.length; i++){
-                                strFindReply += ("/" + strFindReplyDetail[i]);
-                            }
-                        }
-
-                        if(updatedReply.equals("")){
-                            updatedReply = strFindReply;
-                        } else {
-                            updatedReply += ("+" + strFindReply);
-                        }
-                    }
-
-                    strCurrentContentArray[Const.CONTENT_REPLY] = updatedReply;
-                    String strUpdatedCurrentContent = strCurrentContentArray[0];
-                    for (int i = 1; i < strCurrentContentArray.length; i++) {
-                        strUpdatedCurrentContent += ("::" + strCurrentContentArray[i]);
-                    }
-
-                    strTotalContentArray[position] = strUpdatedCurrentContent;
-                    String updatedTotalContent = strTotalContentArray[0];
-                    for (int i = 1; i < strTotalContentArray.length; i++) {
-                        updatedTotalContent += ("," + strTotalContentArray[i]);
-                    }
-
-                    Log.d(TAG, updatedTotalContent);
-                    spContentEditor.putString(content.getPublisherEmail(), updatedTotalContent);
-                    spContentEditor.apply();
-
-                    Reply editedReply = (Reply)adapter.getItem(editReplyPosition);
-                    editedReply.setDesc(editReply.getText().toString());
-                    adapter.setEditPosition(-1);
-                    adapter.notifyDataSetChanged();
-                }else {
-                    String strReply = strCurrentContentArray[Const.CONTENT_REPLY];
-                    Long currentTime = System.currentTimeMillis();
-                    if (strReply.equals(" ")) {
-                        strReply = loginUser.getEmail() + "/" + Utils.getByteStringForm(editReply.getText().toString(), "#") + "/" + currentTime + "/" + " ";
-                    } else {
-                        strReply += ("+" + loginUser.getEmail() + "/" + Utils.getByteStringForm(editReply.getText().toString(), "#") + "/" + currentTime + "/" + " ");
-                    }
-
-                    strCurrentContentArray[Const.CONTENT_REPLY] = strReply;
-                    String strUpdatedCurrentContent = strCurrentContentArray[0];
-                    for (int i = 1; i < strCurrentContentArray.length; i++) {
-                        strUpdatedCurrentContent += ("::" + strCurrentContentArray[i]);
-                    }
-
-                    strTotalContentArray[position] = strUpdatedCurrentContent;
-                    String updatedTotalContent = strTotalContentArray[0];
-                    for (int i = 1; i < strTotalContentArray.length; i++) {
-                        updatedTotalContent += ("," + strTotalContentArray[i]);
-                    }
-
-                    Log.d(TAG, updatedTotalContent);
-                    spContentEditor.putString(content.getPublisherEmail(), updatedTotalContent);
-                    spContentEditor.apply();
-
-                    Reply reply = new Reply(loginUser, editReply.getText().toString(), currentTime);
-                    adapter.addReply(reply);
-                }
-                isChanged = true;
-                if(isEdited){
-                    isEdited =false;
+                String strReply = strCurrentContentArray[Const.CONTENT_REPLY];
+                Long currentTime = System.currentTimeMillis();
+                if (strReply.equals(" ")) {
+                    strReply = loginUser.getEmail() + "/" + Utils.getByteStringForm(editReply.getText().toString(), "#") + "/" + currentTime + "/" + " ";
                 } else {
-                    listViewReply.setSelection(adapter.getCount()-1);
+                    strReply += ("+" + loginUser.getEmail() + "/" + Utils.getByteStringForm(editReply.getText().toString(), "#") + "/" + currentTime + "/" + " ");
+                }
+
+                strCurrentContentArray[Const.CONTENT_REPLY] = strReply;
+                String strUpdatedCurrentContent = strCurrentContentArray[0];
+                for (int i = 1; i < strCurrentContentArray.length; i++) {
+                    strUpdatedCurrentContent += ("::" + strCurrentContentArray[i]);
+                }
+
+                strTotalContentArray[position] = strUpdatedCurrentContent;
+                String updatedTotalContent = strTotalContentArray[0];
+                for (int i = 1; i < strTotalContentArray.length; i++) {
+                    updatedTotalContent += ("," + strTotalContentArray[i]);
+                }
+
+                Log.d(TAG, updatedTotalContent);
+                spContentEditor.putString(content.getPublisherEmail(), updatedTotalContent);
+                spContentEditor.apply();
+
+                Reply reply = new Reply(loginUser, editReply.getText().toString(), currentTime);
+                adapter.addReply(reply);
+
+                isChanged = true;
+                if (isEdited) {
+                    isEdited = false;
+                } else {
+                    listViewReply.setSelection(adapter.getCount() - 1);
                 }
                 editReply.setText("");
 
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(editReply.getWindowToken(), 0);
-
-
             }
         });
 
@@ -175,26 +128,20 @@ public class ReplyActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(isEdited){
-            isEdited = false;
-            editReply.setText("");
-            adapter.setEditPosition(-1);
-            adapter.notifyDataSetChanged();
+        if (isChanged) {
+            Intent intent = new Intent();
+            intent.putExtra("content", content);
+            intent.putExtra("position", getIntent().getIntExtra("position", 0));
+            setResult(RESULT_OK, intent);
         } else {
-            if (isChanged) {
-                Intent intent = new Intent();
-                intent.putExtra("content", content);
-                intent.putExtra("position", getIntent().getIntExtra("position", 0));
-                setResult(RESULT_OK, intent);
-            } else {
-                setResult(RESULT_CANCELED, null);
-            }
-
-            finish();
+            setResult(RESULT_CANCELED, null);
         }
+
+        finish();
+
     }
 
-    public void setChanged(boolean isChanged){
+    public void setChanged(boolean isChanged) {
         this.isChanged = isChanged;
     }
 
@@ -202,16 +149,19 @@ public class ReplyActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(resultCode == RESULT_OK){
-            if(requestCode == 0){
-                isChanged = true;
-                int position = data.getIntExtra("position", 0);
+        if (resultCode == RESULT_OK) {
+            isChanged = true;
+            int position = data.getIntExtra("position", 0);
+
+            if (requestCode == 0) {
                 ArrayList<Reply> reply = data.getParcelableArrayListExtra("reply_list");
                 content.getReplyList().get(position).setReplyList(reply);
-                adapter.notifyDataSetChanged();
             } else {
-
+                content.getReplyList().get(position).setDesc(data.getStringExtra("changed"));
             }
+
+            adapter.notifyDataSetChanged();
+
         }
     }
 }

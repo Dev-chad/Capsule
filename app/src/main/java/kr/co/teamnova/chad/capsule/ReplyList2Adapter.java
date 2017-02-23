@@ -1,6 +1,7 @@
 package kr.co.teamnova.chad.capsule;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -104,11 +105,13 @@ public class ReplyList2Adapter extends BaseAdapter {
                         switch (item.getItemId()) {
                             case R.id.menu_edit:
                                 Log.d(TAG, "edit");
-                                /*Intent intent = new Intent(context, AddContentActivity.class);
-                                intent.putExtra("edit_content", content);
-                                intent.putExtra("login_user", loginUser.getEmail());
+                                Intent intent = new Intent(context, ReplyEditActivity.class);
+                                intent.putExtra("content", content);
+                                intent.putExtra("upper_reply", upperReply);
+                                intent.putExtra("reply", reply);
                                 intent.putExtra("position", position);
-                                activity.startActivityForResult(intent, 0);*/
+                                intent.putExtra("mode", "답글");
+                                activity.startActivityForResult(intent, 0);
                                 break;
 
                             case R.id.menu_delete:

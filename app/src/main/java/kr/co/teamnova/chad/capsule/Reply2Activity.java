@@ -1,5 +1,6 @@
 package kr.co.teamnova.chad.capsule;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -22,6 +24,7 @@ public class Reply2Activity extends AppCompatActivity {
     private static final String TAG = "Reply2Activity";
     private boolean isChanged = false;
     private ArrayList<Reply> replyList;
+    private ReplyList2Adapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,7 +39,7 @@ public class Reply2Activity extends AppCompatActivity {
         replyList = upperReply.getReplyList();
 
         ListView listView = (ListView)findViewById(R.id.listView_reply);
-        final ReplyList2Adapter adapter = new ReplyList2Adapter(this, loginUser, replyList, content, upperReply);
+        adapter = new ReplyList2Adapter(this, loginUser, replyList, content, upperReply);
         listView.setAdapter(adapter);
 
         final EditText editReply = (EditText) findViewById(R.id.edit_reply);
@@ -87,7 +90,6 @@ public class Reply2Activity extends AppCompatActivity {
                 String[] strTotalReply2 = strReplyDetail[Const.REPLY_REPLY].split("#");
                 if(strTotalReply2[0].equals(" ")){
                     strReplyDetail[Const.REPLY_REPLY] = loginUser.getEmail() + "&" + Utils.getByteStringForm(strReply, "*") + "&" + currentTime;
-                    Log.d(TAG, "Reply Reply:  " + strReplyDetail[Const.REPLY_REPLY]);
                 }else {
                     strReplyDetail[Const.REPLY_REPLY] += ("#"+loginUser.getEmail() + "&" + Utils.getByteStringForm(strReply, "*") + "&" + currentTime);
                 }
@@ -123,8 +125,10 @@ public class Reply2Activity extends AppCompatActivity {
 
                 spContentEditor.putString(content.getPublisherEmail(), updatedTotalContent);
                 spContentEditor.apply();
-
+                editReply.setText("");
                 isChanged = true;
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(editReply.getWindowToken(), 0);
             }
         });
 
@@ -157,5 +161,16 @@ public class Reply2Activity extends AppCompatActivity {
             setResult(RESULT_CANCELED, null);
         }
         finish();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(resultCode == RESULT_OK){
+            replyList.get(data.getIntExtra("position", 0)).setDesc(data.getStringExtra("changed"));
+            adapter.notifyDataSetChanged();
+            isChanged = true;
+        }
     }
 }
