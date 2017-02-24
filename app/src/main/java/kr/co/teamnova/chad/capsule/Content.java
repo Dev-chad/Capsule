@@ -23,6 +23,8 @@ public class Content implements Parcelable {
     private Uri publisherProfileImage;
     private Uri image;
     private String location;
+    private String feeling;
+    private String weather;
     private long dateMillisecond;
     private int timeMode = MODE_TIME_RELATIVE;
     private ArrayList<String> likeUserList;
@@ -35,7 +37,7 @@ public class Content implements Parcelable {
     }
 
 
-    public Content(Uri image, String desc, Uri publisherProfileImage, String publisher, String publisherEmail, long dateMillisecond, String location, ArrayList<String> likeUserList, ArrayList<Reply> replyList) {
+    public Content(Uri image, String desc, Uri publisherProfileImage, String publisher, String publisherEmail, long dateMillisecond, String location, String feeling, String weather, ArrayList<String> likeUserList, ArrayList<Reply> replyList) {
 
         this.dateMillisecond = dateMillisecond;
         this.desc = desc;
@@ -45,6 +47,8 @@ public class Content implements Parcelable {
         this.publisherEmail = publisherEmail;
         this.publisherProfileImage = publisherProfileImage;
         this.location = location;
+        this.weather = weather;
+        this.feeling = feeling;
         contentDetailCheck = false;
         this.likeUserList = likeUserList;
         this.replyList = replyList;
@@ -59,6 +63,8 @@ public class Content implements Parcelable {
         publisherProfileImage = in.readParcelable(Uri.class.getClassLoader());
         image = in.readParcelable(Uri.class.getClassLoader());
         location = in.readString();
+        feeling = in.readString();
+        weather = in.readString();
         dateMillisecond = in.readLong();
         timeMode = in.readInt();
         likeUserList = in.createStringArrayList();
@@ -75,6 +81,8 @@ public class Content implements Parcelable {
         dest.writeParcelable(publisherProfileImage, flags);
         dest.writeParcelable(image, flags);
         dest.writeString(location);
+        dest.writeString(feeling);
+        dest.writeString(weather);
         dest.writeLong(dateMillisecond);
         dest.writeInt(timeMode);
         dest.writeStringList(likeUserList);
@@ -147,6 +155,22 @@ public class Content implements Parcelable {
 
     public void setContentDetailCheck(boolean contentDetailCheck) {
         this.contentDetailCheck = contentDetailCheck;
+    }
+
+    public String getWeather() {
+        return weather;
+    }
+
+    public void setWeather(String weather) {
+        this.weather = weather;
+    }
+
+    public String getFeeling() {
+        return feeling;
+    }
+
+    public void setFeeling(String feeling) {
+        this.feeling = feeling;
     }
 
     public String getDate() {

@@ -13,6 +13,8 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -56,6 +58,9 @@ public class ContentListViewAdapter extends BaseAdapter {
         public LinearLayout layoutLike;
         public TextView textLikeCount;
         public TextView textReplyCount;
+        public ImageView imageFeeling;
+        public ImageView imageWeather;
+        public int mPosition;
     }
 
     private ArrayList<Content> listViewContentList = new ArrayList<Content>();
@@ -86,7 +91,6 @@ public class ContentListViewAdapter extends BaseAdapter {
         final Context context = parent.getContext();
 
         final Content content = listViewContentList.get(position);
-
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.listview_content, parent, false);
@@ -108,12 +112,15 @@ public class ContentListViewAdapter extends BaseAdapter {
             viewHolder.layoutReply = (LinearLayout) convertView.findViewById(R.id.layout_reply);
             viewHolder.textLikeCount = (TextView) convertView.findViewById(R.id.text_like_count);
             viewHolder.textReplyCount = (TextView) convertView.findViewById(R.id.text_reply_count);
+            viewHolder.imageFeeling = (ImageView) convertView.findViewById(R.id.image_feeling);
+            viewHolder.imageWeather = (ImageView)convertView.findViewById(R.id.image_weather);
 
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
+        viewHolder.mPosition = position;
 
         // 게시물 프로필
         viewHolder.imageViewPublisher.setImageURI(content.getPublisherProfileImage());
@@ -124,10 +131,10 @@ public class ContentListViewAdapter extends BaseAdapter {
         if (content.getContentImage() == null) {
             viewHolder.imageViewContent.setVisibility(View.GONE);
         } else {
+            viewHolder.imageViewContent.setImageBitmap(null);
             viewHolder.imageViewContent.setVisibility(View.VISIBLE);
-            BitmapWorkerTask task = new BitmapWorkerTask(context, viewHolder.imageViewContent);
+            BitmapWorkerTask task = new BitmapWorkerTask(context, viewHolder.imageViewContent, position, viewHolder);
             task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, content.getContentImage());
-//            task.execute(content.getContentImage());
         }
 
 
@@ -172,6 +179,20 @@ public class ContentListViewAdapter extends BaseAdapter {
         } else {
             viewHolder.layoutLocation.setVisibility(View.GONE);
             viewHolder.textViewLocation.setText("");
+        }
+
+        if (content.getFeeling().equals(" ")){
+            viewHolder.imageFeeling.setVisibility(View.GONE);
+        } else {
+            viewHolder.imageFeeling.setVisibility(View.VISIBLE);
+            viewHolder.imageFeeling.setBackgroundResource(Integer.valueOf(content.getFeeling()));
+        }
+
+        if(content.getWeather().equals(" ")){
+            viewHolder.imageWeather.setVisibility(View.GONE);
+        } else {
+            viewHolder.imageWeather.setVisibility(View.VISIBLE);
+            viewHolder.imageWeather.setBackgroundResource(Integer.valueOf(content.getWeather()));
         }
 
         // 게시물 작성 시간
@@ -549,11 +570,15 @@ public class ContentListViewAdapter extends BaseAdapter {
         private final WeakReference<ImageView> imageViewReference;
         private Uri data = null;
         private Context context;
+        private int setPosition;
+        private ViewHolder mHolder;
 
-        public BitmapWorkerTask(Context context, ImageView imageView) {
+        public BitmapWorkerTask(Context context, ImageView imageView, int setPosition, ViewHolder mHolder) {
             // Use a WeakReference to ensure the ImageView can be garbage collected
             imageViewReference = new WeakReference<>(imageView);
             this.context = context;
+            this.setPosition = setPosition;
+            this.mHolder = mHolder;
         }
 
         // Decode image in background.
@@ -568,7 +593,10 @@ public class ContentListViewAdapter extends BaseAdapter {
         protected void onPostExecute(Bitmap bitmap) {
             if (imageViewReference != null && bitmap != null) {
                 final ImageView imageView = imageViewReference.get();
-                if (imageView != null) {
+                if (imageView != null && setPosition == mHolder.mPosition) {
+                    Animation flowAnimation;
+                    flowAnimation = AnimationUtils.loadAnimation(fragment.getActivity(), R.anim.alpha);
+                    imageView.startAnimation(flowAnimation);
                     imageView.setImageBitmap(bitmap);
                 }
             }

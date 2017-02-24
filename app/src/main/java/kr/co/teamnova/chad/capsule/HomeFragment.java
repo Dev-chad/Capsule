@@ -39,6 +39,7 @@ public class HomeFragment extends Fragment implements AbsListView.OnScrollListen
 
     private ArrayList<Content> totalContent;
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_home, container, false);
@@ -129,6 +130,8 @@ public class HomeFragment extends Fragment implements AbsListView.OnScrollListen
                         loginUser.getEmail(),
                         Long.valueOf(strContentDetail[Const.CONTENT_TIME]),
                         strLocation,
+                        strContentDetail[Const.CONTENT_FEELING],
+                        strContentDetail[Const.CONTENT_WEATHER],
                         likeList,
                         replyList);
 
@@ -201,6 +204,8 @@ public class HomeFragment extends Fragment implements AbsListView.OnScrollListen
                                 email,
                                 Long.valueOf(strContentDetail[Const.CONTENT_TIME]),
                                 strLocation,
+                                strContentDetail[Const.CONTENT_FEELING],
+                                strContentDetail[Const.CONTENT_WEATHER],
                                 likeList,
                                 replyList);
 

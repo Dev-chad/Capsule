@@ -23,6 +23,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -39,7 +42,7 @@ import java.util.Locale;
  * Created by Chad on 2017-02-15.
  */
 
-public class AddContentActivity extends AppCompatActivity {
+public class AddContentActivity extends AppCompatActivity implements OnClickListener {
     private static final String TAG = "AddContentActivity";
 
     private final int PICK_FROM_ALBUM = 0;
@@ -54,13 +57,31 @@ public class AddContentActivity extends AppCompatActivity {
     private ImageButton btnCancel;
     private ImageButton ibtnImageCancel;
 
+    private ImageButton ibtnIndifferent;
+    private ImageButton ibtnHappy;
+    private ImageButton ibtnLove;
+    private ImageButton ibtnCrying;
+    private ImageButton ibtnAngry;
+
+    private ImageButton ibtnNormal;
+    private ImageButton ibtnSun;
+    private ImageButton ibtnCloud;
+    private ImageButton ibtnRain;
+    private ImageButton ibtnSnow;
+
     private Content editContent;
     private Bitmap contentImage = null;
 
     private boolean useLocation = false;
     private boolean isEditMode = false;
 
+    private String feeling = " ";
+    private String weather = " ";
+
     private User loginUser;
+
+    private Animation flowAnimation;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -76,13 +97,37 @@ public class AddContentActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
+        flowAnimation = AnimationUtils.loadAnimation(this, R.anim.scale);
+
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         editContentDetails = (EditText) findViewById(R.id.edit_content_details);
         textLocation = (TextView) findViewById(R.id.text_location);
 
+        ibtnIndifferent = (ImageButton) findViewById(R.id.ibtn_indifferent);
+        ibtnIndifferent.setOnClickListener(this);
+        ibtnHappy = (ImageButton) findViewById(R.id.ibtn_happy);
+        ibtnHappy.setOnClickListener(this);
+        ibtnLove = (ImageButton) findViewById(R.id.ibtn_love);
+        ibtnLove.setOnClickListener(this);
+        ibtnCrying = (ImageButton) findViewById(R.id.ibtn_crying);
+        ibtnCrying.setOnClickListener(this);
+        ibtnAngry = (ImageButton) findViewById(R.id.ibtn_angry);
+        ibtnAngry.setOnClickListener(this);
+
+        ibtnNormal = (ImageButton) findViewById(R.id.ibtn_normal);
+        ibtnNormal.setOnClickListener(this);
+        ibtnCloud = (ImageButton) findViewById(R.id.ibtn_wind);
+        ibtnCloud.setOnClickListener(this);
+        ibtnRain = (ImageButton) findViewById(R.id.ibtn_rain);
+        ibtnRain.setOnClickListener(this);
+        ibtnSnow = (ImageButton) findViewById(R.id.ibtn_snow);
+        ibtnSnow.setOnClickListener(this);
+        ibtnSun = (ImageButton) findViewById(R.id.ibtn_sun);
+        ibtnSun.setOnClickListener(this);
+
         ibtnImageCancel = (ImageButton) findViewById(R.id.ibtn_image_cancel);
-        ibtnImageCancel.setOnClickListener(new View.OnClickListener() {
+        ibtnImageCancel.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 imageContent.setImageBitmap(null);
@@ -92,7 +137,7 @@ public class AddContentActivity extends AppCompatActivity {
         });
 
         imageContent = (ImageView) findViewById(R.id.image_content);
-        imageContent.setOnClickListener(new View.OnClickListener() {
+        imageContent.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
@@ -107,7 +152,7 @@ public class AddContentActivity extends AppCompatActivity {
         });
 
         btnLocation = (ImageButton) findViewById(R.id.ibtn_location);
-        btnLocation.setOnClickListener(new View.OnClickListener() {
+        btnLocation.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (ActivityCompat.checkSelfPermission(AddContentActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -122,7 +167,7 @@ public class AddContentActivity extends AppCompatActivity {
         });
 
         btnCancel = (ImageButton) findViewById(R.id.ibtn_cancel);
-        btnCancel.setOnClickListener(new View.OnClickListener() {
+        btnCancel.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 useLocation = false;
@@ -150,7 +195,52 @@ public class AddContentActivity extends AppCompatActivity {
                 btnCancel.setVisibility(View.VISIBLE);
             }
             editContentDetails.setText(editContent.getContentDesc());
+
+            if (!editContent.getFeeling().equals(" ")) {
+                switch (Integer.valueOf(editContent.getFeeling())) {
+                    case R.mipmap.image_btn_indifferent:
+                        ibtnIndifferent.callOnClick();
+                        break;
+                    case R.mipmap.image_btn_happy:
+                        ibtnHappy.callOnClick();
+                        break;
+                    case R.mipmap.image_btn_angry:
+                        ibtnAngry.callOnClick();
+
+                        break;
+                    case R.mipmap.image_btn_crying:
+                        ibtnCrying.callOnClick();
+
+                        break;
+                    case R.mipmap.image_btn_love:
+                        ibtnLove.callOnClick();
+
+                        break;
+                }
+            }
+
+            if (!editContent.getWeather().equals(" ")) {
+                switch (Integer.valueOf(editContent.getWeather())){
+                    case R.mipmap.image_weather_normal:
+                        ibtnNormal.callOnClick();
+                        break;
+                    case R.mipmap.image_weather_sun:
+                        ibtnSun.callOnClick();
+                        break;
+                    case R.mipmap.image_weather_cloud:
+                        ibtnCloud.callOnClick();
+                        break;
+                    case R.mipmap.image_weather_snow:
+                        ibtnSnow.callOnClick();
+                        break;
+                    case R.mipmap.image_weather_rain:
+                        ibtnRain.callOnClick();
+                        break;
+                }
+            }
         }
+
+
 
 
     }
@@ -165,6 +255,7 @@ public class AddContentActivity extends AppCompatActivity {
                     if (data.getData() != null) {
                         try {
                             contentImage = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
+
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -273,7 +364,6 @@ public class AddContentActivity extends AppCompatActivity {
                 String strImageUri;
                 String desc;
                 String strLocation;
-                String strWeather;
                 String strLikeList = " ";
                 long currentTime;
 
@@ -312,12 +402,14 @@ public class AddContentActivity extends AppCompatActivity {
                         BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(imageContentFile));
                         contentImage.compress(Bitmap.CompressFormat.JPEG, 100, out);
 
+
                         out.flush();
                         out.close();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                     strImageUri = Uri.fromFile(imageContentFile).toString();
+
                 } else {
                     strImageUri = " ";
                 }
@@ -339,7 +431,8 @@ public class AddContentActivity extends AppCompatActivity {
                         strImageUri + "::"
                                 + desc + "::"
                                 + strLocation + "::"
-                                + " :: ::"
+                                + feeling + "::"
+                                + weather + "::"
                                 + currentTime + "::"
                                 + strLikeList + ":: ";
 
@@ -400,6 +493,9 @@ public class AddContentActivity extends AppCompatActivity {
                         editContent.setLocation(strLocation);
                     }
 
+                    editContent.setWeather(weather);
+                    editContent.setFeeling(feeling);
+
                     Intent intent = getIntent();
                     intent.putExtra("edit_content", editContent);
                     setResult(RESULT_OK, intent);
@@ -418,5 +514,154 @@ public class AddContentActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         finish();
         return super.onSupportNavigateUp();
+    }
+
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        v.startAnimation(flowAnimation);
+        switch (id) {
+            case R.id.ibtn_indifferent:
+                if (feeling.equals(String.valueOf(R.mipmap.image_btn_indifferent))) {
+                    feeling = " ";
+                    ibtnIndifferent.setBackgroundResource(R.mipmap.image_btn_indifferent_gray);
+
+                } else {
+                    feeling = String.valueOf(R.mipmap.image_btn_indifferent);
+                    ibtnIndifferent.setBackgroundResource(R.mipmap.image_btn_indifferent);
+                    ibtnAngry.setBackgroundResource(R.mipmap.image_btn_angry_gray);
+                    ibtnHappy.setBackgroundResource(R.mipmap.image_btn_happy_gray);
+                    ibtnLove.setBackgroundResource(R.mipmap.image_btn_love_gray);
+                    ibtnCrying.setBackgroundResource(R.mipmap.image_btn_crying_gray);
+                }
+                break;
+            case R.id.ibtn_happy:
+                if (feeling.equals(String.valueOf(R.mipmap.image_btn_happy))) {
+                    feeling = " ";
+                    ibtnHappy.setBackgroundResource(R.mipmap.image_btn_happy_gray);
+
+                } else {
+                    feeling = String.valueOf(R.mipmap.image_btn_happy);
+                    ibtnIndifferent.setBackgroundResource(R.mipmap.image_btn_indifferent_gray);
+                    ibtnAngry.setBackgroundResource(R.mipmap.image_btn_angry_gray);
+                    ibtnHappy.setBackgroundResource(R.mipmap.image_btn_happy);
+                    ibtnLove.setBackgroundResource(R.mipmap.image_btn_love_gray);
+                    ibtnCrying.setBackgroundResource(R.mipmap.image_btn_crying_gray);
+                }
+
+                break;
+            case R.id.ibtn_love:
+                if (feeling.equals(String.valueOf(R.mipmap.image_btn_love))) {
+                    feeling = " ";
+                    ibtnLove.setBackgroundResource(R.mipmap.image_btn_love_gray);
+
+                } else {
+                    feeling = String.valueOf(R.mipmap.image_btn_love);
+                    ibtnIndifferent.setBackgroundResource(R.mipmap.image_btn_indifferent_gray);
+                    ibtnAngry.setBackgroundResource(R.mipmap.image_btn_angry_gray);
+                    ibtnHappy.setBackgroundResource(R.mipmap.image_btn_happy_gray);
+                    ibtnLove.setBackgroundResource(R.mipmap.image_btn_love);
+                    ibtnCrying.setBackgroundResource(R.mipmap.image_btn_crying_gray);
+                }
+
+                break;
+            case R.id.ibtn_crying:
+                if (feeling.equals(String.valueOf(R.mipmap.image_btn_crying))) {
+                    feeling = " ";
+                    ibtnCrying.setBackgroundResource(R.mipmap.image_btn_crying_gray);
+
+                } else {
+                    feeling = String.valueOf(R.mipmap.image_btn_crying);
+                    ibtnIndifferent.setBackgroundResource(R.mipmap.image_btn_indifferent_gray);
+                    ibtnAngry.setBackgroundResource(R.mipmap.image_btn_angry_gray);
+                    ibtnHappy.setBackgroundResource(R.mipmap.image_btn_happy_gray);
+                    ibtnLove.setBackgroundResource(R.mipmap.image_btn_love_gray);
+                    ibtnCrying.setBackgroundResource(R.mipmap.image_btn_crying);
+                }
+
+                break;
+            case R.id.ibtn_angry:
+                if (feeling.equals(String.valueOf(R.mipmap.image_btn_angry))) {
+                    feeling = " ";
+                    ibtnAngry.setBackgroundResource(R.mipmap.image_btn_angry_gray);
+
+                } else {
+                    feeling = String.valueOf(R.mipmap.image_btn_angry);
+                    ibtnIndifferent.setBackgroundResource(R.mipmap.image_btn_indifferent_gray);
+                    ibtnAngry.setBackgroundResource(R.mipmap.image_btn_angry);
+                    ibtnHappy.setBackgroundResource(R.mipmap.image_btn_happy_gray);
+                    ibtnLove.setBackgroundResource(R.mipmap.image_btn_love_gray);
+                    ibtnCrying.setBackgroundResource(R.mipmap.image_btn_crying_gray);
+                }
+
+                break;
+
+
+            case R.id.ibtn_normal:
+                if (weather.equals(String.valueOf(R.mipmap.image_weather_normal))) {
+                    weather = " ";
+                    ibtnNormal.setBackgroundResource(R.mipmap.image_weather_normal_gray);
+                } else {
+                    weather = String.valueOf(R.mipmap.image_weather_normal);
+                    ibtnNormal.setBackgroundResource(R.mipmap.image_weather_normal);
+                    ibtnSun.setBackgroundResource(R.mipmap.image_weather_sun_gray);
+                    ibtnSnow.setBackgroundResource(R.mipmap.image_weather_snow_gray);
+                    ibtnCloud.setBackgroundResource(R.mipmap.image_weather_cloud_gray);
+                    ibtnRain.setBackgroundResource(R.mipmap.image_weather_rain_gray);
+                }
+                break;
+            case R.id.ibtn_sun:
+                if (weather.equals(String.valueOf(R.mipmap.image_weather_sun))) {
+                    weather = " ";
+                    ibtnSun.setBackgroundResource(R.mipmap.image_weather_sun_gray);
+                } else {
+                    weather = String.valueOf(R.mipmap.image_weather_sun);
+                    ibtnNormal.setBackgroundResource(R.mipmap.image_weather_normal_gray);
+                    ibtnSun.setBackgroundResource(R.mipmap.image_weather_sun);
+                    ibtnSnow.setBackgroundResource(R.mipmap.image_weather_snow_gray);
+                    ibtnCloud.setBackgroundResource(R.mipmap.image_weather_cloud_gray);
+                    ibtnRain.setBackgroundResource(R.mipmap.image_weather_rain_gray);
+                }
+                break;
+            case R.id.ibtn_wind:
+                if (weather.equals(String.valueOf(R.mipmap.image_weather_cloud))) {
+                    weather = " ";
+                    ibtnCloud.setBackgroundResource(R.mipmap.image_weather_cloud_gray);
+                } else {
+                    weather = String.valueOf(R.mipmap.image_weather_cloud);
+                    ibtnNormal.setBackgroundResource(R.mipmap.image_weather_normal_gray);
+                    ibtnSun.setBackgroundResource(R.mipmap.image_weather_sun_gray);
+                    ibtnSnow.setBackgroundResource(R.mipmap.image_weather_snow_gray);
+                    ibtnCloud.setBackgroundResource(R.mipmap.image_weather_cloud);
+                    ibtnRain.setBackgroundResource(R.mipmap.image_weather_rain_gray);
+                }
+                break;
+            case R.id.ibtn_rain:
+                if (weather.equals(String.valueOf(R.mipmap.image_weather_rain))) {
+                    weather = " ";
+                    ibtnRain.setBackgroundResource(R.mipmap.image_weather_rain_gray);
+                } else {
+                    weather = String.valueOf(R.mipmap.image_weather_rain);
+                    ibtnNormal.setBackgroundResource(R.mipmap.image_weather_normal_gray);
+                    ibtnSun.setBackgroundResource(R.mipmap.image_weather_sun_gray);
+                    ibtnSnow.setBackgroundResource(R.mipmap.image_weather_snow_gray);
+                    ibtnCloud.setBackgroundResource(R.mipmap.image_weather_cloud_gray);
+                    ibtnRain.setBackgroundResource(R.mipmap.image_weather_rain);
+                }
+                break;
+            case R.id.ibtn_snow:
+                if (weather.equals(String.valueOf(R.mipmap.image_weather_snow))) {
+                    weather = " ";
+                    ibtnSnow.setBackgroundResource(R.mipmap.image_weather_snow_gray);
+                } else {
+                    weather = String.valueOf(R.mipmap.image_weather_snow);
+                    ibtnNormal.setBackgroundResource(R.mipmap.image_weather_normal_gray);
+                    ibtnSun.setBackgroundResource(R.mipmap.image_weather_sun_gray);
+                    ibtnSnow.setBackgroundResource(R.mipmap.image_weather_snow);
+                    ibtnCloud.setBackgroundResource(R.mipmap.image_weather_cloud_gray);
+                    ibtnRain.setBackgroundResource(R.mipmap.image_weather_rain_gray);
+                }
+                break;
+        }
     }
 }

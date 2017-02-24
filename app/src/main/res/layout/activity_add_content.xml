@@ -140,10 +140,11 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="105dp"
         android:layout_below="@id/layout_feeling"
         android:layout_centerHorizontal="true"
+        android:gravity="center"
         android:layout_marginTop="10dp">
 
         <ImageButton
@@ -247,6 +248,147 @@
             android:layout_marginTop="5dp"
             android:gravity="center"
             android:text="화나"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_weather"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/layout_feeling"
+        android:layout_marginTop="110dp">
+
+        <ImageView
+            android:id="@+id/image_weather"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:background="@mipmap/image_weather" />
+
+        <TextView
+            android:id="@+id/text_const_weather"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="5dp"
+            android:layout_toEndOf="@id/image_weather"
+            android:text="날씨는 어떤가요?"
+            android:textColor="@android:color/black"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="105dp"
+        android:layout_below="@id/layout_weather"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:layout_marginTop="10dp">
+
+        <ImageButton
+            android:id="@+id/ibtn_normal"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@mipmap/image_weather_normal_gray" />
+
+        <TextView
+            android:id="@+id/text_const_normal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@id/ibtn_normal"
+            android:layout_alignStart="@id/ibtn_normal"
+            android:layout_below="@id/ibtn_normal"
+            android:layout_marginTop="5dp"
+            android:gravity="center"
+            android:text="보통"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <ImageButton
+            android:id="@+id/ibtn_sun"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="17dp"
+            android:layout_toEndOf="@id/ibtn_normal"
+            android:background="@mipmap/image_weather_sun_gray" />
+
+        <TextView
+            android:id="@+id/text_const_sun"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@id/ibtn_sun"
+            android:layout_alignStart="@id/ibtn_sun"
+            android:layout_below="@id/ibtn_normal"
+            android:layout_marginTop="5dp"
+            android:gravity="center"
+            android:text="화창"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <ImageButton
+
+            android:id="@+id/ibtn_wind"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="17dp"
+            android:layout_toEndOf="@id/ibtn_sun"
+            android:background="@mipmap/image_weather_cloud_gray" />
+
+        <TextView
+            android:id="@+id/text_const_wind"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@id/ibtn_wind"
+            android:layout_alignStart="@id/ibtn_wind"
+            android:layout_below="@id/ibtn_normal"
+            android:layout_marginTop="5dp"
+            android:gravity="center"
+            android:text="구름"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <ImageButton
+            android:id="@+id/ibtn_rain"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="17dp"
+            android:layout_toEndOf="@id/ibtn_wind"
+            android:background="@mipmap/image_weather_rain_gray" />
+
+        <TextView
+            android:id="@+id/text_const_rain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@id/ibtn_rain"
+            android:layout_alignStart="@id/ibtn_rain"
+            android:layout_below="@id/ibtn_normal"
+            android:layout_marginTop="5dp"
+            android:gravity="center"
+            android:text="비"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <ImageButton
+            android:id="@+id/ibtn_snow"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="17dp"
+            android:layout_toEndOf="@id/ibtn_rain"
+            android:background="@mipmap/image_weather_snow_gray" />
+
+        <TextView
+            android:id="@+id/text_const_snow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@id/ibtn_snow"
+            android:layout_alignStart="@id/ibtn_snow"
+            android:layout_below="@id/ibtn_normal"
+            android:layout_marginTop="5dp"
+            android:gravity="center"
+            android:text="눈"
             android:textSize="12sp"
             android:textStyle="bold" />
 
