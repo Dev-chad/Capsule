@@ -112,6 +112,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/view_line"
+        android:divider="#dddddd"
+        android:dividerHeight="15dp"
         android:padding="5dp" />
 
     <TextView

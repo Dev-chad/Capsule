@@ -13,6 +13,8 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -609,9 +611,9 @@ public class ContentListViewAdapter extends BaseAdapter {
                 if (fragment.isAdded() && bitmap != null) {
                     final ImageView imageView = imageViewReference.get();
                     if (imageView != null && setPosition == mHolder.mPosition) {
-                    /*Animation flowAnimation;
+                    Animation flowAnimation;
                     flowAnimation = AnimationUtils.loadAnimation(fragment.getActivity(), R.anim.alpha);
-                    imageView.startAnimation(flowAnimation);*/
+                    imageView.startAnimation(flowAnimation);
                         imageView.setImageBitmap(bitmap);
                     }
                 }
@@ -619,9 +621,9 @@ public class ContentListViewAdapter extends BaseAdapter {
                 if (fragment2.isAdded() && bitmap != null) {
                     final ImageView imageView = imageViewReference.get();
                     if (imageView != null && setPosition == mHolder.mPosition) {
-                    /*Animation flowAnimation;
-                    flowAnimation = AnimationUtils.loadAnimation(fragment.getActivity(), R.anim.alpha);
-                    imageView.startAnimation(flowAnimation);*/
+                        Animation flowAnimation;
+                        flowAnimation = AnimationUtils.loadAnimation(fragment2.getActivity(), R.anim.alpha);
+                        imageView.startAnimation(flowAnimation);
                         imageView.setImageBitmap(bitmap);
                     }
                 }

@@ -38,6 +38,8 @@ public class SearchFragment extends Fragment {
     private TextView textFollowCount;
     private TextView textFollowerCount;
 
+    private String loginUserEmail;
+
     public SearchFragment() {
 
     }
@@ -46,7 +48,7 @@ public class SearchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view =inflater.inflate(R.layout.fragment_search, container, false);
 
-        String loginUserEmail = getArguments().getString("login_user");
+        loginUserEmail = getArguments().getString("login_user");
 
         SharedPreferences spAccount = getContext().getSharedPreferences("account", MODE_PRIVATE);
         String[] strUserData = spAccount.getString(loginUserEmail, "").split(",");
@@ -151,6 +153,13 @@ public class SearchFragment extends Fragment {
         textFollowCount.setText(String.valueOf(loginUser.getFollowerList().size()));
         textContentCount.setText(String.valueOf(totalContent.size()));
 
+        textFollowCount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
 
         return view;
     }
@@ -179,5 +188,17 @@ public class SearchFragment extends Fragment {
                 adapter.notifyDataSetChanged();
             }
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        SharedPreferences spAccount = getContext().getSharedPreferences("account", MODE_PRIVATE);
+        String[] strUserData = spAccount.getString(loginUserEmail, "").split(",");
+        loginUser = new User(loginUserEmail, strUserData);
+
+        textContentCount.setText(String.valueOf(loginUser.getNumOfContent()));
+        textFollowCount.setText(String.valueOf(loginUser.getFollowList().size()));
+        textFollowerCount.setText(String.valueOf(loginUser.getFollowerList().size()));
     }
 }

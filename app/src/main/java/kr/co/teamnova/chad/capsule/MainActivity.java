@@ -15,14 +15,14 @@ import android.widget.ImageButton;
  * Created by Chad on 2017-01-17.
  */
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity {
     private final int STATE_HOME = 0;
     private final int STATE_SEARCH = 1;
     private final int STATE_PEOPLE = 2;
     private final int STATE_ADD = 3;
 
     private int stateNum = 0;
-
+    private int subState = 0;
     private ImageButton btnHome;
     private ImageButton btnSearch;
     private ImageButton btnPeople;
@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 stateNum = STATE_HOME;
+                subState = STATE_HOME;
                 onClickMenu();
             }
         });
@@ -53,6 +54,7 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 stateNum = STATE_SEARCH;
+                subState = STATE_SEARCH;
                 onClickMenu();
             }
         });
@@ -62,6 +64,7 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 stateNum = STATE_PEOPLE;
+                subState = STATE_HOME;
                 onClickMenu();
             }
         });
@@ -160,7 +163,12 @@ public class MainActivity extends AppCompatActivity{
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 0) {
             if (resultCode == RESULT_OK) {
-                btnHome.callOnClick();
+                if (subState == STATE_SEARCH) {
+                    btnSearch.callOnClick();
+                } else {
+                    btnHome.callOnClick();
+                }
+
             }
         }
     }
