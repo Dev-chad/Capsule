@@ -10,10 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -54,15 +51,6 @@ public class HomeFragment extends Fragment implements AbsListView.OnScrollListen
         listViewContent = (ListView) view.findViewById(R.id.listView_content);
         listViewContent.setOnScrollListener(this);
         listViewContent.setAdapter(adapter);
-
-        final RelativeLayout layoutProfile = (RelativeLayout) view.findViewById(R.id.layout_profile);
-        final View viewLine = view.findViewById(R.id.view_line);
-
-        TextView textNickname = (TextView) view.findViewById(R.id.text_nickname);
-        ImageView imageProfile = (ImageView) view.findViewById(R.id.image_profile);
-        imageProfile.setImageURI(loginUser.getUriProfileImage());
-
-        textContentCount = (TextView) view.findViewById(R.id.text_content_count);
 
         textNothingContent = (TextView) view.findViewById(R.id.text_nothing_content_const);
 
@@ -136,6 +124,7 @@ public class HomeFragment extends Fragment implements AbsListView.OnScrollListen
                         replyList);
 
                 totalContent.add(userContent);
+
             }
         }
 
@@ -222,41 +211,14 @@ public class HomeFragment extends Fragment implements AbsListView.OnScrollListen
         if (totalContent.size() == 0) {
             textNothingContent.setVisibility(View.VISIBLE);
         }
-
-        imageProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
-        final ImageButton ibtnOpen = (ImageButton) view.findViewById(R.id.ibtn_open);
-        ibtnOpen.bringToFront();
-        ibtnOpen.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (layoutProfile.getVisibility() == View.VISIBLE) {
-                    layoutProfile.setVisibility(View.GONE);
-                    viewLine.setVisibility(View.GONE);
-                    ibtnOpen.setBackgroundResource(R.mipmap.image_arrow_bottom);
-                } else {
-                    layoutProfile.setVisibility(View.VISIBLE);
-                    viewLine.setVisibility(View.VISIBLE);
-                    ibtnOpen.setBackgroundResource(R.mipmap.image_arrow_above);
-                }
-            }
-        });
-
-        textNickname.setText(loginUser.getNickname());
-        textContentCount.setText(String.valueOf(loginUser.getNumOfContent()));
         return view;
     }
 
-    public void updateContentCount(int position) {
+/*    public void updateContentCount(int position) {
         textContentCount.setText(String.valueOf(loginUser.getNumOfContent()));
         adapter.notifyDataSetChanged();
         listViewContent.setSelection(position);
-    }
+    }*/
 
     class FileNameSort implements Comparator<Content> {
         public int compare(Content f1, Content f2) {

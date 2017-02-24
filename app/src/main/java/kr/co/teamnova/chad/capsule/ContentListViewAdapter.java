@@ -13,8 +13,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -39,7 +37,9 @@ public class ContentListViewAdapter extends BaseAdapter {
 
     private static final String TAG = "ContentListViewAdapter";
     private HomeFragment fragment;
+    private SearchFragment fragment2;
     private User loginUser;
+
 
     public class ViewHolder {
         public ImageView imageViewPublisher;
@@ -68,6 +68,11 @@ public class ContentListViewAdapter extends BaseAdapter {
 
     public ContentListViewAdapter(HomeFragment fragment, User loginUser) {
         this.fragment = fragment;
+        this.loginUser = loginUser;
+    }
+
+    public ContentListViewAdapter(SearchFragment fragment, User loginUser) {
+        this.fragment2 = fragment;
         this.loginUser = loginUser;
     }
 
@@ -113,7 +118,7 @@ public class ContentListViewAdapter extends BaseAdapter {
             viewHolder.textLikeCount = (TextView) convertView.findViewById(R.id.text_like_count);
             viewHolder.textReplyCount = (TextView) convertView.findViewById(R.id.text_reply_count);
             viewHolder.imageFeeling = (ImageView) convertView.findViewById(R.id.image_feeling);
-            viewHolder.imageWeather = (ImageView)convertView.findViewById(R.id.image_weather);
+            viewHolder.imageWeather = (ImageView) convertView.findViewById(R.id.image_weather);
 
             convertView.setTag(viewHolder);
         } else {
@@ -126,17 +131,15 @@ public class ContentListViewAdapter extends BaseAdapter {
         viewHolder.imageViewPublisher.setImageURI(content.getPublisherProfileImage());
         viewHolder.textViewPublisher.setText(content.getPublisherName());
 
-
         // 게시물 이미지
+
         if (content.getContentImage() == null) {
             viewHolder.imageViewContent.setVisibility(View.GONE);
         } else {
-            viewHolder.imageViewContent.setImageBitmap(null);
             viewHolder.imageViewContent.setVisibility(View.VISIBLE);
             BitmapWorkerTask task = new BitmapWorkerTask(context, viewHolder.imageViewContent, position, viewHolder);
             task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, content.getContentImage());
         }
-
 
         // 게시물 내용 표시 및 더 보기(접기) 글씨 표시 여부
         if (content.getContentDesc().length() == 0) {
@@ -181,14 +184,14 @@ public class ContentListViewAdapter extends BaseAdapter {
             viewHolder.textViewLocation.setText("");
         }
 
-        if (content.getFeeling().equals(" ")){
+        if (content.getFeeling().equals(" ")) {
             viewHolder.imageFeeling.setVisibility(View.GONE);
         } else {
             viewHolder.imageFeeling.setVisibility(View.VISIBLE);
             viewHolder.imageFeeling.setBackgroundResource(Integer.valueOf(content.getFeeling()));
         }
 
-        if(content.getWeather().equals(" ")){
+        if (content.getWeather().equals(" ")) {
             viewHolder.imageWeather.setVisibility(View.GONE);
         } else {
             viewHolder.imageWeather.setVisibility(View.VISIBLE);
@@ -259,12 +262,15 @@ public class ContentListViewAdapter extends BaseAdapter {
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.menu_edit:
-//                                fragment.editContent(content, position);
                                 Intent intent = new Intent(context, AddContentActivity.class);
                                 intent.putExtra("edit_content", content);
                                 intent.putExtra("login_user", loginUser.getEmail());
                                 intent.putExtra("position", position);
-                                fragment.startActivityForResult(intent, 0);
+                                if (fragment == null) {
+                                    fragment2.startActivityForResult(intent, 0);
+                                } else {
+                                    fragment.startActivityForResult(intent, 0);
+                                }
                                 break;
                             case R.id.menu_delete:
                                 File imageFile = new File(context.getFilesDir() + "/contents/" + loginUser.getEmail() + '/' + content.getDateToMillisecond() + ".jpg");
@@ -309,7 +315,7 @@ public class ContentListViewAdapter extends BaseAdapter {
                                 spContentsEditor.apply();
 
                                 listViewContentList.remove(position);
-                                fragment.updateContentCount(position);
+                                notifyDataSetChanged();
 
                                 break;
                             default:
@@ -327,7 +333,6 @@ public class ContentListViewAdapter extends BaseAdapter {
         viewHolder.ibtnLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 // sp에 저장된 게시물 리스트에서 현재 게시물이 어디에 위치한지 알기 위한 변수
                 int contentPosition = 0;
 
@@ -346,9 +351,9 @@ public class ContentListViewAdapter extends BaseAdapter {
                 //현재 게시물 데이터를 저장할 어레이
                 String[] strContentArray = {};
 
-                for(String strFindContent:strTotalContentArray){
+                for (String strFindContent : strTotalContentArray) {
                     String[] strFindContentDetail = strFindContent.split("::");
-                    if(strFindContentDetail[Const.CONTENT_TIME].equals(String.valueOf(content.getDateToMillisecond()))){
+                    if (strFindContentDetail[Const.CONTENT_TIME].equals(String.valueOf(content.getDateToMillisecond()))) {
                         //현재 게시물의 작성시간과 일치하면 현재 게시물에 대한 데이터
                         strContentArray = strFindContentDetail;
                         break;
@@ -363,18 +368,18 @@ public class ContentListViewAdapter extends BaseAdapter {
                     content.getLikeUserList().remove(loginUser.getEmail());
                     loginUser.getLikeContentList().remove(content.getPublisherEmail() + "+" + content.getDateToMillisecond());
 
-                    if(loginUser.getLikeContentList().size() > 0){
+                    if (loginUser.getLikeContentList().size() > 0) {
                         updateLikeContent = loginUser.getLikeContentList().get(0);
-                        for(int i=1; i<loginUser.getLikeContentList().size(); i++){
+                        for (int i = 1; i < loginUser.getLikeContentList().size(); i++) {
                             updateLikeContent += ("::" + loginUser.getLikeContentList().get(i));
                         }
                     } else {
                         updateLikeContent = " ";
                     }
 
-                    if(content.getLikeCount() > 0){
-                        updateLikeUser =  content.getLikeUserList().get(0);
-                        for(int i=1; i<content.getLikeUserList().size(); i++){
+                    if (content.getLikeCount() > 0) {
+                        updateLikeUser = content.getLikeUserList().get(0);
+                        for (int i = 1; i < content.getLikeUserList().size(); i++) {
                             updateLikeUser += ("+" + content.getLikeUserList().get(i));
                         }
                     } else {
@@ -386,34 +391,34 @@ public class ContentListViewAdapter extends BaseAdapter {
                     loginUser.getLikeContentList().add(content.getPublisherEmail() + "+" + content.getDateToMillisecond());
 
                     updateLikeContent = loginUser.getLikeContentList().get(0);
-                    for(int i=1; i<loginUser.getLikeContentList().size(); i++){
+                    for (int i = 1; i < loginUser.getLikeContentList().size(); i++) {
                         updateLikeContent += ("::" + loginUser.getLikeContentList().get(i));
                     }
 
-                    updateLikeUser =  content.getLikeUserList().get(0);
-                    for(int i=1; i<content.getLikeUserList().size(); i++){
+                    updateLikeUser = content.getLikeUserList().get(0);
+                    for (int i = 1; i < content.getLikeUserList().size(); i++) {
                         updateLikeUser += ("+" + content.getLikeUserList().get(i));
                     }
                 }
 
                 strLoginUserArray[Const.INDEX_LIKE_CONTENT] = updateLikeContent;
                 String updateLoginUser = strLoginUserArray[0];
-                for(int i=1; i<strLoginUserArray.length; i++){
-                    updateLoginUser += (","+strLoginUserArray[i]);
+                for (int i = 1; i < strLoginUserArray.length; i++) {
+                    updateLoginUser += ("," + strLoginUserArray[i]);
                 }
 
                 strContentArray[Const.CONTENT_LIKE_USER] = updateLikeUser;
                 String updateContent = strContentArray[0];
 
-                for(int i=1; i<strContentArray.length; i++){
-                    updateContent += ("::"+strContentArray[i]);
+                for (int i = 1; i < strContentArray.length; i++) {
+                    updateContent += ("::" + strContentArray[i]);
                 }
 
                 strTotalContentArray[contentPosition] = updateContent;
                 String updateTotalContent = strTotalContentArray[0];
 
-                for(int i=1; i<strTotalContentArray.length; i++){
-                    updateTotalContent += (","+strTotalContentArray[i]);
+                for (int i = 1; i < strTotalContentArray.length; i++) {
+                    updateTotalContent += ("," + strTotalContentArray[i]);
                 }
 
                 spAccountEditor.putString(loginUser.getEmail(), updateLoginUser);
@@ -448,7 +453,12 @@ public class ContentListViewAdapter extends BaseAdapter {
                 intent.putExtra("content", content);
                 intent.putExtra("login_user", loginUser);
                 intent.putExtra("position", position);
-                fragment.startActivityForResult(intent, 1);
+                if (fragment == null) {
+                    fragment2.startActivityForResult(intent, 1);
+
+                } else {
+                    fragment.startActivityForResult(intent, 1);
+                }
             }
         });
 
@@ -460,7 +470,12 @@ public class ContentListViewAdapter extends BaseAdapter {
                 intent.putExtra("content", content);
                 intent.putExtra("login_user", loginUser);
                 intent.putExtra("position", position);
-                fragment.startActivityForResult(intent, 1);
+                if (fragment == null) {
+                    fragment2.startActivityForResult(intent, 1);
+
+                } else {
+                    fragment.startActivityForResult(intent, 1);
+                }
             }
         });
 
@@ -476,7 +491,6 @@ public class ContentListViewAdapter extends BaseAdapter {
                 notifyDataSetChanged();
             }
         });
-
 
         return convertView;
     }
@@ -591,13 +605,25 @@ public class ContentListViewAdapter extends BaseAdapter {
         // Once complete, see if ImageView is still around and set bitmap.
         @Override
         protected void onPostExecute(Bitmap bitmap) {
-            if (imageViewReference != null && bitmap != null) {
-                final ImageView imageView = imageViewReference.get();
-                if (imageView != null && setPosition == mHolder.mPosition) {
-                    Animation flowAnimation;
+            if (fragment != null) {
+                if (fragment.isAdded() && bitmap != null) {
+                    final ImageView imageView = imageViewReference.get();
+                    if (imageView != null && setPosition == mHolder.mPosition) {
+                    /*Animation flowAnimation;
                     flowAnimation = AnimationUtils.loadAnimation(fragment.getActivity(), R.anim.alpha);
-                    imageView.startAnimation(flowAnimation);
-                    imageView.setImageBitmap(bitmap);
+                    imageView.startAnimation(flowAnimation);*/
+                        imageView.setImageBitmap(bitmap);
+                    }
+                }
+            } else if (fragment2 != null) {
+                if (fragment2.isAdded() && bitmap != null) {
+                    final ImageView imageView = imageViewReference.get();
+                    if (imageView != null && setPosition == mHolder.mPosition) {
+                    /*Animation flowAnimation;
+                    flowAnimation = AnimationUtils.loadAnimation(fragment.getActivity(), R.anim.alpha);
+                    imageView.startAnimation(flowAnimation);*/
+                        imageView.setImageBitmap(bitmap);
+                    }
                 }
             }
         }
@@ -608,5 +634,11 @@ public class ContentListViewAdapter extends BaseAdapter {
         listViewContentList.add(position, content);
 //        Log.d(TAG, listViewContentList.get(position).getContentDesc());
         notifyDataSetChanged();
+    }
+
+    private int pxToDp(Context context, int px) {
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        int dp = Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+        return dp;
     }
 }
