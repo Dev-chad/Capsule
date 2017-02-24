@@ -84,8 +84,8 @@ public class MainActivity extends AppCompatActivity{
         bundle.putString("login_user", loginUser);
         switch (stateNum) {
             case STATE_HOME: {
-                btnHome.setImageResource(R.mipmap.image_btn_home);
-                btnSearch.setImageResource(R.mipmap.image_btn_search_inactive);
+                btnHome.setImageResource(R.mipmap.image_btn_together);
+                btnSearch.setImageResource(R.mipmap.image_btn_home_inactive);
                 btnPeople.setImageResource(R.mipmap.image_btn_people_inactive);
                 btnAdd.setImageResource(R.mipmap.image_btn_add_inactive);
                 HomeFragment fragment = new HomeFragment();
@@ -94,8 +94,8 @@ public class MainActivity extends AppCompatActivity{
                 break;
             }
             case STATE_SEARCH: {
-                btnHome.setImageResource(R.mipmap.image_btn_home_inactive);
-                btnSearch.setImageResource(R.mipmap.image_btn_search);
+                btnHome.setImageResource(R.mipmap.image_btn_together_inactive);
+                btnSearch.setImageResource(R.mipmap.image_btn_home);
                 btnPeople.setImageResource(R.mipmap.image_btn_people_inactive);
                 btnAdd.setImageResource(R.mipmap.image_btn_add_inactive);
                 SearchFragment fragment = new SearchFragment();
@@ -104,8 +104,8 @@ public class MainActivity extends AppCompatActivity{
                 break;
             }
             case STATE_PEOPLE: {
-                btnHome.setImageResource(R.mipmap.image_btn_home_inactive);
-                btnSearch.setImageResource(R.mipmap.image_btn_search_inactive);
+                btnHome.setImageResource(R.mipmap.image_btn_together_inactive);
+                btnSearch.setImageResource(R.mipmap.image_btn_home_inactive);
                 btnPeople.setImageResource(R.mipmap.image_btn_people);
                 btnAdd.setImageResource(R.mipmap.image_btn_add_inactive);
                 UserListFragment fragment = new UserListFragment();

@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="#ffffff"
-            android:src="@mipmap/image_btn_home_inactive" />
+            android:src="@mipmap/image_btn_together" />
 
         <ImageButton
             android:id="@+id/btn_search"
@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="#ffffff"
-            android:src="@mipmap/image_btn_search_inactive" />
+            android:src="@mipmap/image_btn_home_inactive" />
 
         <ImageButton
             android:id="@+id/btn_people"
