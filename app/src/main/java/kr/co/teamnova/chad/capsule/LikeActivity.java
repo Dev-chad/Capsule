@@ -15,6 +15,8 @@ public class LikeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_like);
 
+        setTitle(getIntent().getStringExtra("mode"));
+
         ListView listViewUser;
         LikeUserListAdapter adapter;
         listViewUser = (ListView) findViewById(R.id.listView_like);

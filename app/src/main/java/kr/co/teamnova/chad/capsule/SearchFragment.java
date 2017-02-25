@@ -207,9 +207,11 @@ public class SearchFragment extends Fragment implements View.OnClickListener{
         Intent intent = new Intent(getContext(), LikeActivity.class);
         switch(id){
             case R.id.text_follow_count:
+                intent.putExtra("mode", "팔로우");
                 intent.putStringArrayListExtra("like_user_list",loginUser.getFollowList());
                 break;
             case R.id.text_follower_count:
+                intent.putExtra("mode", "팔로워");
                 intent.putStringArrayListExtra("like_user_list", loginUser.getFollowerList());
                 break;
         }

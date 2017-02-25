@@ -249,6 +249,7 @@ public class ContentListViewAdapter extends BaseAdapter {
         viewHolder.textViewDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                animCheck = false;
                 if (content.getTimeMode() == Content.MODE_TIME_ABSOLUTE) {
                     content.setTimeMode(Content.MODE_TIME_RELATIVE);
                 } else {
@@ -447,6 +448,7 @@ public class ContentListViewAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, LikeActivity.class);
+                intent.putExtra("mode", "좋아요");
                 intent.putExtra("login_user", loginUser.getEmail());
                 intent.putExtra("like_user_list", content.getLikeUserList());
                 context.startActivity(intent);
@@ -638,6 +640,7 @@ public class ContentListViewAdapter extends BaseAdapter {
                 }
             } else {
                 if(fragment != null){
+                    Log.d(TAG, String.valueOf(setPosition));
                     if(fragment.isLastVisibleList(setPosition)){
                         animCheck = true;
                     }
