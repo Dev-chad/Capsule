@@ -19,6 +19,8 @@ public class ChatActivity extends AppCompatActivity {
         User loginUser = getIntent().getParcelableExtra("login_user");
         User chatUser = getIntent().getParcelableExtra("chat_user");
 
+
+
         setTitle(chatUser.getNickname());
 
         Log.d(TAG, loginUser.getEmail()+ " " + chatUser.getEmail());

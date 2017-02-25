@@ -50,9 +50,12 @@
         <activity
             android:name=".ReplyEditActivity"
             android:theme="@style/Theme.AppCompat.Light.Dialog" />
-        <activity android:name=".MessageActivity"
-            android:label="메신저"/>
-        <activity android:name=".ChatActivity" />
+        <activity
+            android:name=".MessageActivity"
+            android:label="메신저" />
+        <activity
+            android:name=".ChatActivity"
+            android:windowSoftInputMode="stateAlwaysHidden" />
     </application>
 
 </manifest>
