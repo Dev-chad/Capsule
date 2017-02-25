@@ -59,7 +59,7 @@ public class LikeUserListAdapter extends BaseAdapter {
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.listview_user, parent, false);
-            viewHolder = new LikeUserListAdapter.ViewHolder();
+            viewHolder = new ViewHolder();
 
             viewHolder.imageViewProfile = (ImageView) convertView.findViewById(R.id.image_profile);
             viewHolder.textViewEmail = (TextView) convertView.findViewById(R.id.text_email);
@@ -67,7 +67,7 @@ public class LikeUserListAdapter extends BaseAdapter {
             viewHolder.btnFollow = (Button) convertView.findViewById(R.id.btn_follow);
             convertView.setTag(viewHolder);
         } else {
-            viewHolder = (LikeUserListAdapter.ViewHolder) convertView.getTag();
+            viewHolder = (ViewHolder) convertView.getTag();
         }
 
         viewHolder.imageViewProfile.setImageURI(user.getUriProfileImage());

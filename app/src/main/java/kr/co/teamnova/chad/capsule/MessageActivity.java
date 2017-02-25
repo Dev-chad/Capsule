@@ -1,5 +1,6 @@
 package kr.co.teamnova.chad.capsule;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -66,7 +67,7 @@ public class MessageActivity extends AppCompatActivity implements View.OnClickLi
             followList.add(new User(email, strUserData));
         }
 
-        followListAdapter = new FollowListAdapter(followList);
+        followListAdapter = new FollowListAdapter(this, loginUser, followList);
         listFollow.setAdapter(followListAdapter);
 
     }
@@ -86,6 +87,8 @@ public class MessageActivity extends AppCompatActivity implements View.OnClickLi
                 mode = MODE_CHAT;
                 listFollow.setVisibility(View.GONE);
                 listChat.setVisibility(View.VISIBLE);
+                followListAdapter.setSelectedItem(-1);
+                followListAdapter.notifyDataSetChanged();
                 break;
             case R.id.ibtn_follow:
                 mode = MODE_FOLLOW;
@@ -98,5 +101,12 @@ public class MessageActivity extends AppCompatActivity implements View.OnClickLi
                 }
                 break;
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        ibtnChat.callOnClick();
     }
 }

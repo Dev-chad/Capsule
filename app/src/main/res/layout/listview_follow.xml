@@ -28,7 +28,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
-
             android:text="JACKSON"
             android:textColor="@android:color/black" />
 
@@ -40,6 +39,15 @@
             android:layout_below="@id/text_nickname"
             android:text="sss@naver.com"
             android:textSize="10sp" />
+
+       <ImageButton
+           android:id="@+id/ibtn_add_chat"
+           android:layout_width="30dp"
+           android:layout_height="30dp"
+           android:layout_alignParentEnd="true"
+           android:layout_centerVertical="true"
+           android:layout_marginEnd="20dp"
+           android:background="@mipmap/image_chat_add" />
 
     </RelativeLayout>
 
