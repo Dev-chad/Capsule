@@ -78,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         onClickMenu();
-
     }
 
     private void onClickMenu() {

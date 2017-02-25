@@ -41,6 +41,7 @@ public class ContentListViewAdapter extends BaseAdapter {
     private HomeFragment fragment;
     private SearchFragment fragment2;
     private User loginUser;
+    private boolean animCheck = true;
 
 
     public class ViewHolder {
@@ -138,6 +139,11 @@ public class ContentListViewAdapter extends BaseAdapter {
         if (content.getContentImage() == null) {
             viewHolder.imageViewContent.setVisibility(View.GONE);
         } else {
+            if(animCheck){
+                if(viewHolder.imageViewContent.getDrawable() != null){
+                    viewHolder.imageViewContent.setImageAlpha(0);
+                }
+            }
             viewHolder.imageViewContent.setVisibility(View.VISIBLE);
             BitmapWorkerTask task = new BitmapWorkerTask(context, viewHolder.imageViewContent, position, viewHolder);
             task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, content.getContentImage());
@@ -318,7 +324,6 @@ public class ContentListViewAdapter extends BaseAdapter {
 
                                 listViewContentList.remove(position);
                                 notifyDataSetChanged();
-
                                 break;
                             default:
                                 return false;
@@ -335,6 +340,7 @@ public class ContentListViewAdapter extends BaseAdapter {
         viewHolder.ibtnLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                animCheck = false;
                 // sp에 저장된 게시물 리스트에서 현재 게시물이 어디에 위치한지 알기 위한 변수
                 int contentPosition = 0;
 
@@ -607,27 +613,42 @@ public class ContentListViewAdapter extends BaseAdapter {
         // Once complete, see if ImageView is still around and set bitmap.
         @Override
         protected void onPostExecute(Bitmap bitmap) {
-            if (fragment != null) {
-                if (fragment.isAdded() && bitmap != null) {
-                    final ImageView imageView = imageViewReference.get();
-                    if (imageView != null && setPosition == mHolder.mPosition) {
-                    Animation flowAnimation;
-                    flowAnimation = AnimationUtils.loadAnimation(fragment.getActivity(), R.anim.alpha);
-                    imageView.startAnimation(flowAnimation);
-                        imageView.setImageBitmap(bitmap);
+            if(animCheck){
+                imageViewReference.get().setImageAlpha(255);
+                if (fragment != null) {
+                    if (fragment.isAdded() && bitmap != null) {
+                        final ImageView imageView = imageViewReference.get();
+                        if (imageView != null && setPosition == mHolder.mPosition) {
+                            Animation flowAnimation;
+                            flowAnimation = AnimationUtils.loadAnimation(fragment.getActivity(), R.anim.alpha);
+                            imageView.startAnimation(flowAnimation);
+                            imageView.setImageBitmap(bitmap);
+                        }
+                    }
+                } else if (fragment2 != null) {
+                    if (fragment2.isAdded() && bitmap != null) {
+                        final ImageView imageView = imageViewReference.get();
+                        if (imageView != null && setPosition == mHolder.mPosition) {
+                            Animation flowAnimation;
+                            flowAnimation = AnimationUtils.loadAnimation(fragment2.getActivity(), R.anim.alpha);
+                            imageView.startAnimation(flowAnimation);
+                            imageView.setImageBitmap(bitmap);
+                        }
                     }
                 }
-            } else if (fragment2 != null) {
-                if (fragment2.isAdded() && bitmap != null) {
-                    final ImageView imageView = imageViewReference.get();
-                    if (imageView != null && setPosition == mHolder.mPosition) {
-                        Animation flowAnimation;
-                        flowAnimation = AnimationUtils.loadAnimation(fragment2.getActivity(), R.anim.alpha);
-                        imageView.startAnimation(flowAnimation);
-                        imageView.setImageBitmap(bitmap);
+            } else {
+                if(fragment != null){
+                    if(fragment.isLastVisibleList(setPosition)){
+                        animCheck = true;
                     }
+                } else if(fragment2 != null){
+                    if(fragment2.isLastVisibleList(setPosition)){
+                        animCheck = true;
+                    }
+
                 }
             }
+
         }
     }
 

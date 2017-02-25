@@ -268,4 +268,8 @@ public class HomeFragment extends Fragment implements AbsListView.OnScrollListen
             }
         }
     }
+
+    public boolean isLastVisibleList(int position){
+        return listViewContent.getLastVisiblePosition() == position;
+    }
 }

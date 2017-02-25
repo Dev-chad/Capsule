@@ -24,7 +24,7 @@ import static android.content.Context.MODE_PRIVATE;
  * Created by Chad on 2017-01-18.
  */
 
-public class SearchFragment extends Fragment {
+public class SearchFragment extends Fragment implements View.OnClickListener{
 
     private static final String TAG = "SearchFragment";
 
@@ -153,13 +153,8 @@ public class SearchFragment extends Fragment {
         textFollowCount.setText(String.valueOf(loginUser.getFollowerList().size()));
         textContentCount.setText(String.valueOf(totalContent.size()));
 
-        textFollowCount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
+        textFollowCount.setOnClickListener(this);
+        textFollowerCount.setOnClickListener(this);
 
         return view;
     }
@@ -200,5 +195,25 @@ public class SearchFragment extends Fragment {
         textContentCount.setText(String.valueOf(loginUser.getNumOfContent()));
         textFollowCount.setText(String.valueOf(loginUser.getFollowList().size()));
         textFollowerCount.setText(String.valueOf(loginUser.getFollowerList().size()));
+    }
+
+    public boolean isLastVisibleList(int position){
+        return listViewContent.getLastVisiblePosition() == position;
+    }
+
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        Intent intent = new Intent(getContext(), LikeActivity.class);
+        switch(id){
+            case R.id.text_follow_count:
+                intent.putStringArrayListExtra("like_user_list",loginUser.getFollowList());
+                break;
+            case R.id.text_follower_count:
+                intent.putStringArrayListExtra("like_user_list", loginUser.getFollowerList());
+                break;
+        }
+
+        startActivity(intent);
     }
 }

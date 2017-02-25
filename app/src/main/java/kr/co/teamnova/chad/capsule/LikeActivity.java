@@ -20,9 +20,8 @@ public class LikeActivity extends AppCompatActivity {
         listViewUser = (ListView) findViewById(R.id.listView_like);
         ArrayList<User> userList = new ArrayList<>();
 
-        String loginUserEmail = getIntent().getStringExtra("login_user");
         SharedPreferences spAccount = getSharedPreferences("account", MODE_PRIVATE);
-        String[] strUserData = spAccount.getString(loginUserEmail, "").split(",");
+        String[] strUserData;
 
         for (String email : getIntent().getStringArrayListExtra("like_user_list")) {
             strUserData = spAccount.getString(email, "").split(",");
