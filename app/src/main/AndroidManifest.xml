@@ -49,7 +49,9 @@
             android:label="답글" />
         <activity
             android:name=".ReplyEditActivity"
-            android:theme="@style/Theme.AppCompat.Light.Dialog"/>
+            android:theme="@style/Theme.AppCompat.Light.Dialog" />
+        <activity android:name=".MessageActivity"
+            android:label="메신저"/>
     </application>
 
 </manifest>

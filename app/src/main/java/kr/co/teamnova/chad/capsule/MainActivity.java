@@ -153,6 +153,11 @@ public class MainActivity extends AppCompatActivity {
                 finish();
                 break;
             }
+            case R.id.menu_message:{
+                Intent intent = new Intent(this, MessageActivity.class);
+                intent.putExtra("login_user", loginUser);
+                startActivity(intent);
+            }
         }
         return super.onOptionsItemSelected(item);
     }
