@@ -14,6 +14,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Set;
 
 public class MessageActivity extends AppCompatActivity implements View.OnClickListener {
@@ -102,6 +104,8 @@ public class MessageActivity extends AppCompatActivity implements View.OnClickLi
             }
         }
 
+        Collections.sort(chatListItems, new FileNameSort());
+
         chatListAdapter = new ChatListAdapter(chatListItems);
         listChat.setAdapter(chatListAdapter);
 
@@ -182,6 +186,7 @@ public class MessageActivity extends AppCompatActivity implements View.OnClickLi
 
             }
         }
+        chatListAdapter.notifyDataSetChanged();
         ibtnChat.callOnClick();
     }
 
@@ -208,5 +213,11 @@ public class MessageActivity extends AppCompatActivity implements View.OnClickLi
         }
 
         return super.onContextItemSelected(item);
+    }
+
+    class FileNameSort implements Comparator<ChatListItem> {
+        public int compare(ChatListItem f1, ChatListItem f2) {
+            return f1.getDate() > f2.getDate() ? -1 : f1.getDate() < f2.getDate() ? 1:0;
+        }
     }
 }

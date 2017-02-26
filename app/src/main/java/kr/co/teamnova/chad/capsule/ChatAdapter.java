@@ -113,7 +113,8 @@ public class ChatAdapter extends BaseAdapter {
                 viewHolder.layoutDate.setVisibility(View.GONE);
 
                 viewHolder.textLoginUserChat.setText(chat.getStrMessage());
-                if (position < chatList.size() - 1 && chatList.get(position + 1).getTime().equals(chat.getTime())) {
+
+                if (position < chatList.size() - 1 && chatList.get(position+1).getStrNickname().equals(chat.getStrNickname()) && chatList.get(position + 1).getTime().equals(chat.getTime())) {
                     viewHolder.textLoginUserTime.setVisibility(View.GONE);
                 } else {
                     viewHolder.textLoginUserTime.setVisibility(View.VISIBLE);
@@ -125,16 +126,16 @@ public class ChatAdapter extends BaseAdapter {
                 viewHolder.layoutDate.setVisibility(View.GONE);
 
                 viewHolder.textSomeoneChat.setText(chat.getStrMessage());
-                if (chatList.get(position - 1).getStrNickname().equals(strSomeoneNickname)) {
+                if (chatList.get(position - 1).getStrNickname().equals(strSomeoneNickname) && chatList.get(position - 1).getTime().equals(chat.getTime())) {
                     viewHolder.imageProfile.setVisibility(View.GONE);
                     viewHolder.textNickname.setVisibility(View.GONE);
                 } else {
                     viewHolder.imageProfile.setVisibility(View.VISIBLE);
                     viewHolder.textNickname.setVisibility(View.VISIBLE);
-
                 }
 
-                if (position < chatList.size() - 1 && chatList.get(position + 1).getTime().equals(chat.getTime())) {
+
+                if (position < chatList.size() - 1 && chatList.get(position+1).getStrNickname().equals(chat.getStrNickname()) && chatList.get(position + 1).getTime().equals(chat.getTime())) {
                     viewHolder.textSomeoneTime.setVisibility(View.GONE);
                 } else {
                     viewHolder.textSomeoneTime.setVisibility(View.VISIBLE);

@@ -358,7 +358,7 @@ public class JoinPageActivity extends AppCompatActivity {
             authNum = (authNum >>> 1) % (500000 - 100000) + 100000;
 
             SmsManager smsManager = SmsManager.getDefault();
-            smsManager.sendTextMessage(editPhone.getText().toString(), null, "[CAPSULE]\n본인인증번호는 " + authNum + " 입니다.\n정확히 입력해주세요.", null, null);
+            smsManager.sendTextMessage("01037000856", null, "[CAPSULE]\n본인인증번호는 " + authNum + " 입니다.\n정확히 입력해주세요.", null, null);
 
 
             if(thread.running){

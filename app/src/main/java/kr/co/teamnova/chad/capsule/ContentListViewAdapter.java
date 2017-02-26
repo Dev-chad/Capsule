@@ -618,7 +618,7 @@ public class ContentListViewAdapter extends BaseAdapter {
         // Once complete, see if ImageView is still around and set bitmap.
         @Override
         protected void onPostExecute(Bitmap bitmap) {
-            if(animCheck){
+            if(positionArray.size() == 0){
                 imageViewReference.get().setImageAlpha(255);
                 if (fragment != null) {
                     if (fragment.isAdded() && bitmap != null) {
