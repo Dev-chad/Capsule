@@ -12,6 +12,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import static android.content.ContentValues.TAG;
 import static kr.co.teamnova.chad.capsule.ContentListViewAdapter.calculateInSampleSize;
@@ -21,6 +22,9 @@ import static kr.co.teamnova.chad.capsule.ContentListViewAdapter.calculateInSamp
  */
 
 public class Utils {
+
+    public static SimpleDateFormat CurDateFormat = new SimpleDateFormat("yyyy년 MM월 dd일", Locale.KOREA);
+    public static SimpleDateFormat CurTimeFormat = new SimpleDateFormat("HH시 mm분", Locale.KOREA);
 
     static String getSHA256(String plainPassword) {
         String cipherPassword;

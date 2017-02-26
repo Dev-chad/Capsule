@@ -30,7 +30,7 @@
             android:layout_height="35dp"
             android:layout_weight="1"
             android:background="#ffffff"
-            android:src="@mipmap/image_speech_bubble" />
+            android:src="@mipmap/image_btn_chat" />
     </LinearLayout>
 
     <View

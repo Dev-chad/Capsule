@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Capsule</string>
+    <string name="app_name">CAPSULE</string>
 
     <string name="str_join">가입하기</string>
     <string name="str_log_in">로그인</string>

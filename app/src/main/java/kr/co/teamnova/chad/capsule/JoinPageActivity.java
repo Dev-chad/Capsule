@@ -161,6 +161,7 @@ public class JoinPageActivity extends AppCompatActivity {
                         layoutPhoneAuth.setVisibility(View.GONE);
                         textErrorMessage.setText("");
                         isCompletedPhoneAuth = true;
+                        editPassword.requestFocus();
                     } else {
                         textErrorMessage.setText(R.string.str_error_auth_overtime);
                     }

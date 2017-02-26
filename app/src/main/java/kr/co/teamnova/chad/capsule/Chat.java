@@ -9,16 +9,21 @@ public class Chat {
     private String strNickname;
     private String strMessage;
     private String time;
-    private boolean isLast;
+    private boolean isTimeLine;
 
-    public Chat() {
+    public Chat(String time) {
+        this.time = time;
+        this.isTimeLine = true;
+        strNickname="";
+        strMessage="";
     }
 
-    public Chat(String strNickname, String strMessage, String time, boolean isLast) {
+    public Chat(String strNickname, String strMessage, String time) {
         this.strNickname = strNickname;
         this.strMessage = strMessage;
         this.time = time;
-        this.isLast = isLast;
+
+        isTimeLine = false;
     }
 
     public String getStrNickname() {
@@ -28,7 +33,6 @@ public class Chat {
     public void setStrNickname(String strNickname) {
         this.strNickname = strNickname;
     }
-
 
     public String getStrMessage() {
         return strMessage;
@@ -46,11 +50,11 @@ public class Chat {
         this.time = time;
     }
 
-    public boolean isLast() {
-        return isLast;
+    public boolean isTimeLine() {
+        return isTimeLine;
     }
 
-    public void setLast(boolean last) {
-        isLast = last;
+    public void setTimeLine(boolean timeLine) {
+        isTimeLine = timeLine;
     }
 }

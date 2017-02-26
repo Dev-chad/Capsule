@@ -5,14 +5,18 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.ContextMenu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Set;
 
-public class MessageActivity extends AppCompatActivity implements View.OnClickListener{
+public class MessageActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "MessageActivity";
     private final int MODE_FOLLOW = 0;
     private final int MODE_CHAT = 1;
@@ -26,6 +30,12 @@ public class MessageActivity extends AppCompatActivity implements View.OnClickLi
     private ImageButton ibtnChat;
 
     private FollowListAdapter followListAdapter;
+    private ChatListAdapter chatListAdapter;
+
+    private ArrayList<User> followList;
+    private ArrayList<ChatListItem> chatListItems;
+
+    private SharedPreferences spAccount;
 
     private int mode = 0;
 
@@ -34,33 +44,35 @@ public class MessageActivity extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message);
 
-        textNoChat = (TextView)findViewById(R.id.text_no_chat);
-        textNoFollow = (TextView)findViewById(R.id.text_no_follow);
+        textNoChat = (TextView) findViewById(R.id.text_no_chat);
+        textNoFollow = (TextView) findViewById(R.id.text_no_follow);
 
-        ibtnChat = (ImageButton)findViewById(R.id.ibtn_chat);
+        ibtnChat = (ImageButton) findViewById(R.id.ibtn_chat);
         ibtnChat.setOnClickListener(this);
-        ibtnFollow = (ImageButton)findViewById(R.id.ibtn_follow);
+        ibtnFollow = (ImageButton) findViewById(R.id.ibtn_follow);
         ibtnFollow.setOnClickListener(this);
 
-        listFollow = (ListView)findViewById(R.id.list_follow);
-        listChat = (ListView)findViewById(R.id.list_chat);
+        ibtnChat.setImageAlpha(30);
+
+        listFollow = (ListView) findViewById(R.id.list_follow);
+        listChat = (ListView) findViewById(R.id.list_chat);
         listChat.setVisibility(View.GONE);
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         String strLoginUserEmail = getIntent().getStringExtra("login_user");
-        SharedPreferences spAccount = getSharedPreferences("account", MODE_PRIVATE);
+        spAccount = getSharedPreferences("account", MODE_PRIVATE);
         String[] strUserData = spAccount.getString(strLoginUserEmail, "").split(",");
         loginUser = new User(strLoginUserEmail, strUserData);
 
-        if(loginUser.getFollowList().size() == 0){
+        if (loginUser.getFollowList().size() == 0) {
             textNoFollow.setVisibility(View.VISIBLE);
         } else {
             textNoFollow.setVisibility(View.GONE);
         }
 
-        ArrayList<User> followList = new ArrayList<>();
+        followList = new ArrayList<>();
 
         for (String email : loginUser.getFollowList()) {
             strUserData = spAccount.getString(email, "").split(",");
@@ -69,6 +81,49 @@ public class MessageActivity extends AppCompatActivity implements View.OnClickLi
 
         followListAdapter = new FollowListAdapter(this, loginUser, followList);
         listFollow.setAdapter(followListAdapter);
+
+        chatListItems = new ArrayList<>();
+
+        SharedPreferences spMessage = getSharedPreferences("message", MODE_PRIVATE);
+        final SharedPreferences.Editor spMesseageEditor = spMessage.edit();
+        Set<String> keySet = spMessage.getAll().keySet();
+
+        for (String key : keySet) {
+            if (key.contains(loginUser.getEmail() + ",")) {
+                String email = key.split(loginUser.getEmail() + ",")[1];
+                String totalMessage = spMessage.getString(key, "");
+                User user = new User(email, spAccount.getString(email, "").split(","));
+                int size = totalMessage.split(",").length;
+                String[] lastMessage = totalMessage.split(",")[size - 1].split("::");
+
+                ChatListItem chatListItem = new ChatListItem(user.getNickname(), user.getUriProfileImage(), Utils.getStringFromByteString(lastMessage[1], "\\+"), user.getEmail(), Long.valueOf(lastMessage[2]));
+                chatListItems.add(chatListItem);
+
+            }
+        }
+
+        chatListAdapter = new ChatListAdapter(chatListItems);
+        listChat.setAdapter(chatListAdapter);
+
+        listChat.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ChatListItem chatListItem = chatListItems.get(position);
+                Intent intent = new Intent(MessageActivity.this, ChatActivity.class);
+                intent.putExtra("login_user", loginUser);
+                intent.putExtra("chat_user", new User(chatListItem.getEmail(), spAccount.getString(chatListItem.getEmail(), "").split(",")));
+                startActivityForResult(intent, 0);
+            }
+        });
+
+       /*listChat.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+           @Override
+           public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+               *//*ChatListItem chatListItem = chatListItems.get(position);
+               spMesseageEditor.remove()*//*
+           }
+       });*/
+        registerForContextMenu(listChat);
 
     }
 
@@ -82,9 +137,11 @@ public class MessageActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View v) {
         int id = v.getId();
 
-        switch (id){
+        switch (id) {
             case R.id.ibtn_chat:
                 mode = MODE_CHAT;
+                ibtnFollow.setImageAlpha(30);
+                ibtnChat.setImageAlpha(255);
                 listFollow.setVisibility(View.GONE);
                 listChat.setVisibility(View.VISIBLE);
                 followListAdapter.setSelectedItem(-1);
@@ -92,9 +149,11 @@ public class MessageActivity extends AppCompatActivity implements View.OnClickLi
                 break;
             case R.id.ibtn_follow:
                 mode = MODE_FOLLOW;
+                ibtnChat.setImageAlpha(30);
+                ibtnFollow.setImageAlpha(255);
                 listFollow.setVisibility(View.VISIBLE);
                 listChat.setVisibility(View.GONE);
-                if(loginUser.getFollowList().size() == 0){
+                if (loginUser.getFollowList().size() == 0) {
                     textNoFollow.setVisibility(View.VISIBLE);
                 } else {
                     textNoFollow.setVisibility(View.GONE);
@@ -106,7 +165,48 @@ public class MessageActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        SharedPreferences spMessage = getSharedPreferences("message", MODE_PRIVATE);
+        chatListItems.clear();
+        Set<String> keySet = spMessage.getAll().keySet();
 
+        for (String key : keySet) {
+            if (key.contains(loginUser.getEmail() + ",")) {
+                String email = key.split(loginUser.getEmail() + ",")[1];
+                String totalMessage = spMessage.getString(key, "");
+                User user = new User(email, spAccount.getString(email, "").split(","));
+                int size = totalMessage.split(",").length;
+                String[] lastMessage = totalMessage.split(",")[size - 1].split("::");
+
+                ChatListItem chatListItem = new ChatListItem(user.getNickname(), user.getUriProfileImage(), Utils.getStringFromByteString(lastMessage[1], "\\+"), user.getEmail(), Long.valueOf(lastMessage[2]));
+                chatListItems.add(chatListItem);
+
+            }
+        }
         ibtnChat.callOnClick();
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+                                    ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        // 롱클릭했을 때 나오는 context Menu 의 항목을 선택(클릭) 했을 때 호출
+        switch(item.getItemId()) {
+            case 1 :// 빨강 메뉴 선택시
+
+                return true;
+            case 2 :// 녹색 메뉴 선택시
+
+                return true;
+            case 3 :// 파랑 메뉴 선택시
+
+                return true;
+        }
+
+        return super.onContextItemSelected(item);
     }
 }

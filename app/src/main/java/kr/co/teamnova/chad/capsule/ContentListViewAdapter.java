@@ -42,6 +42,7 @@ public class ContentListViewAdapter extends BaseAdapter {
     private SearchFragment fragment2;
     private User loginUser;
     private boolean animCheck = true;
+    private ArrayList<Integer> positionArray = new ArrayList<>();
 
 
     public class ViewHolder {
@@ -143,6 +144,8 @@ public class ContentListViewAdapter extends BaseAdapter {
                 if(viewHolder.imageViewContent.getDrawable() != null){
                     viewHolder.imageViewContent.setImageAlpha(0);
                 }
+            } else {
+                positionArray.add(position);
             }
             viewHolder.imageViewContent.setVisibility(View.VISIBLE);
             BitmapWorkerTask task = new BitmapWorkerTask(context, viewHolder.imageViewContent, position, viewHolder);
@@ -639,14 +642,19 @@ public class ContentListViewAdapter extends BaseAdapter {
                     }
                 }
             } else {
+                positionArray.remove(Integer.valueOf(setPosition));
                 if(fragment != null){
                     Log.d(TAG, String.valueOf(setPosition));
                     if(fragment.isLastVisibleList(setPosition)){
-                        animCheck = true;
+                        if (positionArray.size() == 0){
+                            animCheck = true;
+                        }
                     }
                 } else if(fragment2 != null){
                     if(fragment2.isLastVisibleList(setPosition)){
-                        animCheck = true;
+                        if (positionArray.size() == 0){
+                            animCheck = true;
+                        }
                     }
 
                 }
